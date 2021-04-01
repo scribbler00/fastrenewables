@@ -1,8 +1,8 @@
-# fastrenewables
+# Welcome to fastrenewables
 > A framework for transfer learning in the context of renewable timeseries power forecasts.
 
 
-This file will become your README and also the index of your documentation.
+We hope this project will help you to get good results for limited data in renewable power forecasts.
 
 ## Install
 
