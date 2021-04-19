@@ -228,7 +228,7 @@ nb_path: "nbs/00_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="DropCols" class="doc_header"><code>class</code> <code>DropCols</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/core.py#L114" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DropCols</code>(<strong><code>cols</code></strong>) :: <code>TabularProc</code></p>
+<h2 id="DropCols" class="doc_header"><code>class</code> <code>DropCols</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/core.py#L127" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DropCols</code>(<strong><code>cols</code></strong>) :: <code>TabularProc</code></p>
 </blockquote>
 <p>Drops rows by column name.</p>
 
@@ -253,7 +253,7 @@ nb_path: "nbs/00_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FilterByCol" class="doc_header"><code>class</code> <code>FilterByCol</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/core.py#L123" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FilterByCol</code>(<strong><code>col_name</code></strong>, <strong><code>keep</code></strong>=<em><code>True</code></em>, <strong><code>drop_col_after_filter</code></strong>=<em><code>True</code></em>) :: <code>TabularProc</code></p>
+<h2 id="FilterByCol" class="doc_header"><code>class</code> <code>FilterByCol</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/core.py#L136" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FilterByCol</code>(<strong><code>col_name</code></strong>, <strong><code>keep</code></strong>=<em><code>True</code></em>, <strong><code>drop_col_after_filter</code></strong>=<em><code>True</code></em>) :: <code>TabularProc</code></p>
 </blockquote>
 <p>Drops rows by column.</p>
 
@@ -278,7 +278,7 @@ nb_path: "nbs/00_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FilterMonths" class="doc_header"><code>class</code> <code>FilterMonths</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/core.py#L137" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FilterMonths</code>(<strong><code>months</code></strong>=<em><code>range(1, 13)</code></em>) :: <code>TabularProc</code></p>
+<h2 id="FilterMonths" class="doc_header"><code>class</code> <code>FilterMonths</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/core.py#L150" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FilterMonths</code>(<strong><code>months</code></strong>=<em><code>range(1, 13)</code></em>) :: <code>TabularProc</code></p>
 </blockquote>
 <p>Filter dataframe for specific months.</p>
 
@@ -310,7 +310,31 @@ nb_path: "nbs/00_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabularRenewables" class="doc_header"><code>class</code> <code>TabularRenewables</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/core.py#L148" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabularRenewables</code>(<strong><code>dfs</code></strong>, <strong><code>procs</code></strong>=<em><code>None</code></em>, <strong><code>cat_names</code></strong>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>=<em><code>None</code></em>, <strong><code>y_names</code></strong>=<em><code>None</code></em>, <strong><code>add_y_to_x</code></strong>=<em><code>False</code></em>, <strong><code>add_x_to_y</code></strong>=<em><code>False</code></em>, <strong><code>pre_process</code></strong>=<em><code>None</code></em>, <strong><code>include_task_id</code></strong>=<em><code>False</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>) :: <code>CollBase</code></p>
+<h4 id="preproces_and_merge_dfs" class="doc_header"><code>preproces_and_merge_dfs</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/core.py#L161" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>preproces_and_merge_dfs</code>(<strong><code>dfs</code></strong>, <strong><code>task_id_col</code></strong>, <strong><code>y_names</code></strong>, <strong><code>pre_process</code></strong>, <strong><code>offset</code></strong>=<em><code>0</code></em>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="TabularRenewables" class="doc_header"><code>class</code> <code>TabularRenewables</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/core.py#L175" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabularRenewables</code>(<strong><code>dfs</code></strong>, <strong><code>procs</code></strong>=<em><code>None</code></em>, <strong><code>cat_names</code></strong>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>=<em><code>None</code></em>, <strong><code>y_names</code></strong>=<em><code>None</code></em>, <strong><code>add_y_to_x</code></strong>=<em><code>False</code></em>, <strong><code>add_x_to_y</code></strong>=<em><code>False</code></em>, <strong><code>pre_process</code></strong>=<em><code>None</code></em>, <strong><code>include_task_id</code></strong>=<em><code>False</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>) :: <code>CollBase</code></p>
 </blockquote>
 <p>Base class for composing a list of <code>items</code></p>
 
@@ -338,7 +362,148 @@ nb_path: "nbs/00_core.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>nbdev_build_lib
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># # sys.path.append(&quot;../&quot;)</span>
+<span class="c1"># # from fastai.tabular.all import *</span>
+<span class="c1"># # from fastrenewables.core import *</span>
+
+
+<span class="c1"># files = glob.glob(&quot;../data/*.h5&quot;)</span>
+<span class="c1"># len(files), files[0:2]</span>
+<span class="c1"># n_files = 2</span>
+<span class="c1"># dfs = read_files(files[0:n_files], key_metadata=&quot;metadata&quot;)</span>
+<span class="c1"># cols_to_drop = L(</span>
+<span class="c1">#     &quot;long&quot;,</span>
+<span class="c1">#     &quot;lat&quot;,</span>
+<span class="c1">#     &quot;loc_id&quot;,</span>
+<span class="c1">#     &quot;target_file_name&quot;,</span>
+<span class="c1">#     &quot;input_file_name&quot;,</span>
+<span class="c1">#     &quot;num_train_samples&quot;,</span>
+<span class="c1">#     &quot;num_test_samples&quot;,</span>
+<span class="c1"># )</span>
+<span class="c1"># to = TabularRenewables(</span>
+<span class="c1">#     dfs,</span>
+<span class="c1">#     y_names=&quot;PowerGeneration&quot;,</span>
+<span class="c1">#     pre_process=[DropCols(cols_to_drop), FilterByCol(&quot;TestFlag&quot;), AddSeasonalFeatures],</span>
+<span class="c1">#     procs=[NormalizePerTask, Categorify],</span>
+<span class="c1">#     add_x_to_y=False,</span>
+<span class="c1">#     include_task_id=False,</span>
+<span class="c1">#                         splits=RandomSplitter(valid_pct=0.2)</span>
+<span class="c1"># )</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/home/scribbler/anaconda/lib/python3.8/site-packages/fastai/tabular/core.py:148: UserWarning: Using inplace with splits will trigger a pandas error. Set `pd.options.mode.chained_assignment=None` to avoid it.
+  warn(&#34;Using inplace with splits will trigger a pandas error. Set `pd.options.mode.chained_assignment=None` to avoid it.&#34;)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>False</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>1</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
 </pre></div>
 
     </div>
@@ -351,12 +516,478 @@ nb_path: "nbs/00_core.ipynb"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Converted 00_core.ipynb.
-Converted index.ipynb.
+<pre>new one
+**************
+         T_HAG_2_M  RELHUM_HAG_2_M   PS_SFC_0_M  ASWDIFDS_SFC_0_M  \
+TaskID                                                              
+2       282.318524       76.775322  93288.75035         66.925939   
+
+        ASWDIRS_SFC_0_M  WindSpeed58m  SinWindDirection58m  \
+TaskID                                                       
+2            102.740988      3.736435             0.051207   
+
+        CosWindDirection58m  WindSpeed60m  SinWindDirection60m  ...  \
+TaskID                                                          ...   
+2                  0.136615      2.283678             0.076204  ...   
+
+        SinWindDirection60mMinus_t_1  CosWindDirection60mMinus_t_1  \
+TaskID                                                               
+2                           0.075849                      0.200523   
+
+        WindSpeed58mPlus_t_1  SinWindDirection58mPlus_t_1  \
+TaskID                                                      
+2                   3.736496                     0.050579   
+
+        CosWindDirection58mPlus_t_1  WindSpeed60mPlus_t_1  \
+TaskID                                                      
+2                           0.13536              2.282969   
+
+        SinWindDirection60mPlus_t_1  CosWindDirection60mPlus_t_1  \
+TaskID                                                             
+2                          0.075791                     0.199005   
+
+        rotor_diameter_m  nominal_power_kW  
+TaskID                                      
+2                   82.0            2350.0  
+
+[1 rows x 25 columns]
+**************
+         T_HAG_2_M  RELHUM_HAG_2_M     PS_SFC_0_M  ASWDIFDS_SFC_0_M  \
+TaskID                                                                
+0       284.955170       73.328644  100245.539062         62.508850   
+1       283.839020       75.014374   98005.554688         61.388958   
+2       282.318524       76.775322   93288.750350         66.925939   
+
+        ASWDIRS_SFC_0_M  WindSpeed58m  SinWindDirection58m  \
+TaskID                                                       
+0             86.019424      3.933054             0.106643   
+1             90.726685      5.038928             0.157623   
+2            102.740988      3.736435             0.051207   
+
+        CosWindDirection58m  WindSpeed60m  SinWindDirection60m  ...  \
+TaskID                                                          ...   
+0                  0.094790      2.107937             0.021616  ...   
+1                  0.174959      2.719335             0.232530  ...   
+2                  0.136615      2.283678             0.076204  ...   
+
+        SinWindDirection60mMinus_t_1  CosWindDirection60mMinus_t_1  \
+TaskID                                                               
+0                           0.022876                      0.074870   
+1                           0.232911                      0.128301   
+2                           0.075849                      0.200523   
+
+        WindSpeed58mPlus_t_1  SinWindDirection58mPlus_t_1  \
+TaskID                                                      
+0                   3.925769                     0.103862   
+1                   5.038057                     0.158893   
+2                   3.736496                     0.050579   
+
+        CosWindDirection58mPlus_t_1  WindSpeed60mPlus_t_1  \
+TaskID                                                      
+0                          0.096466              2.101971   
+1                          0.172717              2.718433   
+2                          0.135360              2.282969   
+
+        SinWindDirection60mPlus_t_1  CosWindDirection60mPlus_t_1  \
+TaskID                                                             
+0                          0.020946                     0.080306   
+1                          0.233003                     0.128377   
+2                          0.075791                     0.199005   
+
+        rotor_diameter_m  nominal_power_kW  
+TaskID                                      
+0             115.699997            3000.0  
+1              71.000000            2300.0  
+2              82.000000            2350.0  
+
+[3 rows x 25 columns]
+**************
 </pre>
 </div>
 </div>
 
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>T_HAG_2_M</th>
+      <th>RELHUM_HAG_2_M</th>
+      <th>PS_SFC_0_M</th>
+      <th>ASWDIFDS_SFC_0_M</th>
+      <th>ASWDIRS_SFC_0_M</th>
+      <th>PowerGeneration</th>
+      <th>WindSpeed58m</th>
+      <th>SinWindDirection58m</th>
+      <th>CosWindDirection58m</th>
+      <th>WindSpeed60m</th>
+      <th>...</th>
+      <th>SinWindDirection60mPlus_t_1</th>
+      <th>CosWindDirection60mPlus_t_1</th>
+      <th>turbine</th>
+      <th>hub_height_m</th>
+      <th>rotor_diameter_m</th>
+      <th>nominal_power_kW</th>
+      <th>Month</th>
+      <th>Day</th>
+      <th>Hour</th>
+      <th>TaskID</th>
+    </tr>
+    <tr>
+      <th>TimeUTC</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2019-01-01 00:00:00+00:00</th>
+      <td>-0.858319</td>
+      <td>1.423129</td>
+      <td>1.751965</td>
+      <td>-1.686394</td>
+      <td>-1.186579</td>
+      <td>0.000</td>
+      <td>-1.084286</td>
+      <td>-1.158532</td>
+      <td>0.642395</td>
+      <td>-1.116730</td>
+      <td>...</td>
+      <td>0.498562</td>
+      <td>1.175568</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>2019-01-01 01:00:00+00:00</th>
+      <td>-0.880154</td>
+      <td>1.422517</td>
+      <td>1.809663</td>
+      <td>-1.708480</td>
+      <td>-1.188843</td>
+      <td>0.000</td>
+      <td>-0.628330</td>
+      <td>-1.214216</td>
+      <td>0.518541</td>
+      <td>-0.714204</td>
+      <td>...</td>
+      <td>-1.281344</td>
+      <td>0.294197</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>2</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>2019-01-01 02:00:00+00:00</th>
+      <td>-0.903045</td>
+      <td>1.420250</td>
+      <td>1.745841</td>
+      <td>-1.728925</td>
+      <td>-1.190974</td>
+      <td>0.000</td>
+      <td>-0.715126</td>
+      <td>-1.111120</td>
+      <td>0.731233</td>
+      <td>-0.909445</td>
+      <td>...</td>
+      <td>-1.218690</td>
+      <td>0.474283</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>3</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>2019-01-01 03:00:00+00:00</th>
+      <td>-0.961507</td>
+      <td>1.423068</td>
+      <td>1.678533</td>
+      <td>-1.747831</td>
+      <td>-1.192912</td>
+      <td>0.000</td>
+      <td>-1.062709</td>
+      <td>-0.230798</td>
+      <td>1.392244</td>
+      <td>-0.761583</td>
+      <td>...</td>
+      <td>-0.315483</td>
+      <td>1.348358</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>4</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>2019-01-01 04:00:00+00:00</th>
+      <td>-1.092634</td>
+      <td>1.422394</td>
+      <td>1.650093</td>
+      <td>-1.765399</td>
+      <td>-1.194764</td>
+      <td>0.000</td>
+      <td>-0.784807</td>
+      <td>0.939937</td>
+      <td>0.796086</td>
+      <td>-0.568621</td>
+      <td>...</td>
+      <td>0.709075</td>
+      <td>0.988219</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>5</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>2019-11-30 20:00:00+00:00</th>
+      <td>-1.010224</td>
+      <td>0.371668</td>
+      <td>0.213161</td>
+      <td>-1.189413</td>
+      <td>-1.043226</td>
+      <td>0.027</td>
+      <td>-0.625993</td>
+      <td>-0.181384</td>
+      <td>-1.843882</td>
+      <td>-0.848956</td>
+      <td>...</td>
+      <td>-0.234990</td>
+      <td>-2.046295</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>11</td>
+      <td>30</td>
+      <td>21</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>2019-11-30 21:00:00+00:00</th>
+      <td>-1.063638</td>
+      <td>0.387232</td>
+      <td>0.140241</td>
+      <td>-1.212736</td>
+      <td>-1.047669</td>
+      <td>0.005</td>
+      <td>-0.903508</td>
+      <td>0.261339</td>
+      <td>-1.797070</td>
+      <td>-1.188718</td>
+      <td>...</td>
+      <td>-0.589427</td>
+      <td>-1.923247</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>11</td>
+      <td>30</td>
+      <td>22</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>2019-11-30 22:00:00+00:00</th>
+      <td>-1.084534</td>
+      <td>0.419094</td>
+      <td>0.068745</td>
+      <td>-1.235089</td>
+      <td>-1.051931</td>
+      <td>0.009</td>
+      <td>-0.890779</td>
+      <td>0.941646</td>
+      <td>-1.238209</td>
+      <td>-0.774355</td>
+      <td>...</td>
+      <td>0.949988</td>
+      <td>-1.321480</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>11</td>
+      <td>30</td>
+      <td>23</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>2019-11-30 23:00:00+00:00</th>
+      <td>-1.100852</td>
+      <td>0.506348</td>
+      <td>0.047185</td>
+      <td>-1.256472</td>
+      <td>-1.056035</td>
+      <td>0.007</td>
+      <td>-0.752556</td>
+      <td>0.947480</td>
+      <td>-1.228916</td>
+      <td>-0.653795</td>
+      <td>...</td>
+      <td>0.935241</td>
+      <td>0.666731</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>11</td>
+      <td>30</td>
+      <td>24</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>2019-12-01 00:00:00+00:00</th>
+      <td>-1.074790</td>
+      <td>0.300223</td>
+      <td>0.047901</td>
+      <td>-1.615220</td>
+      <td>-0.600778</td>
+      <td>0.027</td>
+      <td>-0.956378</td>
+      <td>0.989096</td>
+      <td>-1.158268</td>
+      <td>-0.794631</td>
+      <td>...</td>
+      <td>-1.361514</td>
+      <td>-0.562198</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>12</td>
+      <td>1</td>
+      <td>1</td>
+      <td>2</td>
+    </tr>
+  </tbody>
+</table>
+<p>7564 rows × 32 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
 </div>
 </div>
 
