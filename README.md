@@ -11,14 +11,3 @@ We hope this project will help you to get excelent results for limited data in r
 ## How to use
 
 Fill me in please! Don't forget code examples:
-
-```
-1+1
-```
-
-
-
-
-    2
-
-

@@ -28,8 +28,9 @@ to = TabularRenewables(
     include_task_id=False
     #                     splits=RandomSplitter(valid_pct=0.2)
 )
+to.setup()
 to.process()
-print(to.to.items)
+print(to)
 # for task_id in normalize_per_task.means.index:
 #     print(task_id)
 # #     t = to.items[to.cont_names + ["TaskID"]]
