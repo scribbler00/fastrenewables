@@ -2,8 +2,17 @@
 
 __all__ = ["index", "modules", "custom_doc_links", "git_url"]
 
-index = {"read_hdf": "00_core.ipynb",
-         "read_csv": "00_core.ipynb"}
+index = {"str_to_path": "00_core.ipynb",
+         "read_hdf": "00_core.ipynb",
+         "read_csv": "00_core.ipynb",
+         "read_files": "00_core.ipynb",
+         "AddSeasonalFeatures": "00_core.ipynb",
+         "DropYear": "00_core.ipynb",
+         "NormalizePerTask": "00_core.ipynb",
+         "DropCols": "00_core.ipynb",
+         "FilterByCol": "00_core.ipynb",
+         "FilterMonths": "00_core.ipynb",
+         "TabularRenewables": "00_core.ipynb"}
 
 modules = ["core.py"]
 
