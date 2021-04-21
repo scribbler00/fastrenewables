@@ -40,7 +40,7 @@ nb_path: "nbs/00_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="read_hdf" class="doc_header"><code>read_hdf</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/core.py#L29" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>read_hdf</code>(<strong><code>file</code></strong>:<code>PosixPath</code>, <strong><code>key</code></strong>:<code>str</code>=<em><code>'/powerdata'</code></em>, <strong><code>key_metadata</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="read_hdf" class="doc_header"><code>read_hdf</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/core.py#L31" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>read_hdf</code>(<strong><code>file</code></strong>:<code>PosixPath</code>, <strong><code>key</code></strong>:<code>str</code>=<em><code>'/powerdata'</code></em>, <strong><code>key_metadata</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Reads a hdf5 table based on the given key.</p>
 
@@ -72,7 +72,7 @@ nb_path: "nbs/00_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="read_csv" class="doc_header"><code>read_csv</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/core.py#L44" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>read_csv</code>(<strong><code>file</code></strong>:<code>PosixPath</code>, <strong><code>sep</code></strong>:<code>str</code>=<em><code>';'</code></em>)</p>
+<h4 id="read_csv" class="doc_header"><code>read_csv</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/core.py#L46" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>read_csv</code>(<strong><code>file</code></strong>:<code>PosixPath</code>, <strong><code>sep</code></strong>:<code>str</code>=<em><code>';'</code></em>)</p>
 </blockquote>
 <p>Reads a csv file.</p>
 
@@ -104,7 +104,7 @@ nb_path: "nbs/00_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="read_files" class="doc_header"><code>read_files</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/core.py#L52" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>read_files</code>(<strong><code>files</code></strong>:<code>PosixPath</code>, <strong><code>key</code></strong>:<code>str</code>=<em><code>'/powerdata'</code></em>, <strong><code>key_metadata</code></strong>=<em><code>None</code></em>, <strong><code>sep</code></strong>:<code>str</code>=<em><code>';'</code></em>, <strong><code>add_task_id</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="read_files" class="doc_header"><code>read_files</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/core.py#L54" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>read_files</code>(<strong><code>files</code></strong>:<code>PosixPath</code>, <strong><code>key</code></strong>:<code>str</code>=<em><code>'/powerdata'</code></em>, <strong><code>key_metadata</code></strong>=<em><code>None</code></em>, <strong><code>sep</code></strong>:<code>str</code>=<em><code>';'</code></em>, <strong><code>add_task_id</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Reads a number of CSV or HDF5 files depending on file ending.</p>
 
@@ -132,7 +132,14 @@ nb_path: "nbs/00_core.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]},</span>
+                  <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">])</span>
+<span class="n">df</span><span class="o">.</span><span class="n">to_hdf</span><span class="p">(</span><span class="s1">&#39;data.h5&#39;</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s1">&#39;df&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">read_files</span><span class="p">(</span><span class="s2">&quot;data.h5&quot;</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;df&quot;</span><span class="p">,</span> <span class="n">add_task_id</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]},)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;data.csv&#39;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;;&quot;</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">read_files</span><span class="p">(</span><span class="s2">&quot;data.csv&quot;</span><span class="p">,</span> <span class="n">add_task_id</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
 </pre></div>
 
     </div>
@@ -153,7 +160,7 @@ nb_path: "nbs/00_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="AddSeasonalFeatures" class="doc_header"><code>class</code> <code>AddSeasonalFeatures</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/core.py#L79" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AddSeasonalFeatures</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>TabularProc</code></p>
+<h2 id="RenewablesTabularProc" class="doc_header"><code>class</code> <code>RenewablesTabularProc</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/core.py#L82" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RenewablesTabularProc</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>TabularProc</code></p>
 </blockquote>
 <p>Base class to write a non-lazy tabular processor for dataframes</p>
 
@@ -171,21 +178,21 @@ nb_path: "nbs/00_core.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="DropYear" class="doc_header"><code>class</code> <code>DropYear</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/core.py#L86" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DropYear</code>(<strong><code>year</code></strong>=<em><code>2020</code></em>) :: <code>TabularProc</code></p>
-</blockquote>
-<p>Drops a complete year.</p>
-
 </div>
+    {% endraw %}
 
-</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
 
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">TestProc</span><span class="p">(</span><span class="n">RenewablesTabularProc</span><span class="p">):</span> <span class="k">pass</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">TestProc</span><span class="p">(),</span> <span class="n">RenewablesTabularProc</span><span class="p">),</span> <span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+    </div>
 </div>
 </div>
 
@@ -203,14 +210,88 @@ nb_path: "nbs/00_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="NormalizePerTask" class="doc_header"><code>class</code> <code>NormalizePerTask</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/core.py#L97" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NormalizePerTask</code>(<strong><code>task_id_col</code></strong>=<em><code>'TaskID'</code></em>) :: <code>TabularProc</code></p>
+<h2 id="CreateTimeStampIndex" class="doc_header"><code>class</code> <code>CreateTimeStampIndex</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/core.py#L86" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CreateTimeStampIndex</code>(<strong><code>col_name</code></strong>, <strong><code>offset_correction</code></strong>=<em><code>None</code></em>) :: <a href="/fastrenewables/core.html#RenewablesTabularProc"><code>RenewablesTabularProc</code></a></p>
 </blockquote>
-<p>Normalize per TaskId</p>
+<p>Base class to write a non-lazy tabular processor for dataframes</p>
 
 </div>
 
 </div>
 
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">type</span><span class="p">(</span><span class="n">CreateTimeStampIndex</span><span class="p">(</span><span class="n">col_name</span><span class="o">=</span><span class="s2">&quot;TimeStamps&quot;</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>__main__.CreateTimeStampIndex</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_test_data</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">]</span> <span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;TimeStamps&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">index</span>
+    <span class="k">return</span> <span class="n">TabularPandas</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="c1"># tests basic functionality to set a proper timestamp based index</span>
+<span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;2015-01-01-01&#39;</span><span class="p">,</span> <span class="s1">&#39;2015-01-01-02&#39;</span><span class="p">,</span> <span class="s1">&#39;2015-01-02-03&#39;</span><span class="p">,</span> <span class="s1">&#39;2015-02-01-23&#39;</span><span class="p">,</span> <span class="s1">&#39;2015-02-01-13&#39;</span><span class="p">]</span> 
+<span class="n">to</span> <span class="o">=</span> <span class="n">get_test_data</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">CreateTimeStampIndex</span><span class="p">(</span><span class="n">col_name</span><span class="o">=</span><span class="s2">&quot;TimeStamps&quot;</span><span class="p">)(</span><span class="n">to</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">utc</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
+<span class="c1"># corrects missing year</span>
+<span class="n">index_missing_year</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;0000-01-01-01&#39;</span><span class="p">,</span> <span class="s1">&#39;0000-01-01-02&#39;</span><span class="p">,</span> <span class="s1">&#39;0000-01-02-03&#39;</span><span class="p">,</span> <span class="s1">&#39;0000-02-01-23&#39;</span><span class="p">,</span> <span class="s1">&#39;0000-02-01-13&#39;</span><span class="p">]</span> 
+<span class="n">to</span> <span class="o">=</span> <span class="n">get_test_data</span><span class="p">(</span><span class="n">index_missing_year</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">CreateTimeStampIndex</span><span class="p">(</span><span class="n">col_name</span><span class="o">=</span><span class="s2">&quot;TimeStamps&quot;</span><span class="p">)(</span><span class="n">to</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">utc</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
+<span class="c1"># check if warning is triggered, due to wrong column name</span>
+<span class="n">to</span> <span class="o">=</span> <span class="n">get_test_data</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+<span class="n">test_call</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">CreateTimeStampIndex</span><span class="p">(</span><span class="n">col_name</span><span class="o">=</span><span class="s2">&quot;FalseColumnName&quot;</span><span class="p">)(</span><span class="n">to</span><span class="p">)</span>
+<span class="n">test_warns</span><span class="p">(</span><span class="n">test_call</span><span class="p">)</span>
+</pre></div>
+
+    </div>
 </div>
 </div>
 
@@ -228,7 +309,126 @@ nb_path: "nbs/00_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="DropCols" class="doc_header"><code>class</code> <code>DropCols</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/core.py#L129" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DropCols</code>(<strong><code>cols</code></strong>) :: <code>TabularProc</code></p>
+<h2 id="AddSeasonalFeatures" class="doc_header"><code>class</code> <code>AddSeasonalFeatures</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/core.py#L119" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AddSeasonalFeatures</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <a href="/fastrenewables/core.html#RenewablesTabularProc"><code>RenewablesTabularProc</code></a></p>
+</blockquote>
+<p>Base class to write a non-lazy tabular processor for dataframes</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">to</span> <span class="o">=</span> <span class="n">get_test_data</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;2018-01-01-01&#39;</span><span class="p">,</span> <span class="s1">&#39;2018-01-01-02&#39;</span><span class="p">,</span> <span class="s1">&#39;2018-01-02-03&#39;</span><span class="p">,</span> <span class="s1">&#39;2018-02-01-23&#39;</span><span class="p">,</span> <span class="s1">&#39;2018-02-01-13&#39;</span><span class="p">]</span> <span class="p">)</span>
+<span class="n">CreateTimeStampIndex</span><span class="p">(</span><span class="s2">&quot;TimeStamps&quot;</span><span class="p">)(</span><span class="n">to</span><span class="p">)</span>
+<span class="n">AddSeasonalFeatures</span><span class="p">()(</span><span class="n">to</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">]),</span> <span class="n">to</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">Month</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]),</span> <span class="n">to</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">Day</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">23</span><span class="p">,</span><span class="mi">13</span><span class="p">]),</span> <span class="n">to</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">Hour</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="FilterYear" class="doc_header"><code>class</code> <code>FilterYear</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/core.py#L127" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FilterYear</code>(<strong><code>year</code></strong>, <strong><code>drop</code></strong>=<em><code>True</code></em>) :: <a href="/fastrenewables/core.html#RenewablesTabularProc"><code>RenewablesTabularProc</code></a></p>
+</blockquote>
+<p>Filter a list of years. By default the years are dropped.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">test_data_filter_year</span><span class="p">():</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;2018-01-01-01&#39;</span><span class="p">,</span> <span class="s1">&#39;2019-01-01-02&#39;</span><span class="p">,</span> <span class="s1">&#39;2020-01-02-03&#39;</span><span class="p">,]</span> 
+    <span class="k">return</span> <span class="n">TabularPandas</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">index</span><span class="p">),</span>
+                      <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">]</span> <span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+    
+<span class="n">to</span> <span class="o">=</span> <span class="n">test_data_filter_year</span><span class="p">()</span>
+<span class="n">FilterYear</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2018</span><span class="p">)(</span><span class="n">to</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2019</span><span class="p">,</span><span class="mi">2020</span><span class="p">]),</span> <span class="n">to</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">year</span><span class="p">)</span>
+<span class="n">to</span> <span class="o">=</span> <span class="n">test_data_filter_year</span><span class="p">()</span>
+<span class="n">FilterYear</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2020</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">to</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2020</span><span class="p">]),</span> <span class="n">to</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">year</span><span class="p">)</span>
+<span class="n">to</span> <span class="o">=</span> <span class="n">test_data_filter_year</span><span class="p">()</span>
+<span class="n">FilterYear</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="p">[</span><span class="mi">2018</span><span class="p">,</span><span class="mi">2020</span><span class="p">],</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">to</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2019</span><span class="p">]),</span> <span class="n">to</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">year</span><span class="p">)</span>
+<span class="n">to</span> <span class="o">=</span> <span class="n">test_data_filter_year</span><span class="p">()</span>
+<span class="n">FilterYear</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="p">[</span><span class="mi">2018</span><span class="p">,</span><span class="mi">2020</span><span class="p">],</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">to</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2018</span><span class="p">,</span><span class="mi">2020</span><span class="p">]),</span> <span class="n">to</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">year</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="DropCols" class="doc_header"><code>class</code> <code>DropCols</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/core.py#L147" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DropCols</code>(<strong><code>cols</code></strong>) :: <a href="/fastrenewables/core.html#RenewablesTabularProc"><code>RenewablesTabularProc</code></a></p>
 </blockquote>
 <p>Drops rows by column name.</p>
 
@@ -246,21 +446,32 @@ nb_path: "nbs/00_core.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="FilterByCol" class="doc_header"><code>class</code> <code>FilterByCol</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/core.py#L138" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FilterByCol</code>(<strong><code>col_name</code></strong>, <strong><code>keep</code></strong>=<em><code>True</code></em>, <strong><code>drop_col_after_filter</code></strong>=<em><code>True</code></em>) :: <code>TabularProc</code></p>
-</blockquote>
-<p>Drops rows by column.</p>
-
 </div>
+    {% endraw %}
 
-</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
 
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">to</span> <span class="o">=</span> <span class="n">get_test_data</span><span class="p">()</span>
+<span class="n">DropCols</span><span class="p">(</span><span class="kc">None</span><span class="p">)(</span><span class="n">to</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">to</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">])</span>
+<span class="n">to</span> <span class="o">=</span> <span class="n">get_test_data</span><span class="p">()</span>
+<span class="n">DropCols</span><span class="p">([])(</span><span class="n">to</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">to</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">])</span>
+<span class="n">to</span> <span class="o">=</span> <span class="n">get_test_data</span><span class="p">()</span>
+<span class="n">DropCols</span><span class="p">([</span><span class="s2">&quot;C&quot;</span><span class="p">])(</span><span class="n">to</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">to</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">])</span>
+<span class="n">to</span> <span class="o">=</span> <span class="n">get_test_data</span><span class="p">()</span>
+<span class="n">DropCols</span><span class="p">([</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">])(</span><span class="n">to</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">to</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">])</span>
+<span class="n">to</span> <span class="o">=</span> <span class="n">get_test_data</span><span class="p">()</span>
+</pre></div>
+
+    </div>
 </div>
 </div>
 
@@ -278,7 +489,66 @@ nb_path: "nbs/00_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FilterMonths" class="doc_header"><code>class</code> <code>FilterMonths</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/core.py#L152" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FilterMonths</code>(<strong><code>months</code></strong>=<em><code>range(1, 13)</code></em>) :: <code>TabularProc</code></p>
+<h2 id="FilterByCol" class="doc_header"><code>class</code> <code>FilterByCol</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/core.py#L157" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FilterByCol</code>(<strong><code>col_name</code></strong>, <strong><code>drop</code></strong>=<em><code>True</code></em>, <strong><code>drop_col_after_filter</code></strong>=<em><code>True</code></em>) :: <code>TabularProc</code></p>
+</blockquote>
+<p>Drops rows by column.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">to</span> <span class="o">=</span> <span class="n">get_test_data</span><span class="p">()</span>
+<span class="n">to</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s2">&quot;C&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">FilterByCol</span><span class="p">(</span><span class="n">col_name</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="n">drop_col_after_filter</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">to</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">to</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">index</span><span class="p">),[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">to</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">columns</span><span class="p">,[</span><span class="s2">&quot;A&quot;</span><span class="p">,</span><span class="s2">&quot;B&quot;</span><span class="p">])</span>
+
+<span class="n">to</span> <span class="o">=</span> <span class="n">get_test_data</span><span class="p">()</span>
+<span class="n">to</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s2">&quot;C&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">FilterByCol</span><span class="p">(</span><span class="n">col_name</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="n">drop_col_after_filter</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">to</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">to</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">index</span><span class="p">),[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">to</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">columns</span><span class="p">,[</span><span class="s2">&quot;A&quot;</span><span class="p">,</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="FilterMonths" class="doc_header"><code>class</code> <code>FilterMonths</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/core.py#L173" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FilterMonths</code>(<strong><code>months</code></strong>=<em><code>range(1, 13)</code></em>, <strong><code>drop</code></strong>=<em><code>False</code></em>) :: <code>TabularProc</code></p>
 </blockquote>
 <p>Filter dataframe for specific months.</p>
 
@@ -302,6 +572,36 @@ nb_path: "nbs/00_core.ipynb"
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_test_data_filter_month</span><span class="p">():</span>
+    <span class="n">to</span> <span class="o">=</span> <span class="n">get_test_data</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;2018-01-01-01&#39;</span><span class="p">,</span> <span class="s1">&#39;2018-02-01-02&#39;</span><span class="p">,</span> <span class="s1">&#39;2018-03-02-03&#39;</span><span class="p">,</span> <span class="s1">&#39;2018-04-01-23&#39;</span><span class="p">,</span> <span class="s1">&#39;2018-05-01-13&#39;</span><span class="p">])</span>
+    <span class="n">CreateTimeStampIndex</span><span class="p">(</span><span class="s2">&quot;TimeStamps&quot;</span><span class="p">)(</span><span class="n">to</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">to</span>
+
+<span class="k">def</span> <span class="nf">test_filter_month</span><span class="p">(</span><span class="n">months</span><span class="p">,</span><span class="n">drop</span><span class="p">,</span><span class="n">expected_result</span><span class="p">):</span>
+    <span class="n">to</span> <span class="o">=</span> <span class="n">get_test_data_filter_month</span><span class="p">()</span>
+    <span class="n">FilterMonths</span><span class="p">(</span><span class="n">months</span><span class="p">,</span><span class="n">drop</span><span class="p">)(</span><span class="n">to</span><span class="p">)</span>
+    <span class="n">test_eq</span><span class="p">(</span><span class="n">to</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">expected_result</span><span class="p">)</span>
+    
+<span class="n">test_filter_month</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="kc">False</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
+<span class="n">test_filter_month</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="kc">False</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
+<span class="n">test_filter_month</span><span class="p">([</span><span class="mi">1</span><span class="p">],</span> <span class="kc">False</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">test_filter_month</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="kc">True</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
 <div class="output">
@@ -310,7 +610,7 @@ nb_path: "nbs/00_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabularRenewables" class="doc_header"><code>class</code> <code>TabularRenewables</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/core.py#L163" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabularRenewables</code>(<strong><code>dfs</code></strong>, <strong><code>procs</code></strong>=<em><code>None</code></em>, <strong><code>cat_names</code></strong>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>reduce_memory</code></strong>=<em><code>True</code></em>, <strong><code>y_names</code></strong>=<em><code>None</code></em>, <strong><code>add_y_to_x</code></strong>=<em><code>False</code></em>, <strong><code>add_x_to_y</code></strong>=<em><code>False</code></em>, <strong><code>pre_process</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>y_block</code></strong>=<em><code>&lt;fastai.data.block.TransformBlock object at 0x7ff5e0ae3af0&gt;</code></em>) :: <code>TabularPandas</code></p>
+<h2 id="TabularRenewables" class="doc_header"><code>class</code> <code>TabularRenewables</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/core.py#L186" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabularRenewables</code>(<strong><code>dfs</code></strong>, <strong><code>procs</code></strong>=<em><code>None</code></em>, <strong><code>cat_names</code></strong>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>reduce_memory</code></strong>=<em><code>False</code></em>, <strong><code>y_names</code></strong>=<em><code>None</code></em>, <strong><code>add_y_to_x</code></strong>=<em><code>False</code></em>, <strong><code>add_x_to_y</code></strong>=<em><code>False</code></em>, <strong><code>pre_process</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>y_block</code></strong>=<em><code>&lt;fastai.data.block.TransformBlock object at 0x7fead6b10250&gt;</code></em>) :: <code>TabularPandas</code></p>
 </blockquote>
 <p>A <code>Tabular</code> object with transforms</p>
 
@@ -331,6 +631,45 @@ nb_path: "nbs/00_core.ipynb"
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To assure that we can de-normlize each task we assure that the task id is always stored.</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="ReadTabBatchRenewables" class="doc_header"><code>class</code> <code>ReadTabBatchRenewables</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/core.py#L222" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ReadTabBatchRenewables</code>(<strong><code>to</code></strong>) :: <code>ItemTransform</code></p>
+</blockquote>
+<p>Transform <code>TabularPandas</code> values into a <code>Tensor</code> with the ability to decode</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -338,103 +677,8 @@ nb_path: "nbs/00_core.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># def preproces_and_merge_dfs(dfs, task_id_col, y_names, pre_process, offset=0):</span>
-<span class="c1">#     new_dfs = L()</span>
-<span class="c1">#     for task_id,df in enumerate(dfs):</span>
-<span class="c1">#             df = TabularPandas(df, y_names=y_names, procs=pre_process, </span>
-<span class="c1">#                                       do_setup=True, reduce_memory=False).items</span>
-            
-<span class="c1">#             df[task_id_col] = task_id+offset</span>
-
-<span class="c1">#             new_dfs += df</span>
-        
-<span class="c1">#     merged_df = pd.concat(new_dfs, axis=0)</span>
-    
-<span class="c1">#     return merged_df</span>
-        
-<span class="c1"># class TabularRenewables(CollBase, GetAttr, FilteredBase):</span>
-<span class="c1">#     def __init__(self, dfs, procs=None, cat_names=None, cont_names=None, </span>
-<span class="c1">#                  y_names=None, add_y_to_x=False, add_x_to_y=False, pre_process=None, </span>
-<span class="c1">#                  include_task_id=False, splits=None, device=None, do_setup=True):</span>
-<span class="c1">#         self.task_id_col = &quot;TaskID&quot;</span>
-<span class="c1">#         self.y_names = listify(y_names)</span>
-<span class="c1">#         self.pre_process = pre_process</span>
-        
-<span class="c1">#         merged_df = preproces_and_merge_dfs(dfs, self.task_id_col, self.y_names, self.pre_process, offset=0)</span>
-        
-<span class="c1">#         self.cont_names, self.cat_names = cont_cat_split(merged_df, dep_var=y_names, max_card=1000)</span>
-<span class="c1">#         if not include_task_id: self.cat_names = [c for c in self.cat_names if c!= self.task_id_col]</span>
-        
-<span class="c1">#         if add_y_to_x:</span>
-<span class="c1">#             self.cont_names += self.y_names</span>
-<span class="c1">#         if add_x_to_y:</span>
-<span class="c1">#             self.y_names += self.cont_names</span>
-
-        
-<span class="c1">#         if splits is not None: splits = splits(range_of(merged_df))</span>
-<span class="c1">#         self.split = len(df) if splits is None else len(splits[0])</span>
-<span class="c1">#         self.to_device(device)</span>
-<span class="c1">#         self.to = TabularPandas(</span>
-<span class="c1">#             merged_df,</span>
-<span class="c1">#             procs=procs,</span>
-<span class="c1">#             cat_names=self.cat_names,</span>
-<span class="c1">#             cont_names=self.cont_names,</span>
-<span class="c1">#             y_names=self.y_names,</span>
-<span class="c1">#             splits=splits,</span>
-<span class="c1">#             do_setup=do_setup,</span>
-<span class="c1">#             inplace=True,</span>
-<span class="c1">#             y_block=RegressionBlock(),</span>
-<span class="c1">#         )</span>
-<span class="c1">#         super().__init__(self.to.items)</span>
-<span class="c1">#     def new(self, df):</span>
-<span class="c1">#         return type(self.to)(df, do_setup=False, reduce_memory=False, y_block=TransformBlock(),</span>
-<span class="c1">#                           **attrdict(self, &#39;procs&#39;,&#39;cat_names&#39;,&#39;cont_names&#39;,&#39;y_names&#39;, &#39;device&#39;))</span>
-        
-<span class="c1"># #     def new(self, df):</span>
-<span class="c1"># #         # TODO: correct to TabularRenewables</span>
-<span class="c1"># #         return type(self)(df, do_setup=False,**attrdict(self, &#39;procs&#39;,&#39;cat_names&#39;,&#39;cont_names&#39;,&#39;y_names&#39;, \</span>
-<span class="c1"># #                                          &#39;add_y_to_x&#39;, &#39;add_x_to_y&#39;,&#39;pre_process&#39;, &#39;include_task_id&#39;, &#39;device&#39;, ))</span>
-<span class="c1"># #         self.c = copy(self)</span>
-<span class="c1"># #         merged_dfs = preproces_and_merge_dfs(df, self.task_id_col, </span>
-<span class="c1"># #                                              self.y_names, self.pre_process, offset=self.items[self.task_id_col].max()+1)</span>
-<span class="c1"># #         to_new = self.to.new(merged_dfs, )</span>
-<span class="c1"># #         return to_new</span>
-
-<span class="c1"># #     def subset(self, i): return self.to.new(self.items[slice(0,self.to.split) if i==0 else slice(self.to.split,len(self.to))])</span>
-<span class="c1">#     def subset(self, i): return self.new(self.to.items[slice(0,self.split) if i==0 else slice(self.split,len(self))])</span>
-<span class="c1">#     def copy(self): self.items = self.to.copy(); return self</span>
-<span class="c1">#     def decode(self): return self.to.procs.decode(self.to)</span>
-<span class="c1">#     def decode_row(self, row): return self.to.new(pd.DataFrame(row).T).decode().items.iloc[0]</span>
-<span class="c1">#     def show(self, max_n=10, **kwargs): display_df(self.to.new(self.all_cols[:max_n]).decode().items)</span>
-<span class="c1">#     #   TODO: fix self.to.new to self.new</span>
-<span class="c1"># #     def show(self, max_n=10, **kwargs): display_df(self.to.new(self.all_cols[:max_n]).decode().items)</span>
-<span class="c1">#     def setup(self): self.to.procs.setup(self.to)</span>
-<span class="c1">#     def process(self): self.to.procs(self.to)</span>
-<span class="c1">#     def loc(self): return self.items.loc</span>
-<span class="c1">#     def iloc(self): return _TabIloc(self)</span>
-<span class="c1">#     def targ(self): return self.to.items[self.y_names]</span>
-<span class="c1">#     def x_names (self): return self.to.cat_names + self.to.cont_names</span>
-<span class="c1">#     def n_subsets(self): return 2</span>
-<span class="c1">#     def y(self): return self.to[self.to.y_names[0]]</span>
-<span class="c1">#     def new_empty(self): return self.new(pd.DataFrame({}, columns=self.to.items.columns))</span>
-<span class="c1">#     def to_device(self, d=None):</span>
-<span class="c1">#         self.device = d</span>
-<span class="c1">#         return self</span>
-    
-<span class="c1">#     def procs(self):</span>
-<span class="c1">#         return self.to.procs</span>
-
-<span class="c1">#     def all_col_names (self):</span>
-<span class="c1">#         ys = [n for n in self.to.y_names if n in self.to.items.columns]</span>
-<span class="c1">#         return self.to.x_names + self.to.y_names if len(ys) == len(self.to.y_names) else self.to.x_names</span>
-    
-<span class="c1"># properties(TabularRenewables,&#39;loc&#39;,&#39;iloc&#39;,&#39;targ&#39;,&#39;all_col_names&#39;,&#39;n_subsets&#39;,&#39;x_names&#39;,&#39;y&#39;, &quot;procs&quot;)</span>
-
-<span class="c1"># fastai.tabular.core._add_prop(TabularRenewables, &#39;cat&#39;)</span>
-<span class="c1"># fastai.tabular.core._add_prop(TabularRenewables, &#39;cont&#39;)</span>
-<span class="c1"># fastai.tabular.core._add_prop(TabularRenewables, &#39;y&#39;)</span>
-<span class="c1"># fastai.tabular.core._add_prop(TabularRenewables, &#39;x&#39;)</span>
-<span class="c1"># fastai.tabular.core._add_prop(TabularRenewables, &#39;all_col&#39;)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># def show_batch(x: Tabular, y, its, max_n=10, ctxs=None):</span>
+<span class="c1">#     x.show()</span>
 </pre></div>
 
     </div>
@@ -451,34 +695,80 @@ nb_path: "nbs/00_core.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># pd.options.mode.chained_assignment=None</span>
-<span class="c1"># # sys.path.append(&quot;../&quot;)</span>
-<span class="c1"># # from fastai.tabular.all import *</span>
-<span class="c1"># # from fastrenewables.core import *</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nd">@delegates</span><span class="p">()</span>
+<span class="k">class</span> <span class="nc">TabDataLoaderRenewables</span><span class="p">(</span><span class="n">TfmdDL</span><span class="p">):</span>
+    <span class="s2">&quot;A transformed `DataLoader` for Tabular data&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">after_batch</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">after_batch</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">after_batch</span> <span class="o">=</span> <span class="n">L</span><span class="p">(</span><span class="n">TransformBlock</span><span class="p">()</span><span class="o">.</span><span class="n">batch_tfms</span><span class="p">)</span><span class="o">+</span><span class="n">ReadTabBatchRenewables</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="n">bs</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="n">shuffle</span><span class="p">,</span> <span class="n">after_batch</span><span class="o">=</span><span class="n">after_batch</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">create_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">b</span><span class="p">]</span>
+    <span class="k">def</span> <span class="nf">do_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>      <span class="k">return</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">s</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">s</span>
+
+<span class="n">TabularRenewables</span><span class="o">.</span><span class="n">_dl_type</span> <span class="o">=</span> <span class="n">TabDataLoaderRenewables</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
 
 
-<span class="c1"># files = glob.glob(&quot;../data/*.h5&quot;)</span>
-<span class="c1"># len(files), files[0:2]</span>
-<span class="c1"># n_files = 2</span>
-<span class="c1"># dfs = read_files(files[0:n_files], key_metadata=&quot;metadata&quot;)</span>
-<span class="c1"># cols_to_drop = L(</span>
-<span class="c1">#     &quot;long&quot;,</span>
-<span class="c1">#     &quot;lat&quot;,</span>
-<span class="c1">#     &quot;loc_id&quot;,</span>
-<span class="c1">#     &quot;target_file_name&quot;,</span>
-<span class="c1">#     &quot;input_file_name&quot;,</span>
-<span class="c1">#     &quot;num_train_samples&quot;,</span>
-<span class="c1">#     &quot;num_test_samples&quot;,</span>
-<span class="c1"># )</span>
-<span class="c1"># to = TabularRenewables(</span>
-<span class="c1">#     dfs,</span>
-<span class="c1">#     y_names=&quot;PowerGeneration&quot;,</span>
-<span class="c1">#     pre_process=[DropCols(cols_to_drop), FilterByCol(&quot;TestFlag&quot;), AddSeasonalFeatures],</span>
-<span class="c1">#     procs=,</span>
-<span class="c1">#     add_x_to_y=False,</span>
-<span class="c1">#     include_task_id=False,</span>
-<span class="c1">#     splits=RandomSplitter(valid_pct=0.2)</span>
-<span class="c1"># )</span>
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="NormalizePerTask" class="doc_header"><code>class</code> <code>NormalizePerTask</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/core.py#L249" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NormalizePerTask</code>(<strong><code>task_id_col</code></strong>=<em><code>'TaskID'</code></em>) :: <code>TabularProc</code></p>
+</blockquote>
+<p>Normalize per TaskId</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_test_data_task_normalization</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">procs</span><span class="o">=</span><span class="n">NormalizePerTask</span><span class="p">):</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">11</span><span class="p">),</span> <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">]</span> <span class="p">,</span> 
+                      <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">11</span><span class="p">)),</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span><span class="mi">21</span><span class="p">)),</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">21</span><span class="p">,</span><span class="mi">31</span><span class="p">))])</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;TimeStamps&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">index</span>
+    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;TaskID&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">L</span><span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="mi">5</span>  <span class="k">else</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">11</span><span class="p">))</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;2015-01-01-01&#39;</span><span class="p">,</span> <span class="s1">&#39;2015-01-01-02&#39;</span><span class="p">,</span> <span class="s1">&#39;2015-01-02-03&#39;</span><span class="p">,</span> <span class="s1">&#39;2015-02-01-23&#39;</span><span class="p">,</span> <span class="s1">&#39;2015-02-01-13&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;2016-01-01-01&#39;</span><span class="p">,</span> <span class="s1">&#39;2016-01-01-02&#39;</span><span class="p">,</span> <span class="s1">&#39;2016-06-02-03&#39;</span><span class="p">,</span> <span class="s1">&#39;2016-02-01-23&#39;</span><span class="p">,</span> <span class="s1">&#39;2016-02-01-13&#39;</span><span class="p">]</span> 
+    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;TimeStamps&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">index</span>
+    <span class="n">to</span> <span class="o">=</span> <span class="n">TabularRenewables</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">pre_process</span><span class="o">=</span><span class="n">CreateTimeStampIndex</span><span class="p">(</span><span class="n">col_name</span><span class="o">=</span><span class="s2">&quot;TimeStamps&quot;</span><span class="p">),</span> 
+                           <span class="n">procs</span><span class="o">=</span><span class="p">[</span><span class="n">NormalizePerTask</span><span class="p">],</span> <span class="n">cont_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">]</span> <span class="p">,</span> <span class="n">y_names</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> 
+<span class="c1">#                            cat_names=[&quot;TaskID&quot;]</span>
+                          <span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;TimeStamps&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">utc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;TimeStamps&quot;</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span><span class="p">,</span><span class="n">to</span>
 </pre></div>
 
     </div>
@@ -495,18 +785,34 @@ nb_path: "nbs/00_core.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#     new_dfs = L()</span>
-<span class="c1">#     for task_id,df in enumerate(dfs):</span>
-<span class="c1"># #             df = TabularPandas(df, y_names=y_names, procs=pre_process, </span>
-<span class="c1"># #                                       do_setup=True, reduce_memory=False).items</span>
-            
-<span class="c1">#             df[task_id_col] = task_id+offset</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">original_df</span><span class="p">,</span> <span class="n">to</span> <span class="o">=</span> <span class="n">get_test_data_task_normalization</span><span class="p">()</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">original_df</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">),</span> <span class="n">to</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">))</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">3</span><span class="p">,</span><span class="mi">13</span><span class="p">],[</span><span class="mi">8</span><span class="p">,</span><span class="mi">18</span><span class="p">]]),</span> <span class="n">to</span><span class="o">.</span><span class="n">normalize_per_task</span><span class="o">.</span><span class="n">means</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+<span class="n">test_close</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.41421366</span><span class="p">,</span> <span class="mf">1.41421366</span><span class="p">],[</span><span class="mf">1.41421366</span><span class="p">,</span> <span class="mf">1.41421366</span><span class="p">]]),</span> <span class="n">to</span><span class="o">.</span><span class="n">normalize_per_task</span><span class="o">.</span><span class="n">stds</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+</pre></div>
 
-<span class="c1">#             new_dfs += df</span>
-        
-<span class="c1">#     merged_df = pd.concat(new_dfs, axis=0)</span>
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Lets create a dataloader and show a single batch.</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
     
-<span class="c1">#     return merged_df</span>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dl</span> <span class="o">=</span> <span class="n">to</span><span class="o">.</span><span class="n">dataloaders</span><span class="p">(</span><span class="n">bs</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -523,48 +829,7 @@ nb_path: "nbs/00_core.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># n_files = 2</span>
-
-
-<span class="c1"># cont_names = [&#39;T_HAG_2_M&#39;, &#39;RELHUM_HAG_2_M&#39;, &#39;PS_SFC_0_M&#39;, &#39;ASWDIFDS_SFC_0_M&#39;,</span>
-<span class="c1">#        &#39;ASWDIRS_SFC_0_M&#39;, &#39;WindSpeed58m&#39;,</span>
-<span class="c1">#        &#39;SinWindDirection58m&#39;, &#39;CosWindDirection58m&#39;, &#39;WindSpeed60m&#39;,</span>
-<span class="c1">#        &#39;SinWindDirection60m&#39;, &#39;CosWindDirection60m&#39;, &#39;WindSpeed58mMinus_t_1&#39;,</span>
-<span class="c1">#        &#39;SinWindDirection58mMinus_t_1&#39;, &#39;CosWindDirection58mMinus_t_1&#39;,</span>
-<span class="c1">#        &#39;WindSpeed60mMinus_t_1&#39;, &#39;SinWindDirection60mMinus_t_1&#39;,</span>
-<span class="c1">#        &#39;CosWindDirection60mMinus_t_1&#39;, &#39;WindSpeed58mPlus_t_1&#39;,</span>
-<span class="c1">#        &#39;SinWindDirection58mPlus_t_1&#39;, &#39;CosWindDirection58mPlus_t_1&#39;,</span>
-<span class="c1">#        &#39;WindSpeed60mPlus_t_1&#39;, &#39;SinWindDirection60mPlus_t_1&#39;,</span>
-<span class="c1">#        &#39;CosWindDirection60mPlus_t_1&#39;, ]</span>
-
-<span class="c1"># cat_names = [&quot;Month&quot;, &quot;Day&quot;, &quot;Hour&quot;, &quot;rotor_diameter_m&quot;, &quot;hub_height_m&quot;]</span>
-<span class="c1"># y_names = &#39;PowerGeneration&#39;</span>
-<span class="c1"># pd.options.mode.chained_assignment=None</span>
-<span class="c1"># pre_process=[AddSeasonalFeatures, </span>
-<span class="c1">#              FilterByCol(&quot;TestFlag&quot;, drop_col_after_filter=False), </span>
-<span class="c1"># #              DropYear(year=2020),</span>
-<span class="c1"># #              FilterMonths([1,2,3,4]), </span>
-<span class="c1">#              NormalizePerTask]</span>
-
-<span class="c1"># procs = [NormalizePerTask, Categorify]</span>
-<span class="c1"># procs = [Categorify]</span>
-
-<span class="c1"># dfs = read_files(files[0:n_files], key_metadata=&quot;metadata&quot;)</span>
-
-<span class="c1"># to = TabularRenewables(pd.concat(dfs, axis=0), </span>
-<span class="c1">#                   cont_names = cont_names, </span>
-<span class="c1">#                   cat_names=cat_names, </span>
-<span class="c1">#                   y_names=y_names, </span>
-<span class="c1">#                   pre_process=pre_process, </span>
-<span class="c1">#                     procs=procs,</span>
-<span class="c1">#                 splits=RandomSplitter(valid_pct=0.2))</span>
-<span class="c1"># print(to.items.index)</span>
-<span class="c1"># dls = to.dataloaders(bs=256)</span>
-<span class="c1"># dls.show_batch()</span>
-<span class="c1"># learner = tabular_learner(dls, metrics=rmse)</span>
-<span class="c1"># print(learner.dls.train_ds.cat_names)</span>
-<span class="c1"># print(learner.model)</span>
-<span class="c1"># learner.fit_one_cycle(10)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dl</span><span class="o">.</span><span class="n">show_batch</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -576,23 +841,582 @@ nb_path: "nbs/00_core.ipynb"
 
 <div class="output_area">
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>(15826, 40)
-DatetimeIndex([&#39;2019-10-27 15:00:00+00:00&#39;, &#39;2019-02-03 19:00:00+00:00&#39;,
-               &#39;2019-04-03 14:00:00+00:00&#39;, &#39;2019-02-08 02:00:00+00:00&#39;,
-               &#39;2019-02-27 20:00:00+00:00&#39;, &#39;2019-10-20 11:00:00+00:00&#39;,
-               &#39;2019-07-27 00:00:00+00:00&#39;, &#39;2019-07-19 08:00:00+00:00&#39;,
-               &#39;2019-05-11 01:00:00+00:00&#39;, &#39;2019-09-24 11:00:00+00:00&#39;,
-               ...
-               &#39;2019-10-24 15:00:00+00:00&#39;, &#39;2019-05-04 02:00:00+00:00&#39;,
-               &#39;2019-03-05 10:00:00+00:00&#39;, &#39;2019-11-27 22:00:00+00:00&#39;,
-               &#39;2019-02-28 17:00:00+00:00&#39;, &#39;2019-05-05 17:00:00+00:00&#39;,
-               &#39;2019-02-28 09:00:00+00:00&#39;, &#39;2019-07-09 21:00:00+00:00&#39;,
-               &#39;2019-05-05 14:00:00+00:00&#39;, &#39;2019-07-27 06:00:00+00:00&#39;],
-              dtype=&#39;datetime64[ns, UTC]&#39;, name=&#39;TimeUTC&#39;, length=15826, freq=None)
-</pre>
+
+<div class="output_html rendered_html output_subarea ">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>TaskID</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>20.727923</td>
+      <td>44.870060</td>
+      <td>29.0</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>8.656855</td>
+      <td>32.798991</td>
+      <td>24.0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>22.142137</td>
+      <td>46.284273</td>
+      <td>30.0</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>10.071068</td>
+      <td>34.213205</td>
+      <td>25.0</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+</div>
+
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The following gives an example on how to add a new task, that is normalized based on the first year. E.g. when the features are numerical weather predictions. As those are themselves forecasts, we can always extract the past and use the data for standardization.</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">original_df</span><span class="p">,</span> <span class="n">to</span> <span class="o">=</span> <span class="n">get_test_data_task_normalization</span><span class="p">()</span>
+<span class="n">original_df</span><span class="p">[</span><span class="s2">&quot;TaskID&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">mode</span><span class="o">.</span><span class="n">chained_assignment</span><span class="o">=</span><span class="kc">None</span>
+<span class="c1"># setups task normalization</span>
+<span class="n">to_new</span> <span class="o">=</span> <span class="n">to</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">original_df</span><span class="p">,</span> <span class="n">pre_process</span><span class="o">=</span><span class="n">FilterYear</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+<span class="n">to_new</span><span class="o">.</span><span class="n">process</span><span class="p">()</span>
+<span class="n">to_new</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>TaskID</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>count</th>
+      <td>5.000000e+00</td>
+      <td>5.000000e+00</td>
+      <td>5.000000</td>
+      <td>5.0</td>
+    </tr>
+    <tr>
+      <th>mean</th>
+      <td>-4.440892e-17</td>
+      <td>-4.440892e-17</td>
+      <td>23.000000</td>
+      <td>3.0</td>
+    </tr>
+    <tr>
+      <th>std</th>
+      <td>1.118034e+00</td>
+      <td>1.118034e+00</td>
+      <td>1.581139</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>min</th>
+      <td>-1.414213e+00</td>
+      <td>-1.414213e+00</td>
+      <td>21.000000</td>
+      <td>3.0</td>
+    </tr>
+    <tr>
+      <th>25%</th>
+      <td>-7.071067e-01</td>
+      <td>-7.071067e-01</td>
+      <td>22.000000</td>
+      <td>3.0</td>
+    </tr>
+    <tr>
+      <th>50%</th>
+      <td>0.000000e+00</td>
+      <td>0.000000e+00</td>
+      <td>23.000000</td>
+      <td>3.0</td>
+    </tr>
+    <tr>
+      <th>75%</th>
+      <td>7.071067e-01</td>
+      <td>7.071067e-01</td>
+      <td>24.000000</td>
+      <td>3.0</td>
+    </tr>
+    <tr>
+      <th>max</th>
+      <td>1.414213e+00</td>
+      <td>1.414213e+00</td>
+      <td>25.000000</td>
+      <td>3.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">to_new</span><span class="o">.</span><span class="n">items</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>TaskID</th>
+    </tr>
+    <tr>
+      <th>TimeStamps</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2015-01-01 01:00:00+00:00</th>
+      <td>-1.414213</td>
+      <td>-1.414213</td>
+      <td>21</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>2015-01-01 02:00:00+00:00</th>
+      <td>-0.707107</td>
+      <td>-0.707107</td>
+      <td>22</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>2015-01-02 03:00:00+00:00</th>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>23</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>2015-02-01 23:00:00+00:00</th>
+      <td>0.707107</td>
+      <td>0.707107</td>
+      <td>24</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>2015-02-01 13:00:00+00:00</th>
+      <td>1.414213</td>
+      <td>1.414213</td>
+      <td>25</td>
+      <td>3</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Normalization based on second year</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">to_new</span> <span class="o">=</span> <span class="n">to</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">original_df</span><span class="p">,</span> <span class="n">pre_process</span><span class="o">=</span><span class="n">FilterYear</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<span class="n">to_new</span><span class="o">.</span><span class="n">process</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>As the data has larger values in the second year, the normalization is quite off.</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">to_new</span><span class="o">.</span><span class="n">items</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>TaskID</th>
+    </tr>
+    <tr>
+      <th>TimeStamps</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2016-01-01 01:00:00+00:00</th>
+      <td>2.121320</td>
+      <td>2.121320</td>
+      <td>26</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>2016-01-01 02:00:00+00:00</th>
+      <td>2.828427</td>
+      <td>2.828427</td>
+      <td>27</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>2016-06-02 03:00:00+00:00</th>
+      <td>3.535534</td>
+      <td>3.535534</td>
+      <td>28</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>2016-02-01 23:00:00+00:00</th>
+      <td>4.242640</td>
+      <td>4.242640</td>
+      <td>29</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>2016-02-01 13:00:00+00:00</th>
+      <td>4.949747</td>
+      <td>4.949747</td>
+      <td>30</td>
+      <td>3</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This can also be seen in the summary:</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">to_new</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>TaskID</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>count</th>
+      <td>5.000000</td>
+      <td>5.000000</td>
+      <td>5.000000</td>
+      <td>5.0</td>
+    </tr>
+    <tr>
+      <th>mean</th>
+      <td>3.535534</td>
+      <td>3.535534</td>
+      <td>28.000000</td>
+      <td>3.0</td>
+    </tr>
+    <tr>
+      <th>std</th>
+      <td>1.118034</td>
+      <td>1.118034</td>
+      <td>1.581139</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>min</th>
+      <td>2.121320</td>
+      <td>2.121320</td>
+      <td>26.000000</td>
+      <td>3.0</td>
+    </tr>
+    <tr>
+      <th>25%</th>
+      <td>2.828427</td>
+      <td>2.828427</td>
+      <td>27.000000</td>
+      <td>3.0</td>
+    </tr>
+    <tr>
+      <th>50%</th>
+      <td>3.535534</td>
+      <td>3.535534</td>
+      <td>28.000000</td>
+      <td>3.0</td>
+    </tr>
+    <tr>
+      <th>75%</th>
+      <td>4.242640</td>
+      <td>4.242640</td>
+      <td>29.000000</td>
+      <td>3.0</td>
+    </tr>
+    <tr>
+      <th>max</th>
+      <td>4.949747</td>
+      <td>4.949747</td>
+      <td>30.000000</td>
+      <td>3.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's check a dataloader and verify if we can display the data.</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">to_new</span><span class="o">.</span><span class="n">dataloaders</span><span class="p">(</span><span class="n">bs</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">show_batch</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
 
 <div class="output_area">
 
@@ -602,357 +1426,40 @@ DatetimeIndex([&#39;2019-10-27 15:00:00+00:00&#39;, &#39;2019-02-03 19:00:00+00:
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>Month</th>
-      <th>Day</th>
-      <th>Hour</th>
-      <th>rotor_diameter_m</th>
-      <th>hub_height_m</th>
-      <th>T_HAG_2_M</th>
-      <th>RELHUM_HAG_2_M</th>
-      <th>PS_SFC_0_M</th>
-      <th>ASWDIFDS_SFC_0_M</th>
-      <th>ASWDIRS_SFC_0_M</th>
-      <th>WindSpeed58m</th>
-      <th>SinWindDirection58m</th>
-      <th>CosWindDirection58m</th>
-      <th>WindSpeed60m</th>
-      <th>SinWindDirection60m</th>
-      <th>CosWindDirection60m</th>
-      <th>WindSpeed58mMinus_t_1</th>
-      <th>SinWindDirection58mMinus_t_1</th>
-      <th>CosWindDirection58mMinus_t_1</th>
-      <th>WindSpeed60mMinus_t_1</th>
-      <th>SinWindDirection60mMinus_t_1</th>
-      <th>CosWindDirection60mMinus_t_1</th>
-      <th>WindSpeed58mPlus_t_1</th>
-      <th>SinWindDirection58mPlus_t_1</th>
-      <th>CosWindDirection58mPlus_t_1</th>
-      <th>WindSpeed60mPlus_t_1</th>
-      <th>SinWindDirection60mPlus_t_1</th>
-      <th>CosWindDirection60mPlus_t_1</th>
-      <th>PowerGeneration</th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>TaskID</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>0</th>
-      <td>5</td>
-      <td>2</td>
-      <td>10</td>
-      <td>115.7</td>
-      <td>92</td>
-      <td>0.468416</td>
-      <td>-1.194797</td>
-      <td>-0.502458</td>
-      <td>0.502105</td>
-      <td>0.797864</td>
-      <td>-0.231152</td>
-      <td>-0.779812</td>
-      <td>1.156806</td>
-      <td>0.227371</td>
-      <td>-0.671907</td>
-      <td>1.175520</td>
-      <td>-0.194975</td>
-      <td>-0.870952</td>
-      <td>1.108169</td>
-      <td>0.314154</td>
-      <td>-0.759932</td>
-      <td>1.125164</td>
-      <td>-0.402073</td>
-      <td>-0.959248</td>
-      <td>1.044332</td>
-      <td>-0.000003</td>
-      <td>-0.840573</td>
-      <td>1.062503</td>
-      <td>0.004</td>
+      <td>9.0</td>
+      <td>19.0</td>
+      <td>29.0</td>
+      <td>3</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>10</td>
-      <td>28</td>
-      <td>0</td>
-      <td>71</td>
-      <td>114</td>
-      <td>-0.704064</td>
-      <td>0.659828</td>
-      <td>0.711843</td>
-      <td>-1.635641</td>
-      <td>-1.118504</td>
-      <td>-0.755940</td>
-      <td>-0.819562</td>
-      <td>1.046224</td>
-      <td>-1.068783</td>
-      <td>0.193894</td>
-      <td>1.128889</td>
-      <td>-0.891920</td>
-      <td>-0.871803</td>
-      <td>1.025146</td>
-      <td>-1.118487</td>
-      <td>0.454499</td>
-      <td>1.011089</td>
-      <td>-0.531675</td>
-      <td>-1.075785</td>
-      <td>0.918494</td>
-      <td>-0.939393</td>
-      <td>-0.584809</td>
-      <td>1.207543</td>
-      <td>0.003</td>
+      <td>8.0</td>
+      <td>18.0</td>
+      <td>28.0</td>
+      <td>3</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>7</td>
-      <td>27</td>
-      <td>4</td>
-      <td>71</td>
-      <td>114</td>
-      <td>1.008298</td>
-      <td>-0.477016</td>
-      <td>-1.083498</td>
-      <td>-0.254646</td>
-      <td>1.551122</td>
-      <td>-0.158465</td>
-      <td>-0.606647</td>
-      <td>-1.616294</td>
-      <td>-0.895593</td>
-      <td>-0.524751</td>
-      <td>-1.591566</td>
-      <td>-0.235503</td>
-      <td>-0.638582</td>
-      <td>-1.609063</td>
-      <td>-0.808917</td>
-      <td>-0.759177</td>
-      <td>-1.548602</td>
-      <td>0.009939</td>
-      <td>-0.702879</td>
-      <td>-1.587947</td>
-      <td>-0.696360</td>
-      <td>-0.907832</td>
-      <td>-1.501788</td>
-      <td>0.000</td>
+      <td>10.0</td>
+      <td>20.0</td>
+      <td>30.0</td>
+      <td>3</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>4</td>
-      <td>17</td>
-      <td>8</td>
-      <td>71</td>
-      <td>114</td>
-      <td>0.048179</td>
-      <td>-1.054820</td>
-      <td>0.783855</td>
-      <td>-0.343809</td>
-      <td>0.936470</td>
-      <td>-0.508757</td>
-      <td>-0.210341</td>
-      <td>-1.659963</td>
-      <td>-0.056437</td>
-      <td>-0.341358</td>
-      <td>-1.600702</td>
-      <td>-0.235833</td>
-      <td>0.069045</td>
-      <td>-1.631911</td>
-      <td>0.267286</td>
-      <td>-0.077069</td>
-      <td>-1.577210</td>
-      <td>-0.947675</td>
-      <td>-0.348903</td>
-      <td>-1.653730</td>
-      <td>-0.875131</td>
-      <td>-0.571864</td>
-      <td>-1.584077</td>
-      <td>0.003</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>2</td>
-      <td>8</td>
-      <td>11</td>
-      <td>71</td>
-      <td>114</td>
-      <td>-0.698318</td>
-      <td>0.126111</td>
-      <td>0.007155</td>
-      <td>-1.247913</td>
-      <td>-1.015346</td>
-      <td>2.743097</td>
-      <td>0.974236</td>
-      <td>0.591287</td>
-      <td>2.841020</td>
-      <td>0.879641</td>
-      <td>0.649184</td>
-      <td>2.578131</td>
-      <td>0.973026</td>
-      <td>0.591782</td>
-      <td>2.686041</td>
-      <td>0.868003</td>
-      <td>0.664287</td>
-      <td>2.272893</td>
-      <td>1.063665</td>
-      <td>0.466680</td>
-      <td>2.296342</td>
-      <td>0.980645</td>
-      <td>0.506622</td>
-      <td>0.397</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>2</td>
-      <td>19</td>
-      <td>8</td>
-      <td>115.7</td>
-      <td>92</td>
-      <td>-1.216702</td>
-      <td>1.246966</td>
-      <td>0.389476</td>
-      <td>-1.205278</td>
-      <td>-0.406978</td>
-      <td>-0.984563</td>
-      <td>0.992411</td>
-      <td>0.716313</td>
-      <td>-1.034110</td>
-      <td>1.068016</td>
-      <td>-1.004337</td>
-      <td>-0.941445</td>
-      <td>1.261816</td>
-      <td>-0.180552</td>
-      <td>-0.792406</td>
-      <td>-0.451879</td>
-      <td>-1.491956</td>
-      <td>-1.114320</td>
-      <td>0.944928</td>
-      <td>0.782557</td>
-      <td>-0.850432</td>
-      <td>-1.335290</td>
-      <td>-0.575878</td>
-      <td>0.000</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>7</td>
-      <td>5</td>
-      <td>9</td>
-      <td>71</td>
-      <td>114</td>
-      <td>1.298436</td>
-      <td>-1.770229</td>
-      <td>0.350207</td>
-      <td>0.426632</td>
-      <td>1.640235</td>
-      <td>-0.689306</td>
-      <td>-0.427340</td>
-      <td>1.145344</td>
-      <td>-0.220591</td>
-      <td>-0.568248</td>
-      <td>1.206932</td>
-      <td>-0.624902</td>
-      <td>-0.446515</td>
-      <td>1.143421</td>
-      <td>-0.141817</td>
-      <td>-0.580628</td>
-      <td>1.206177</td>
-      <td>-0.815181</td>
-      <td>-0.442173</td>
-      <td>1.145114</td>
-      <td>-0.385980</td>
-      <td>-0.560779</td>
-      <td>1.210804</td>
-      <td>0.088</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>8</td>
-      <td>14</td>
-      <td>19</td>
-      <td>71</td>
-      <td>114</td>
-      <td>0.582884</td>
-      <td>-0.746091</td>
-      <td>0.148730</td>
-      <td>1.054999</td>
-      <td>1.355690</td>
-      <td>-0.996700</td>
-      <td>1.248183</td>
-      <td>-0.510412</td>
-      <td>-0.761042</td>
-      <td>0.719979</td>
-      <td>-1.197783</td>
-      <td>-0.662964</td>
-      <td>1.087523</td>
-      <td>-0.928524</td>
-      <td>-0.626952</td>
-      <td>0.878093</td>
-      <td>-1.029554</td>
-      <td>-0.644197</td>
-      <td>1.141105</td>
-      <td>0.326916</td>
-      <td>-0.830321</td>
-      <td>1.149683</td>
-      <td>0.083748</td>
-      <td>0.004</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>10</td>
-      <td>30</td>
-      <td>2</td>
-      <td>71</td>
-      <td>114</td>
-      <td>-1.123340</td>
-      <td>1.017866</td>
-      <td>1.225238</td>
-      <td>-0.627595</td>
-      <td>-0.813618</td>
-      <td>-0.102076</td>
-      <td>-0.563579</td>
-      <td>-1.625949</td>
-      <td>-0.790489</td>
-      <td>-0.877896</td>
-      <td>-1.514320</td>
-      <td>-0.130413</td>
-      <td>-0.567948</td>
-      <td>-1.625750</td>
-      <td>-0.791916</td>
-      <td>-0.965537</td>
-      <td>-1.480791</td>
-      <td>-0.137887</td>
-      <td>-0.562799</td>
-      <td>-1.623908</td>
-      <td>-0.839386</td>
-      <td>-0.811226</td>
-      <td>-1.533313</td>
-      <td>0.001</td>
-    </tr>
-    <tr>
-      <th>9</th>
+      <td>6.0</td>
+      <td>16.0</td>
+      <td>26.0</td>
       <td>3</td>
-      <td>21</td>
-      <td>13</td>
-      <td>71</td>
-      <td>114</td>
-      <td>0.222105</td>
-      <td>-1.187809</td>
-      <td>1.861269</td>
-      <td>0.067636</td>
-      <td>0.362551</td>
-      <td>-1.569966</td>
-      <td>-1.099708</td>
-      <td>-1.404350</td>
-      <td>-1.468060</td>
-      <td>-1.809480</td>
-      <td>-0.615440</td>
-      <td>-1.491150</td>
-      <td>-1.539891</td>
-      <td>-0.955255</td>
-      <td>-1.348715</td>
-      <td>-1.826128</td>
-      <td>-0.560117</td>
-      <td>-1.512342</td>
-      <td>0.721765</td>
-      <td>-1.338484</td>
-      <td>-1.429774</td>
-      <td>0.239576</td>
-      <td>-1.489553</td>
-      <td>0.007</td>
     </tr>
   </tbody>
 </table>
@@ -960,127 +1467,138 @@ DatetimeIndex([&#39;2019-10-27 15:00:00+00:00&#39;, &#39;2019-02-03 19:00:00+00:
 
 </div>
 
-<div class="output_area">
+</div>
+</div>
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>[&#39;Month&#39;, &#39;Day&#39;, &#39;Hour&#39;, &#39;rotor_diameter_m&#39;, &#39;hub_height_m&#39;]
-TabularModel(
-  (embeds): ModuleList(
-    (0): Embedding(13, 7)
-    (1): Embedding(32, 11)
-    (2): Embedding(25, 10)
-    (3): Embedding(3, 3)
-    (4): Embedding(3, 3)
-  )
-  (emb_drop): Dropout(p=0.0, inplace=False)
-  (bn_cont): BatchNorm1d(23, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-  (layers): Sequential(
-    (0): LinBnDrop(
-      (0): BatchNorm1d(57, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-      (1): Linear(in_features=57, out_features=200, bias=False)
-      (2): ReLU(inplace=True)
-    )
-    (1): LinBnDrop(
-      (0): BatchNorm1d(200, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-      (1): Linear(in_features=200, out_features=100, bias=False)
-      (2): ReLU(inplace=True)
-    )
-    (2): LinBnDrop(
-      (0): Linear(in_features=100, out_features=1, bias=True)
-    )
-  )
-)
-</pre>
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">original_df</span>
+</pre></div>
+
+    </div>
 </div>
 </div>
+
+<div class="output_wrapper">
+<div class="output">
 
 <div class="output_area">
 
 
-<div class="output_html rendered_html output_subarea ">
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
 <table border="1" class="dataframe">
   <thead>
-    <tr style="text-align: left;">
-      <th>epoch</th>
-      <th>train_loss</th>
-      <th>valid_loss</th>
-      <th>_rmse</th>
-      <th>time</th>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>TaskID</th>
+    </tr>
+    <tr>
+      <th>TimeStamps</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>0</td>
-      <td>0.032086</td>
-      <td>0.021251</td>
-      <td>0.145778</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
+      <th>2015-01-01 01:00:00+00:00</th>
       <td>1</td>
-      <td>0.019747</td>
-      <td>0.013956</td>
-      <td>0.118136</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
-      <td>2</td>
-      <td>0.015110</td>
-      <td>0.013652</td>
-      <td>0.116842</td>
-      <td>00:00</td>
-    </tr>
-    <tr>
+      <td>11</td>
+      <td>21</td>
       <td>3</td>
-      <td>0.012132</td>
-      <td>0.012196</td>
-      <td>0.110436</td>
-      <td>00:00</td>
     </tr>
     <tr>
+      <th>2015-01-01 02:00:00+00:00</th>
+      <td>2</td>
+      <td>12</td>
+      <td>22</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>2015-01-02 03:00:00+00:00</th>
+      <td>3</td>
+      <td>13</td>
+      <td>23</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>2015-02-01 23:00:00+00:00</th>
       <td>4</td>
-      <td>0.010425</td>
-      <td>0.011824</td>
-      <td>0.108736</td>
-      <td>00:00</td>
+      <td>14</td>
+      <td>24</td>
+      <td>3</td>
     </tr>
     <tr>
+      <th>2015-02-01 13:00:00+00:00</th>
       <td>5</td>
-      <td>0.009349</td>
-      <td>0.010812</td>
-      <td>0.103981</td>
-      <td>00:00</td>
+      <td>15</td>
+      <td>25</td>
+      <td>3</td>
     </tr>
     <tr>
+      <th>2016-01-01 01:00:00+00:00</th>
       <td>6</td>
-      <td>0.008182</td>
-      <td>0.010515</td>
-      <td>0.102541</td>
-      <td>00:00</td>
+      <td>16</td>
+      <td>26</td>
+      <td>3</td>
     </tr>
     <tr>
+      <th>2016-01-01 02:00:00+00:00</th>
       <td>7</td>
-      <td>0.007496</td>
-      <td>0.010145</td>
-      <td>0.100720</td>
-      <td>00:00</td>
+      <td>17</td>
+      <td>27</td>
+      <td>3</td>
     </tr>
     <tr>
+      <th>2016-06-02 03:00:00+00:00</th>
       <td>8</td>
-      <td>0.006889</td>
-      <td>0.010254</td>
-      <td>0.101264</td>
-      <td>00:00</td>
+      <td>18</td>
+      <td>28</td>
+      <td>3</td>
     </tr>
     <tr>
+      <th>2016-02-01 23:00:00+00:00</th>
       <td>9</td>
-      <td>0.006429</td>
-      <td>0.010182</td>
-      <td>0.100906</td>
-      <td>00:00</td>
+      <td>19</td>
+      <td>29</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>2016-02-01 13:00:00+00:00</th>
+      <td>10</td>
+      <td>20</td>
+      <td>30</td>
+      <td>3</td>
     </tr>
   </tbody>
 </table>
+</div>
 </div>
 
 </div>
