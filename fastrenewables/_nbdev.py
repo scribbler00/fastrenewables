@@ -13,8 +13,10 @@ index = {"str_to_path": "00_core.ipynb",
          "DropCols": "00_core.ipynb",
          "FilterByCol": "00_core.ipynb",
          "FilterMonths": "00_core.ipynb",
+         "BinFeatures": "00_core.ipynb",
          "TabularRenewables": "00_core.ipynb",
          "ReadTabBatchRenewables": "00_core.ipynb",
+         "TabDataLoaderRenewables": "00_core.ipynb",
          "NormalizePerTask": "00_core.ipynb"}
 
 modules = ["core.py"]
