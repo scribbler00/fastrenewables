@@ -112,7 +112,8 @@ class CreateTimeStampIndex(RenewablesTabularProc):
                     new_index.append(cur_index + pd.DateOffset(hours=i))
                     i += self.offset_correction
                 df.index = new_index
-
+        elif to.items.index.name == self.col_name:
+            warnings.warn(f"Timetamps column {self.col_name} already set as index.")
         else:  warnings.warn(f"Timetamps column {self.col_name} not in columns {df.columns}")
 
 # Cell

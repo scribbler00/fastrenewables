@@ -15,9 +15,19 @@ index = {"str_to_path": "00_core.ipynb",
          "FilterMonths": "00_core.ipynb",
          "TabularRenewables": "00_core.ipynb",
          "ReadTabBatchRenewables": "00_core.ipynb",
-         "NormalizePerTask": "00_core.ipynb"}
+         "NormalizePerTask": "00_core.ipynb",
+         "RenewableDataLoaders": "01_data.ipynb",
+         "EmbeddingType": "02_model.ipynb",
+         "get_emb_sz_list": "02_model.ipynb",
+         "EmbeddingModule": "02_model.ipynb",
+         "MultiLayerPerceptron": "02_model.ipynb",
+         "RenewableLearner": "03_learner.ipynb",
+         "renewable_learner": "03_learner.ipynb"}
 
-modules = ["core.py"]
+modules = ["core.py",
+           "data.py",
+           "model.py",
+           "learner.py"]
 
 doc_url = "https://scribbler00.github.io/fastrenewables/"
 

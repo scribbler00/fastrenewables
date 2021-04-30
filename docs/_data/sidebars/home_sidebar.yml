@@ -12,6 +12,15 @@ entries:
     - output: web,pdf
       title: core
       url: core.html
+    - output: web,pdf
+      title: data
+      url: data.html
+    - output: web,pdf
+      title: model
+      url: model.html
+    - output: web,pdf
+      title: learner
+      url: learner.html
     output: web
     title: fastrenewables
   output: web
