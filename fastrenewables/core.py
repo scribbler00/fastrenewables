@@ -7,7 +7,6 @@ __all__ = ['str_to_path', 'read_hdf', 'read_csv', 'read_files', 'RenewablesTabul
 # Cell
 #export
 import pandas as pd
-from nbdev.showdoc import *
 from fastai.data.external import *
 from fastcore.all import *
 from pathlib import PosixPath
