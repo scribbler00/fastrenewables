@@ -219,7 +219,7 @@ class TabularRenewables(TabularPandas):
         else:
             prepared_df = dfs
 
-        available_conts = list(set(df)-set(L(cat_names))-set(L(y_names)))
+        available_conts = list(set(prepared_df)-set(L(cat_names))-set(L(y_names)))
         conts = [c for c in cont_names if c in available_conts ]
 
         if splits is not None: splits = splits(range_of(prepared_df))
