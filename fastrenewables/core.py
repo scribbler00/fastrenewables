@@ -218,6 +218,10 @@ class TabularRenewables(TabularPandas):
             prepared_df = self.prepared_to.items
         else:
             prepared_df = dfs
+
+        available_conts = list(set(df)-set(L(cat_names))-set(L(y_names)))
+        conts = [c for c in cont_names if c in available_conts ]
+
         if splits is not None: splits = splits(range_of(prepared_df))
         super().__init__(prepared_df,
             procs=procs,
