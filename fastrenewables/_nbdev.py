@@ -2,32 +2,32 @@
 
 __all__ = ["index", "modules", "custom_doc_links", "git_url"]
 
-index = {"str_to_path": "00_core.ipynb",
-         "read_hdf": "00_core.ipynb",
-         "read_csv": "00_core.ipynb",
-         "read_files": "00_core.ipynb",
-         "RenewablesTabularProc": "00_core.ipynb",
-         "CreateTimeStampIndex": "00_core.ipynb",
-         "AddSeasonalFeatures": "00_core.ipynb",
-         "FilterYear": "00_core.ipynb",
-         "DropCols": "00_core.ipynb",
-         "FilterByCol": "00_core.ipynb",
-         "FilterMonths": "00_core.ipynb",
-         "TabularRenewables": "00_core.ipynb",
-         "ReadTabBatchRenewables": "00_core.ipynb",
-         "NormalizePerTask": "00_core.ipynb",
-         "RenewableDataLoaders": "01_data.ipynb",
-         "EmbeddingType": "02_model.ipynb",
-         "get_emb_sz_list": "02_model.ipynb",
-         "EmbeddingModule": "02_model.ipynb",
-         "MultiLayerPerceptron": "02_model.ipynb",
-         "RenewableLearner": "03_learner.ipynb",
-         "renewable_learner": "03_learner.ipynb"}
+index = {"str_to_path": "00_tabular.core.ipynb",
+         "read_hdf": "00_tabular.core.ipynb",
+         "read_csv": "00_tabular.core.ipynb",
+         "read_files": "00_tabular.core.ipynb",
+         "RenewablesTabularProc": "00_tabular.core.ipynb",
+         "CreateTimeStampIndex": "00_tabular.core.ipynb",
+         "AddSeasonalFeatures": "00_tabular.core.ipynb",
+         "FilterYear": "00_tabular.core.ipynb",
+         "DropCols": "00_tabular.core.ipynb",
+         "FilterByCol": "00_tabular.core.ipynb",
+         "FilterMonths": "00_tabular.core.ipynb",
+         "TabularRenewables": "00_tabular.core.ipynb",
+         "ReadTabBatchRenewables": "00_tabular.core.ipynb",
+         "NormalizePerTask": "00_tabular.core.ipynb",
+         "RenewableDataLoaders": "01_tabular.data.ipynb",
+         "EmbeddingType": "02_tabular.model.ipynb",
+         "get_emb_sz_list": "02_tabular.model.ipynb",
+         "EmbeddingModule": "02_tabular.model.ipynb",
+         "MultiLayerPerceptron": "02_tabular.model.ipynb",
+         "RenewableLearner": "03_tabular.learner.ipynb",
+         "renewable_learner": "03_tabular.learner.ipynb"}
 
-modules = ["core.py",
-           "data.py",
-           "model.py",
-           "learner.py"]
+modules = ["tabular/core.py",
+           "tabular/data.py",
+           "tabular/model.py",
+           "tabular/learner.py"]
 
 doc_url = "https://scribbler00.github.io/fastrenewables/"
 

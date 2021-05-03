@@ -1,9 +1,9 @@
 {
   "fastrenewables": {
     "Overview": "/",
-    "core": "core.html",
-    "data": "data.html",
-    "model": "model.html",
-    "learner": "learner.html"
+    "core": "tabular.core.html",
+    "data": "tabular.data.html",
+    "model": "tabular.model.html",
+    "learner": "tabular.learner.html"
   }
 }

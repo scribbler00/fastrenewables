@@ -11,16 +11,16 @@ entries:
       url: /
     - output: web,pdf
       title: core
-      url: core.html
+      url: tabular.core.html
     - output: web,pdf
       title: data
-      url: data.html
+      url: tabular.data.html
     - output: web,pdf
       title: model
-      url: model.html
+      url: tabular.model.html
     - output: web,pdf
       title: learner
-      url: learner.html
+      url: tabular.learner.html
     output: web
     title: fastrenewables
   output: web
