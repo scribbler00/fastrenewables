@@ -167,7 +167,6 @@ class FilterByCol(RenewablesTabularProc):
         to.items.drop(to.items[mask].index, inplace=True)
         if self.drop_col_after_filter: to.items.drop(self.col_name, axis=1, inplace=True, errors="ignore")
 
-
 # Cell
 class FilterMonths(RenewablesTabularProc):
     "Filter dataframe for specific months."
@@ -202,7 +201,6 @@ class BinFeatures(TabularProc):
                                        labels=range(1, len(self.bin_edges[c])),
                                        include_lowest=True)
 
-
 # Cell
 class TabularRenewables(TabularPandas):
     def __init__(self, dfs, procs=None, cat_names=None, cont_names=None, do_setup=True, reduce_memory=False,
@@ -220,7 +218,7 @@ class TabularRenewables(TabularPandas):
             prepared_df = dfs
 
         available_conts = list(set(prepared_df)-set(L(cat_names))-set(L(y_names)))
-        conts = [c for c in cont_names if c in available_conts ]
+        cont_names = [c for c in cont_names if c in available_conts ]
 
         if splits is not None: splits = splits(range_of(prepared_df))
         super().__init__(prepared_df,
@@ -243,7 +241,6 @@ class TabularRenewables(TabularPandas):
         to_tmp = self.new(self.all_cols[:max_n])
         to_tmp.items["TaskID"] = self.items.TaskID[:max_n]
         display_df(to_tmp.decode().items)
-
 
 # Cell
 
@@ -271,7 +268,6 @@ class ReadTabBatchRenewables(ItemTransform):
         to.items["TaskID"]=self.task_ids.values
 
         return to
-
 
 # Cell
 @delegates()
