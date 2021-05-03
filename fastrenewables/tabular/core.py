@@ -207,6 +207,9 @@ class TabularRenewables(TabularPandas):
                  y_names=None, add_y_to_x=False, add_x_to_y=False, pre_process=None, device=None, splits=None, y_block=RegressionBlock()):
 
         self.pre_process = pre_process
+        cont_names = listify(cont_names)
+        cat_names = listify(cat_names)
+        y_names = listify(y_names)
 
         # TODO: check whether elements in procs are of type RenewablesTabularProc and create warning
 
@@ -217,15 +220,22 @@ class TabularRenewables(TabularPandas):
         else:
             prepared_df = dfs
 
-        available_conts = list(set(prepared_df)-set(L(cat_names))-set(L(y_names)))
-        cont_names = [c for c in cont_names if c in available_conts ]
+        # assures that only available features are taken
+        new_cat_names = [c for c in cat_names if c in prepared_df.columns ]
+        new_cont_names = [c for c in cont_names if c in prepared_df.columns]
+        new_y_names = [c for c in y_names if c in prepared_df.columns]
+        def _warn_removed_features(newcs,oldcs):
+            if len(newcs) != len(oldcs): warnings.warn(f"Removed features from {oldcs} to be {newcs}.")
+        _warn_removed_features(new_cat_names, cat_names)
+        _warn_removed_features(new_cont_names, cont_names)
+        _warn_removed_features(new_y_names, y_names)
 
         if splits is not None: splits = splits(range_of(prepared_df))
         super().__init__(prepared_df,
             procs=procs,
-            cat_names=cat_names,
-            cont_names=cont_names,
-            y_names=y_names,
+            cat_names=new_cat_names,
+            cont_names=new_cont_names,
+            y_names=new_y_names,
             splits=splits,
             do_setup=do_setup,
             inplace=True,
