@@ -29,7 +29,7 @@ index = {"VILoss": "00_losses.ipynb",
          "renewable_learner": "04_tabular.learner.ipynb"}
 
 modules = ["losses.py",
-           "core.py",
+           "tabular/core.py",
            "tabular/data.py",
            "tabular/model.py",
            "tabular/learner.py"]
