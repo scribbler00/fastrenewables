@@ -2,7 +2,6 @@
 
 __all__ = ["index", "modules", "custom_doc_links", "git_url"]
 
-<<<<<<< HEAD
 index = {"VILoss": "00_losses.ipynb",
          "str_to_path": "01_tabular.core.ipynb",
          "read_hdf": "01_tabular.core.ipynb",
@@ -15,8 +14,10 @@ index = {"VILoss": "00_losses.ipynb",
          "DropCols": "01_tabular.core.ipynb",
          "FilterByCol": "01_tabular.core.ipynb",
          "FilterMonths": "01_tabular.core.ipynb",
+         "BinFeatures": "01_tabular.core.ipynb",
          "TabularRenewables": "01_tabular.core.ipynb",
          "ReadTabBatchRenewables": "01_tabular.core.ipynb",
+         "TabDataLoaderRenewables": "01_tabular.core.ipynb",
          "NormalizePerTask": "01_tabular.core.ipynb",
          "RenewableDataLoaders": "02_tabular.data.ipynb",
          "EmbeddingType": "03_tabular.model.ipynb",
@@ -26,27 +27,9 @@ index = {"VILoss": "00_losses.ipynb",
          "get_structure": "03_tabular.model.ipynb",
          "RenewableLearner": "04_tabular.learner.ipynb",
          "renewable_learner": "04_tabular.learner.ipynb"}
-=======
-index = {"str_to_path": "00_core.ipynb",
-         "read_hdf": "00_core.ipynb",
-         "read_csv": "00_core.ipynb",
-         "read_files": "00_core.ipynb",
-         "RenewablesTabularProc": "00_core.ipynb",
-         "CreateTimeStampIndex": "00_core.ipynb",
-         "AddSeasonalFeatures": "00_core.ipynb",
-         "FilterYear": "00_core.ipynb",
-         "DropCols": "00_core.ipynb",
-         "FilterByCol": "00_core.ipynb",
-         "FilterMonths": "00_core.ipynb",
-         "BinFeatures": "00_core.ipynb",
-         "TabularRenewables": "00_core.ipynb",
-         "ReadTabBatchRenewables": "00_core.ipynb",
-         "TabDataLoaderRenewables": "00_core.ipynb",
-         "NormalizePerTask": "00_core.ipynb"}
->>>>>>> 3f7aaa9cbf5d01d9ae35b4f3280872db5859e22f
 
 modules = ["losses.py",
-           "tabular/core.py",
+           "core.py",
            "tabular/data.py",
            "tabular/model.py",
            "tabular/learner.py"]
