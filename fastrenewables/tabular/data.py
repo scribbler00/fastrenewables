@@ -50,7 +50,7 @@ class RenewableDataLoaders(DataLoaders):
     @classmethod
     def from_files(cls, files,  **kwargs):
         dfs = read_files(files)
-        print(kwargs)
+
         dfs = pd.concat(dfs, axis=0)
         if "cat_names" in kwargs.keys():
             kwargs["cat_names"] = kwargs["cat_names"] if "TaskID" in kwargs["cat_names"] else kwargs["cat_names"] + ["TaskID"]
