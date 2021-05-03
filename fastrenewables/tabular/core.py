@@ -116,6 +116,25 @@ class CreateTimeStampIndex(RenewablesTabularProc):
         else:  warnings.warn(f"Timetamps column {self.col_name} not in columns {df.columns}")
 
 # Cell
+def _interpolate_df(df, sample_time="15Min", limit=5, drop_na=True):
+        df = df[~df.index.duplicated()]
+        upsampled = df.resample(sample_time)
+        df  = upsampled.interpolate(method="linear", limit=limit)
+
+        if drop_na: df = df.dropna(axis=0)
+
+        if "Hour" in df.columns:
+            df["Hour"] = df.index.hour
+        if "Month" in df.columns:
+            df["Month"] = df.index.month
+        if "Day" in df.columns:
+            df["Day"] = df.index.day
+        if "Week" in df.columns:
+            df["Week"] = df.index.week
+
+        return df
+
+# Cell
 class Interpolate(RenewablesTabularProc):
     order=0
     def __init__(self,sample_time = "15Min", limit=5, drop_na=True, group_by_col="TaskID"):
@@ -135,6 +154,46 @@ class Interpolate(RenewablesTabularProc):
             to.items = pd.concat(dfs, axis=0)
         else:
             to.items = _interpolate_df(to.items)
+
+# Cell
+def _create_consistent_number_of_sampler_per_day(
+    df: pd.DataFrame, n_samples_per_day: int = 24
+) -> pd.DataFrame:
+    """
+    Remove days with less than the specified amount of samples from the DataFrame.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        the DataFrame used for the conversion.
+    n_samples_per_day : integer
+        the amount of samples each day in the DataFrame.
+
+    Returns
+    -------
+    pandas.DataFrame
+        the given DataFrame, now with a consistent amount of samples each day.
+    """
+    sample_col = df.columns[0]
+    # Create a list of booleans, where each day with 'less than n_samples_per_day' samples is denoted with 'True'
+    mask = df.resample("D").apply(len)[sample_col]
+    mask = (mask < n_samples_per_day) & (mask > 0)
+
+    for i in range(len(mask)):
+        if mask[i]:
+            new_day = mask.index[i] + pd.DateOffset(days=1)
+            new_day.hours = 0
+
+            cur_mask = (df.index < mask.index[i]) | (df.index >= new_day)
+            df = df[cur_mask]
+
+    mask = df.resample("D").apply(len)[sample_col]
+    mask = (mask < n_samples_per_day) & (mask > 0)
+
+    if mask.sum() != 0:
+        raise ValueError("Wrong sample frequency.")
+
+    return df
 
 # Cell
 # TODO: generalize to TransformByGroupTransform and use in NormalizePerTask and Interpolate
