@@ -316,11 +316,12 @@ class FilterDays(RenewablesTabularProc):
     def __init__(self, num_days):
         self.num_days = num_days
 
+    def setups(self, to: Tabular):
+        self.n_samples_per_day = get_samples_per_day(to.items)
 
     def encodes(self, to):
-        mask = to.items.index.month.isin(self.months)
-        if not self.drop: mask = ~mask
-        to.items.drop(to.items[mask].index, inplace=True)
+        to.items = to.items[-(self.n_samples_per_day * self.num_days_training):]
+
 
 # Cell
 class DropCols(RenewablesTabularProc):
