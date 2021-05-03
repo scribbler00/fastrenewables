@@ -320,7 +320,7 @@ class FilterDays(RenewablesTabularProc):
         self.n_samples_per_day = get_samples_per_day(to.items)
 
     def encodes(self, to):
-        to.items = to.items[-(self.n_samples_per_day * self.num_days_training):]
+        to.items = to.items[-(self.n_samples_per_day * self.num_days):]
 
 
 # Cell
