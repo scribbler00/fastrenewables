@@ -258,13 +258,29 @@ class FilterIncosistentSamplesPerDay(RenewablesTabularProc):
 
 
 # Cell
-# TODO: add continious representation via sinus and cosine
 class AddSeasonalFeatures(RenewablesTabularProc):
     order=0
+    def __init__(self, as_cont=True):
+        self.as_cont = as_cont
+
     def encodes(self, to):
-        to.items["Month"] = to.items.index.month
-        to.items["Day"] = to.items.index.day
-        to.items["Hour"] = to.items.index.hour
+        as_sin = lambda value, max_value: np.sin(2*np.pi*value/max_value)
+        as_cos = lambda value, max_value: np.cos(2*np.pi*value/max_value)
+
+        if self.as_cont:
+            to.items["MonthSin"] = as_sin(to.items.index.month, 12)
+            to.items["MonthCos"] = as_cos(to.items.index.month, 12)
+            to.items["DaySin"] = as_sin(to.items.index.day, 31)
+            to.items["DayCos"] = as_cos(to.items.index.day, 31)
+            to.items["HourSin"] = as_sin(to.items.index.hour, 24)
+            to.items["HourCos"] = as_cos(to.items.index.hour, 24)
+
+        else:
+            to.items["Month"] = to.items.index.month
+            to.items["Day"] = to.items.index.day
+            to.items["Hour"] = to.items.index.hour
+
+
 
 # Cell
 class FilterByCol(RenewablesTabularProc):
@@ -387,15 +403,16 @@ class TabularRenewables(TabularPandas):
         cont_names = listify(cont_names)
         cat_names = listify(cat_names)
         y_names = listify(y_names)
-        pre_process = listify(pre_process)
+        self.pre_process = listify(pre_process)
 
-        for pp in pre_process:
+        for pp in self.pre_process:
             if not isinstance(pp, RenewablesTabularProc):
                 warnings.warn(f"Type of {pp} is not expected RenewablesTabularProc.")
 
-        if pre_process is not None:
-            self.prepared_to = TabularPandas(dfs, y_names=y_names, procs=pre_process, cont_names=cont_names,
+        if self.pre_process is not None:
+            self.prepared_to = TabularPandas(dfs, y_names=y_names, procs=self.pre_process, cont_names=cont_names,
                                           do_setup=True, reduce_memory=False)
+            self.pre_process = self.prepared_to.procs
             prepared_df = self.prepared_to.items
         else:
             prepared_df = dfs
