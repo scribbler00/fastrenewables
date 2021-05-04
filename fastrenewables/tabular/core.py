@@ -130,6 +130,8 @@ def get_samples_per_day(df):
         amount of entries per day.
     """
     samples_per_day = -1
+
+    if len(df) == 0: return samples_per_day
     mins = 0
     for i in range(1, 10):
         mins = (df.index[-i] - df.index[-(i + 1)]).seconds // 60
@@ -170,6 +172,16 @@ def _interpolate_df(df, sample_time="15Min", limit=5, drop_na=True):
         return df
 
 # Cell
+def _apply_group_by(to, group_by_col, func, **kwargs):
+    if group_by_col in to.items.columns:
+        dfs = L()
+        for k,df in to.items.groupby(group_by_col):
+            dfs += func(df, **kwargs)
+        to.items = pd.concat(dfs, axis=0)
+    else:
+        to.items = func(to.items, **kwargs)
+
+# Cell
 class Interpolate(RenewablesTabularProc):
     order=0
     def __init__(self,sample_time = "15Min", limit=5, drop_na=True, group_by_col="TaskID"):
@@ -180,15 +192,12 @@ class Interpolate(RenewablesTabularProc):
 
     def setups(self, to: Tabular):
         self.n_samples_per_day = get_samples_per_day(to.items)
+        if self.n_samples_per_day == -1:
+            warnings.warn("Incorrect number of samples per day. Skip processing.")
 
     def encodes(self, to):
-        if self.group_by_col in to.items.columns:
-            dfs = L()
-            for k,df in to.items.groupby(self.group_by_col):
-                dfs += _interpolate_df(df)
-            to.items = pd.concat(dfs, axis=0)
-        else:
-            to.items = _interpolate_df(to.items)
+        if self.n_samples_per_day == -1: return
+        _apply_group_by(to, self.group_by_col, _interpolate_df)
 
 # Cell
 def _create_consistent_number_of_sampler_per_day(
@@ -243,17 +252,13 @@ class FilterIncosistentSamplesPerDay(RenewablesTabularProc):
         self.n_samples_per_day = get_samples_per_day(to.items)
 
     def encodes(self, to):
-        if self.group_by_col in to.items.columns:
-            dfs = L()
-            for k,df in to.items.groupby(self.group_by_col):
-                dfs += _create_consistent_number_of_sampler_per_day(df, n_samples_per_day=self.n_samples_per_day)
-            to.items = pd.concat(dfs, axis=0)
-        else:
-            to.items = _create_consistent_number_of_sampler_per_day(to.items, n_samples_per_day=self.n_samples_per_day)
+        _apply_group_by(to, self.group_by_col, _create_consistent_number_of_sampler_per_day,
+                        n_samples_per_day=self.n_samples_per_day)
 
 
 
 # Cell
+# TODO: add continious representation via sinus and cosine
 class AddSeasonalFeatures(RenewablesTabularProc):
     order=0
     def encodes(self, to):
