@@ -425,6 +425,11 @@ class BinFeatures(TabularProc):
                                        include_lowest=True)
 
 # Cell
+#export
+def _add_prop(cls, o):
+    setattr(cls, camel2snake(o.__class__.__name__), o)
+
+# Cell
 # class TabularRenewables(TabularPandas):
 #     def __init__(self, dfs, procs=None, cat_names=None, cont_names=None, do_setup=True, reduce_memory=False,
 #                  y_names=None, add_y_to_x=False, add_x_to_y=False, pre_process=None, device=None, splits=None, y_block=RegressionBlock()):
