@@ -80,11 +80,13 @@ def read_files(
 # Cell
 # this is merely a class to differentiate between fastai processing and renewbale pre-processing functionality
 class RenewablesTabularProc(TabularProc):
+    include_in_new=False
     pass
 
 # Cell
 class CreateTimeStampIndex(RenewablesTabularProc):
     order=0
+    include_in_new=True
     def __init__(self, col_name, offset_correction=None):
         self.col_name = col_name
         self.offset_correction = offset_correction
@@ -92,12 +94,11 @@ class CreateTimeStampIndex(RenewablesTabularProc):
     def encodes(self, to):
         df = to.items
 
-
-        if self.col_name in df.columns:
-            df.reset_index(drop=True, inplace=True)
+        def create_timestamp_index(df, drop_index=True):
+            df.reset_index(drop=drop_index, inplace=True)
             df.rename({self.col_name: "TimeUTC"}, axis=1, inplace=True)
             #  in case the timestamp is index give it a proper timestamp,e.g., in GermanSolarFarm dataset
-            if "0000-" in df.TimeUTC[0]:
+            if "0000-" in str(df.TimeUTC[0]):
                 df.TimeUTC = df.TimeUTC.apply(
                     lambda x: x.replace("0000-", "2015-").replace("0001-", "2016-")
                 )
@@ -113,7 +114,13 @@ class CreateTimeStampIndex(RenewablesTabularProc):
                     i += self.offset_correction
                 df.index = new_index
 
-        else:  warnings.warn(f"Timetamps column {self.col_name} not in columns {df.columns}")
+        if self.col_name in df.columns:
+            create_timestamp_index(df, drop_index=True)
+        # properly already processed
+        elif self.col_name == to.items.index.name:
+            create_timestamp_index(df, drop_index=False)
+        else:
+            warnings.warn(f"Timetamps column {self.col_name} not in columns {df.columns} or df.index.name")
 
 # Cell
 def get_samples_per_day(df):
@@ -153,7 +160,7 @@ def get_samples_per_day(df):
     return samples_per_day
 
 # Cell
-def _interpolate_df(df, sample_time="15Min", limit=5, drop_na=True):
+def _interpolate_df(df, sample_time="15Min", limit=5, drop_na=False):
         df = df[~df.index.duplicated()]
         upsampled = df.resample(sample_time)
         df  = upsampled.interpolate(method="linear", limit=limit)
@@ -172,19 +179,21 @@ def _interpolate_df(df, sample_time="15Min", limit=5, drop_na=True):
         return df
 
 # Cell
-def _apply_group_by(to, group_by_col, func, **kwargs):
-    if group_by_col in to.items.columns:
+def _apply_group_by(to:pd.DataFrame, group_by_col, func, **kwargs):
+    if group_by_col in to.columns:
         dfs = L()
-        for k,df in to.items.groupby(group_by_col):
-            dfs += func(df, **kwargs)
-        to.items = pd.concat(dfs, axis=0)
+        for k,df_g in to.groupby(group_by_col):
+            dfs += func(df_g, **kwargs)
+        df = pd.concat(dfs, axis=0)
     else:
-        to.items = func(to.items, **kwargs)
+        df = func(to, **kwargs)
+    return df
 
 # Cell
 class Interpolate(RenewablesTabularProc):
-    order=0
-    def __init__(self,sample_time = "15Min", limit=5, drop_na=True, group_by_col="TaskID"):
+    order=2
+    include_in_new=True
+    def __init__(self, sample_time = "15Min", limit=5, drop_na=True, group_by_col="TaskID"):
         self.sample_time = sample_time
         self.limit = limit
         self.drop_na = drop_na
@@ -193,11 +202,34 @@ class Interpolate(RenewablesTabularProc):
     def setups(self, to: Tabular):
         self.n_samples_per_day = get_samples_per_day(to.items)
         if self.n_samples_per_day == -1:
-            warnings.warn("Incorrect number of samples per day. Skip processing.")
+            warnings.warn("Could not determine samples per day. Skip processing.")
 
     def encodes(self, to):
-        if self.n_samples_per_day == -1: return
-        _apply_group_by(to, self.group_by_col, _interpolate_df)
+        # if values of a columns are the same in each row (categorical features)
+        # we make that those stay the same during interpolation
+        if self.group_by_col in to.items.columns:
+            d = defaultdict(object)
+            non_unique_columns = L()
+            for group_id, df in to.items.groupby(self.group_by_col):
+                for c in df.columns:
+                    if len(df[c].unique())==1 and c!=self.group_by_col:
+                        d[(group_id,c)] = df[c][0]
+                    else:
+                        non_unique_columns += c
+
+            if self.n_samples_per_day == -1: return
+            non_unique_columns = np.unique(non_unique_columns)
+        else:
+            non_unique_columns = to.items.columns
+        # interpolate non unique columns
+        df = _apply_group_by(to.items.loc[:,np.unique(non_unique_columns)], self.group_by_col, _interpolate_df)
+        to.items = df
+        if self.group_by_col in to.items.columns:
+            for group_id,col_name in d.keys():
+                mask = to[self.group_by_col]==group_id
+                to.items.loc[mask,col_name]=d[(group_id, col_name)]
+        # pandas converts the datatype to float if np.NaN is present, lets revert that
+        to.items = to.items.convert_dtypes()
 
 # Cell
 def _create_consistent_number_of_sampler_per_day(
@@ -240,11 +272,9 @@ def _create_consistent_number_of_sampler_per_day(
     return df
 
 # Cell
-# TODO: generalize to TransformByGroupTransform and use in NormalizePerTask and Interpolate
-
 class FilterIncosistentSamplesPerDay(RenewablesTabularProc):
-    order=1
-
+    order=100
+    include_in_new=True
     def __init__(self, group_by_col="TaskID"):
         self.group_by_col = group_by_col
 
@@ -252,14 +282,15 @@ class FilterIncosistentSamplesPerDay(RenewablesTabularProc):
         self.n_samples_per_day = get_samples_per_day(to.items)
 
     def encodes(self, to):
-        _apply_group_by(to, self.group_by_col, _create_consistent_number_of_sampler_per_day,
+        to.items = _apply_group_by(to.items, self.group_by_col, _create_consistent_number_of_sampler_per_day,
                         n_samples_per_day=self.n_samples_per_day)
 
-
+        assert (to.items.shape[0]%self.n_samples_per_day) == 0, "Incorrect number of samples after filter"
 
 # Cell
 class AddSeasonalFeatures(RenewablesTabularProc):
     order=0
+    include_in_new=True
     def __init__(self, as_cont=True):
         self.as_cont = as_cont
 
@@ -279,8 +310,6 @@ class AddSeasonalFeatures(RenewablesTabularProc):
             to.items["Month"] = to.items.index.month
             to.items["Day"] = to.items.index.day
             to.items["Hour"] = to.items.index.hour
-
-
 
 # Cell
 class FilterByCol(RenewablesTabularProc):
@@ -358,7 +387,7 @@ class DropCols(RenewablesTabularProc):
 class Normalize(RenewablesTabularProc):
     "Normalize per TaskId"
     order = 1
-
+    include_in_new=True
     def __init__(self, cols_to_ignore=[]):
         self.cols_to_ignore = cols_to_ignore
 
@@ -377,6 +406,7 @@ class Normalize(RenewablesTabularProc):
 class BinFeatures(TabularProc):
     "Creates bin from categorical features."
     order = 1
+    include_in_new=True
     def __init__(self, column_names, bin_sizes=5):
         # TODO: Add possiblitiy to add custom bins
         self.column_names = listify(column_names)
@@ -395,51 +425,121 @@ class BinFeatures(TabularProc):
                                        include_lowest=True)
 
 # Cell
+# class TabularRenewables(TabularPandas):
+#     def __init__(self, dfs, procs=None, cat_names=None, cont_names=None, do_setup=True, reduce_memory=False,
+#                  y_names=None, add_y_to_x=False, add_x_to_y=False, pre_process=None, device=None, splits=None, y_block=RegressionBlock()):
+
+#         self.pre_process = listify(pre_process)
+#         cont_names = listify(cont_names)
+#         cat_names = listify(cat_names)
+#         y_names = listify(y_names)
+#         procs = listify(procs)
+
+#         # TODO: add_y_to_x, add_x_to_y? can also achieved through cont_names and y_names
+
+#         for pp in procs:
+#             if isinstance(pp, RenewablesTabularProc):
+#                 warnings.warn(f"Element {pp} of procs is RenewablesTabularProc, might not work with TabularPandas.")
+
+
+
+#         if len(self.pre_process) > 0:
+#             self.prepared_to = TabularPandas(dfs, y_names=y_names,
+#                                              procs=self.pre_process,
+#                                              cont_names=cont_names,
+# #                                              cat_names=cat_names,
+#                                              y_block=y_block,
+#                                              do_setup=True,
+#                                              reduce_memory=False)
+#             self.pre_process = self.prepared_to.procs
+#             prepared_df = self.prepared_to.items
+#             for pp in self.pre_process:
+#                 if getattr(pp, "include_in_new", False): _add_prop(self, pp)
+
+#             print(prepared_df.PowerGeneration)
+#             new_cat_names = [c for c in cat_names if c in prepared_df.columns ]
+#             new_cont_names = [c for c in cont_names if c in prepared_df.columns]
+#             new_y_names = [c for c in y_names if c in prepared_df.columns]
+
+#             def _warn_removed_features(newcs,oldcs):
+#                 if len(newcs) != len(oldcs): warnings.warn(f"Removed features from {oldcs} to be {newcs}.")
+#             _warn_removed_features(new_cat_names, cat_names)
+#             _warn_removed_features(new_cont_names, cont_names)
+#             _warn_removed_features(new_y_names, y_names)
+#         else:
+#             prepared_df = dfs
+
+
+
+#         if splits is not None: splits = splits(range_of(prepared_df))
+#         super().__init__(prepared_df,
+#             procs=procs,
+#             cat_names=cat_names,
+#             cont_names=cont_names,
+#             y_names=y_names,
+#             splits=splits,
+#             do_setup=do_setup,
+#             inplace=True,
+#             y_block=y_block,
+#             reduce_memory=reduce_memory)
+
+#     def new(self, df, pre_process=None, splits=None):
+#         return type(self)(df, do_setup=False, reduce_memory=False, y_block=TransformBlock(),
+#                           pre_process=pre_process, splits=splits,
+#                           **attrdict(self, 'procs','cat_names','cont_names','y_names', 'device'))
+
+#     def show(self, max_n=10, **kwargs):
+#         to_tmp = self.new(self.all_cols[:max_n])
+#         to_tmp.items["TaskID"] = self.items.TaskID[:max_n]
+# #         display_df(to_tmp.items)
+#         display_df(to_tmp.decode().items)
+
 class TabularRenewables(TabularPandas):
     def __init__(self, dfs, procs=None, cat_names=None, cont_names=None, do_setup=True, reduce_memory=False,
                  y_names=None, add_y_to_x=False, add_x_to_y=False, pre_process=None, device=None, splits=None, y_block=RegressionBlock()):
 
         self.pre_process = pre_process
+        self._original_pre_process = self.pre_process
         cont_names = listify(cont_names)
         cat_names = listify(cat_names)
         y_names = listify(y_names)
         self.pre_process = listify(pre_process)
 
-        for pp in self.pre_process:
-            if not isinstance(pp, RenewablesTabularProc):
-                warnings.warn(f"Type of {pp} is not expected RenewablesTabularProc.")
+        for pp in procs:
+            if isinstance(pp, RenewablesTabularProc):
+                warnings.warn(f"Element {pp} of procs is RenewablesTabularProc, might not work with TabularPandas.")
 
-        if self.pre_process is not None:
-            self.prepared_to = TabularPandas(dfs, y_names=y_names, procs=self.pre_process, cont_names=cont_names,
+
+        if len(self.pre_process) > 0:
+            self.prepared_to = TabularPandas(dfs, y_names=y_names,
+                                             procs=self.pre_process, cont_names=cont_names,
                                           do_setup=True, reduce_memory=False)
             self.pre_process = self.prepared_to.procs
             prepared_df = self.prepared_to.items
+            for pp in self.pre_process:
+                if getattr(pp, "include_in_new", False): _add_prop(self, pp)
         else:
             prepared_df = dfs
-
-        # assures that only available features are taken
-        new_cat_names = [c for c in cat_names if c in prepared_df.columns ]
-        new_cont_names = [c for c in cont_names if c in prepared_df.columns]
-        new_y_names = [c for c in y_names if c in prepared_df.columns]
-        def _warn_removed_features(newcs,oldcs):
-            if len(newcs) != len(oldcs): warnings.warn(f"Removed features from {oldcs} to be {newcs}.")
-        _warn_removed_features(new_cat_names, cat_names)
-        _warn_removed_features(new_cont_names, cont_names)
-        _warn_removed_features(new_y_names, y_names)
 
         if splits is not None: splits = splits(range_of(prepared_df))
         super().__init__(prepared_df,
             procs=procs,
-            cat_names=new_cat_names,
-            cont_names=new_cont_names,
-            y_names=new_y_names,
+            cat_names=cat_names,
+            cont_names=cont_names,
+            y_names=y_names,
             splits=splits,
             do_setup=do_setup,
             inplace=True,
             y_block=y_block,
             reduce_memory=reduce_memory)
 
-    def new(self, df, pre_process=None, splits=None):
+    def new(self, df, pre_process=None, splits=None, new_task=False):
+        pre_process = listify(pre_process)
+        if new_task:
+            for pp in self._original_pre_process:
+                if getattr(pp, "include_in_new", False):
+                    pre_process += [pp]
+
         return type(self)(df, do_setup=False, reduce_memory=False, y_block=TransformBlock(),
                           pre_process=pre_process, splits=splits,
                           **attrdict(self, 'procs','cat_names','cont_names','y_names', 'device'))
@@ -465,7 +565,7 @@ class ReadTabBatchRenewables(ItemTransform):
         return res
 
     def decodes(self, o):
-
+        print("aasdasd")
         o = [_maybe_expand(o_) for o_ in to_np(o) if o_.size != 0]
         vals = np.concatenate(o, axis=1)
         try: df = pd.DataFrame(vals, columns=self.to.all_col_names)
@@ -493,6 +593,7 @@ TabularRenewables._dl_type = TabDataLoaderRenewables
 class NormalizePerTask(TabularProc):
     "Normalize per TaskId"
     order = 1
+    include_in_new=True
     def __init__(self, task_id_col="TaskID"):
         self.task_id_col = task_id_col
     def setups(self, to:Tabular):
@@ -514,7 +615,7 @@ class NormalizePerTask(TabularProc):
 
             to.loc[mask, to.cont_names] = ((to.conts[mask] - self.means.loc[task_id]) / self.stds.loc[task_id])
 
-    def decodes(self, to):
+    def decodes(self, to, split_idx=None):
         for task_id in to.items[self.task_id_col].unique():
             # in case this is a new task, we update the means and stds
             if task_id not in self.means.index:
