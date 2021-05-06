@@ -228,6 +228,11 @@ class Interpolate(RenewablesTabularProc):
             for group_id,col_name in d.keys():
                 mask = to[self.group_by_col]==group_id
                 to.items.loc[mask,col_name]=d[(group_id, col_name)]
+
+
+        if len(to.cont_names)>0:
+            mask = to[to.cont_names].isna().values[:,0]
+            to.items = to.items[~mask]
         # pandas converts the datatype to float if np.NaN is present, lets revert that
         to.items = to.items.convert_dtypes()
 
@@ -565,6 +570,7 @@ class ReadTabBatchRenewables(ItemTransform):
         if not to.with_cont: res = (tensor(to.cats).long(),)
         # TODO: some pre-processing causes to.conts.values of type object, while types
         # of the dataframe are float, therefore assure conversion through astype
+        # --> this is caused by Interpolate
         else: res = (tensor(to.cats).long(),tensor(to.conts.astype(float)).float())
         ys = [n for n in to.y_names if n in to.items.columns]
         # same problem as above with type of to.targ
