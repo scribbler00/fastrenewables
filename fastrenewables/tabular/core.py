@@ -563,14 +563,15 @@ class ReadTabBatchRenewables(ItemTransform):
     def encodes(self, to):
         self.task_ids = to.items[["TaskID"]]
         if not to.with_cont: res = (tensor(to.cats).long(),)
-        else: res = (tensor(to.cats).long(),tensor(to.conts).float())
+        # TODO: some pre-processing causes to.conts.values of type object, while types
+        # of the dataframe are float, therefore assure conversion through astype
+        else: res = (tensor(to.cats).long(),tensor(to.conts.astype(float)).float())
         ys = [n for n in to.y_names if n in to.items.columns]
         if len(ys) == len(to.y_names): res = res + (tensor(to.targ),)
         if to.device is not None: res = to_device(res, to.device)
         return res
 
     def decodes(self, o):
-        print("aasdasd")
         o = [_maybe_expand(o_) for o_ in to_np(o) if o_.size != 0]
         vals = np.concatenate(o, axis=1)
         try: df = pd.DataFrame(vals, columns=self.to.all_col_names)
