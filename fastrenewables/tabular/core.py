@@ -567,7 +567,8 @@ class ReadTabBatchRenewables(ItemTransform):
         # of the dataframe are float, therefore assure conversion through astype
         else: res = (tensor(to.cats).long(),tensor(to.conts.astype(float)).float())
         ys = [n for n in to.y_names if n in to.items.columns]
-        if len(ys) == len(to.y_names): res = res + (tensor(to.targ),)
+        # same problem as above with type of to.targ
+        if len(ys) == len(to.y_names): res = res + (tensor(to.targ.astype(float)),)
         if to.device is not None: res = to_device(res, to.device)
         return res
 
