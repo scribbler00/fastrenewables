@@ -3,7 +3,8 @@
 __all__ = ['str_to_path', 'read_hdf', 'read_csv', 'read_files', 'RenewablesTabularProc', 'CreateTimeStampIndex',
            'get_samples_per_day', 'Interpolate', 'FilterInconsistentSamplesPerDay', 'AddSeasonalFeatures',
            'FilterByCol', 'FilterYear', 'FilterMonths', 'FilterDays', 'DropCols', 'Normalize', 'BinFeatures',
-           'TabularRenewables', 'ReadTabBatchRenewables', 'TabDataLoaderRenewables', 'NormalizePerTask']
+           'TabularRenewables', 'ReadTabBatchRenewables', 'TabDataLoaderRenewables', 'NormalizePerTask', 'TabDataset',
+           'TabDataLoader', 'TabDataLoaders']
 
 # Cell
 #export
@@ -229,7 +230,9 @@ class Interpolate(RenewablesTabularProc):
                 mask = to[self.group_by_col]==group_id
                 to.items.loc[mask,col_name]=d[(group_id, col_name)]
 
-
+        # TODO: to infer dtype through pd.inferdtype
+        # use this for conversion
+        # in case there is an object inside, throw an error
         if len(to.cont_names)>0:
             mask = to[to.cont_names].isna().values[:,0]
             to.items = to.items[~mask]
@@ -381,6 +384,7 @@ class FilterDays(RenewablesTabularProc):
 # Cell
 class DropCols(RenewablesTabularProc):
     "Drops rows by column name."
+    include_in_new=True
     order = 10
     def __init__(self, cols):
         self.cols = listify(cols)
@@ -543,9 +547,9 @@ class TabularRenewables(TabularPandas):
             y_block=y_block,
             reduce_memory=reduce_memory)
 
-    def new(self, df, pre_process=None, splits=None, new_task=False):
+    def new(self, df, pre_process=None, splits=None, include_preprocess=False):
         pre_process = listify(pre_process)
-        if new_task:
+        if include_preprocess:
             for pp in self._original_pre_process:
                 if getattr(pp, "include_in_new", False):
                     pre_process += [pp]
@@ -574,7 +578,13 @@ class ReadTabBatchRenewables(ItemTransform):
         else: res = (tensor(to.cats).long(),tensor(to.conts.astype(float)).float())
         ys = [n for n in to.y_names if n in to.items.columns]
         # same problem as above with type of to.targ
-        if len(ys) == len(to.y_names): res = res + (tensor(to.targ.astype(float)),)
+        # preliminary bug fix
+        # is continous target?
+        if getattr(to, 'regression_setup', False):
+            ys_type = float
+        else:
+            ys_type = long
+        if len(ys) == len(to.y_names): res = res + (tensor(to.targ.astype(ys_type)),)
         if to.device is not None: res = to_device(res, to.device)
         return res
 
@@ -638,3 +648,83 @@ class NormalizePerTask(TabularProc):
 
             to.loc[mask, to.cont_names] = to.conts[mask] * self.stds.loc[task_id] + self.means.loc[task_id]
         return to
+
+# Cell
+class TabDataset(fastuple):
+    "A dataset from a `TabularRenewable` object"
+    # Stolen from https://muellerzr.github.io/fastblog/2020/04/22/TabularNumpy.html
+    def __init__(self, to):
+        self.cats = tensor(to.cats.to_numpy().astype(np.long))
+        self.conts = tensor(to.conts.to_numpy().astype(np.float32))
+
+        if getattr(to, 'regression_setup', False):
+            ys_type = np.float32
+        else:
+            ys_type = np.long
+        self.ys = tensor(to.ys.to_numpy().astype(ys_type))
+
+        self.cont_names = to.cont_names
+        self.cat_names = to.cat_names
+        self.y_names = to.y_names
+
+    def __getitem__(self, idx):
+        idx = idx[0]
+        return self.cats[idx:idx+self.bs], self.conts[idx:idx+self.bs], self.ys[idx:idx+self.bs]
+
+    def __len__(self): return len(self.cats)
+
+    def show(self, max_n=10, **kwargs):
+        df_cont = pd.DataFrame(data=self.conts[:max_n], columns=self.cont_names)
+        df_cat = pd.DataFrame(data=self.cats[:max_n], columns=self.cat_names)
+        df_y = pd.DataFrame(data=self.ys[:max_n], columns=self.y_names)
+        display_df(pd.concat([df_cont, df_cat, df_y], axis=1))
+
+    def show_batch(self, max_n=10, **kwargs):
+        self.show()
+
+
+# Cell
+class TabDataLoader(DataLoader):
+    def __init__(self, dataset, bs=32, num_workers=0, device='cuda',
+                 to_device=True, shuffle=False, drop_last=True,**kwargs):
+        "A `DataLoader` based on a `TabDataset`"
+        super().__init__(dataset, bs=bs, num_workers=num_workers, shuffle=shuffle,
+                         device=device, drop_last=drop_last, **kwargs)
+        self.dataset.bs=bs
+        if to_device:self.to_device()
+
+    def create_item(self, s): return s
+
+    def to_device(self, device=None):
+        if device is None: device = self.device
+        self.dataset.cats.to(device)
+        self.dataset.conts.to(device)
+        self.dataset.ys.to(device)
+
+    def create_batch(self, b):
+        "Create a batch of data"
+        cat, cont, y = self.dataset[b]
+        return cat.to(self.device), cont.to(self.device), y.to(self.device)
+
+    def get_idxs(self):
+        "Get index's to select"
+        idxs = Inf.count if self.indexed else Inf.nones
+        if self.n is not None: idxs = list(range(len(self.dataset)))
+        return idxs
+
+    def shuffle_fn(self):
+        "Shuffle the interior dataset"
+        rng = np.random.permutation(len(self.dataset))
+        self.dataset.cats = self.dataset.cats[rng]
+        self.dataset.conts = self.dataset.conts[rng]
+        self.dataset.ys = self.dataset.ys[rng]
+
+# Cell
+class TabDataLoaders(DataLoaders):
+    def __init__(self, to, bs=64, val_bs=None, shuffle_train=True, device='cpu', **kwargs):
+        train_ds = TabDataset(to.train)
+        valid_ds = TabDataset(to.valid)
+        val_bs = bs if val_bs is None else val_bs
+        train = TabDataLoader(train_ds, bs=bs, shuffle=shuffle_train, device=device, **kwargs)
+        valid = TabDataLoader(valid_ds, bs=val_bs, shuffle=False, device=device, **kwargs)
+        super().__init__(train, valid, device=device, **kwargs)
