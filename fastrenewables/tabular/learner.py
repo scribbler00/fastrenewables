@@ -30,12 +30,12 @@ class RenewableLearner(Learner):
         # to increase speed we direclty predict on all tensors
         if isinstance(to, (TabularPandas, TabularRenewables, TabDataLoader)):
             if getattr(to, 'regression_setup', False):
-                ys_type = float
+                ys_type = np.float32
             else:
-                ys_type = long
+                ys_type = np.long
 
-            cats = tensor(to.cats.values).long()
-            xs = tensor(to.conts.values).float()
+            cats = tensor(to.cats.values.astype(np.long))
+            xs = tensor(to.conts.values.astype(np.float32))
             targets = tensor(to.y.values.astype(ys_type))
 
             with torch.no_grad():
