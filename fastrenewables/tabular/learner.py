@@ -18,7 +18,7 @@ from ..losses import VILoss
 class RenewableLearner(Learner):
     "`Learner` for renewable data"
     def predict(self, ds_idx=1, test_dl=None, filter=True):
-        device = next(learn.model.parameters()).device
+        device = next(self.model.parameters()).device
 
         if test_dl is not None:
             cur_dl = test_dl
@@ -36,7 +36,7 @@ class RenewableLearner(Learner):
             targets = tensor(cur_dl.y.values)
 
         with torch.no_grad():
-            preds = learn.model(cats.to(device), xs.to(device))
+            preds = self.model(cats.to(device), xs.to(device))
 
         preds, targets = to_np(preds).reshape(-1), to_np(targets).reshape(-1)
         if filter:
