@@ -19,29 +19,34 @@ class RenewableLearner(Learner):
     "`Learner` for renewable data"
     def predict(self, ds_idx=1, test_dl=None, filter=True):
         device = next(self.model.parameters()).device
-
+        preds, targets = None, None
         if test_dl is not None:
-            cur_dl = test_dl
+            to = test_dl.train_ds
         elif ds_idx == 0:
-            cur_dl = self.dls.train_ds
+            to = self.dls.train_ds
         elif ds_idx == 1:
-            cur_dl = self.dls.valid_ds
+            to = self.dls.valid_ds
 
-        if type(cur_dl) == TabularPandas or \
-            type(cur_dl) == TabDataLoader or \
-            type(cur_dl) == TabularRenewables:
+        # to increase speed we direclty predict on all tensors
+        if isinstance(to, (TabularPandas, TabularRenewables, TabDataLoader)):
+            if getattr(to, 'regression_setup', False):
+                ys_type = float
+            else:
+                ys_type = long
 
-            cats = tensor(cur_dl.cats.values).long()
-            xs = tensor(cur_dl.conts.values)
-            targets = tensor(cur_dl.y.values)
+            cats = tensor(to.cats.values).long()
+            xs = tensor(to.conts.values).float()
+            targets = tensor(to.y.values.astype(ys_type))
 
-        with torch.no_grad():
-            preds = self.model(cats.to(device), xs.to(device))
+            with torch.no_grad():
+                preds = self.model(cats.to(device), xs.to(device))
 
-        preds, targets = to_np(preds).reshape(-1), to_np(targets).reshape(-1)
-        if filter:
-            preds[preds < 0] = 0
-            preds[preds > 1.1] = 1.1
+            preds, targets = to_np(preds).reshape(-1), to_np(targets).reshape(-1)
+            if filter:
+                preds[preds < 0] = 0
+                preds[preds > 1.1] = 1.1
+        else:
+            raise NotImplementedError("Unknown type")
 
         return preds, targets
 
