@@ -56,8 +56,6 @@ def renewable_learner(dls, layers=None, emb_szs=None, config=None, n_out=None, y
     "Get a `Learner` using `dls`, with `metrics`, including a `TabularModel` created using the remaining params."
     if config is None: config = tabular_config()
 
-    to = dls.train_ds
-    emb_szs = get_emb_sz(dls.train_ds, {} if emb_szs is None else emb_szs)
     if n_out is None: n_out = get_c(dls)
     assert n_out, "`n_out` is not defined, and could not be inferred from data, set `dls.c` or pass `n_out`"
 
@@ -66,7 +64,9 @@ def renewable_learner(dls, layers=None, emb_szs=None, config=None, n_out=None, y
 
     embed_p = kwargs["embed_p"].pop() if "embed_p" in kwargs.keys() else 0.1
 
-    if emb_szs is not None:
+    emb_module = None
+    if len(dls.train_ds.cat_names) > 0:
+        emb_szs = get_emb_sz(dls.train_ds, {} if emb_szs is None else emb_szs)
         emb_module = EmbeddingModule(None, embedding_dropout=embed_p, embedding_dimensions=emb_szs)
 
     model = MultiLayerPerceptron(layers, embedding_module=emb_module, **config)
