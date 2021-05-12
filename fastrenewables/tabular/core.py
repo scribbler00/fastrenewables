@@ -579,7 +579,7 @@ class ReadTabBatchRenewables(ItemTransform):
         if getattr(to, 'regression_setup', False):
             ys_type = float
         else:
-            ys_type = long
+            ys_type = int
         if len(ys) == len(to.y_names): res = res + (tensor(to.targ.astype(ys_type)),)
         if to.device is not None: res = to_device(res, to.device)
         return res
