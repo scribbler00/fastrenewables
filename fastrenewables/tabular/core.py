@@ -124,9 +124,10 @@ class CreateTimeStampIndex(RenewablesTabularProc):
             warnings.warn(f"Timetamps column {self.col_name} not in columns {df.columns} or df.index.name")
 
 # Cell
-def get_samples_per_day(df):
+def get_samples_per_day(df, n_samples_to_check=100, expected_samples=[8,24,96]):
     """
-    Extract the amount of entries per day from the DataFrame
+    Extract the amount of entries per day from the DataFrame in the first n_samples_to_check.
+    Aborts, ones the first meaningful *number of samples per day* is found.
     Parameters
     ----------
     df : pandas.DataFrame
@@ -141,24 +142,17 @@ def get_samples_per_day(df):
 
     if len(df) == 0: return samples_per_day
     mins = 0
-    for i in range(1, 10):
-        mins = (df.index[-i] - df.index[-(i + 1)]).seconds // 60
-        # 15 min resolution
-        if mins == 15:
-            samples_per_day = 24 * 4
-            break
-        # hourly resolution
-        elif mins == 60:
-            samples_per_day = 24
-            break
-        # three hour resolution
-        elif mins == 180:
-            samples_per_day = 8
-            break
+    for i in range(1, min(n_samples_to_check,len(df))):
+        mins = (df.index[i] - df.index[i -1]).seconds // 60
+        if (24*60)%mins==0:
+            samples_per_day = (24*60)/mins
+            if samples_per_day in expected_samples: break
+
     if samples_per_day == -1:
         raise ValueError(f"{mins} is an unknown sampling time.")
-
     return samples_per_day
+
+
 
 # Cell
 def _interpolate_df(df, sample_time="15Min", limit=5, drop_na=False):
@@ -206,6 +200,9 @@ class Interpolate(RenewablesTabularProc):
             warnings.warn("Could not determine samples per day. Skip processing.")
 
     def encodes(self, to):
+
+        if self.n_samples_per_day == -1: return
+
         # if values of a columns are the same in each row (categorical features)
         # we make that those stay the same during interpolation
         if self.group_by_col in to.items.columns:
@@ -218,7 +215,6 @@ class Interpolate(RenewablesTabularProc):
                     else:
                         non_unique_columns += c
 
-            if self.n_samples_per_day == -1: return
             non_unique_columns = np.unique(non_unique_columns)
         else:
             non_unique_columns = to.items.columns
