@@ -16,6 +16,7 @@ from fastcore.test import *
 from fastai.tabular.all import *
 import fastai
 from fastai.tabular.core import _maybe_expand
+from itertools import chain
 
 # Cell
 #export
@@ -234,46 +235,6 @@ class Interpolate(RenewablesTabularProc):
             to.items = to.items[~mask]
         # pandas converts the datatype to float if np.NaN is present, lets revert that
         to.items = to.items.convert_dtypes()
-
-# Cell
-def _create_consistent_number_of_sampler_per_day(
-    df: pd.DataFrame, n_samples_per_day: int = 24
-) -> pd.DataFrame:
-    """
-    Remove days with less than the specified amount of samples from the DataFrame.
-
-    Parameters
-    ----------
-    df : pandas.DataFrame
-        the DataFrame used for the conversion.
-    n_samples_per_day : integer
-        the amount of samples each day in the DataFrame.
-
-    Returns
-    -------
-    pandas.DataFrame
-        the given DataFrame, now with a consistent amount of samples each day.
-    """
-    sample_col = df.columns[0]
-    # Create a list of booleans, where each day with 'less than n_samples_per_day' samples is denoted with 'True'
-    mask = df.resample("D").apply(len)[sample_col]
-    mask = (mask < n_samples_per_day) & (mask > 0)
-
-    for i in range(len(mask)):
-        if mask[i]:
-            new_day = mask.index[i] + pd.DateOffset(days=1)
-            new_day.hours = 0
-
-            cur_mask = (df.index < mask.index[i]) | (df.index >= new_day)
-            df = df[cur_mask]
-
-    mask = df.resample("D").apply(len)[sample_col]
-    mask = (mask < n_samples_per_day) & (mask > 0)
-
-    if mask.sum() != 0:
-        raise ValueError("Wrong sample frequency.")
-
-    return df
 
 # Cell
 class FilterInconsistentSamplesPerDay(RenewablesTabularProc):
