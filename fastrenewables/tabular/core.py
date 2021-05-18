@@ -237,6 +237,36 @@ class Interpolate(RenewablesTabularProc):
         to.items = to.items.convert_dtypes()
 
 # Cell
+def _create_consistent_number_of_sampler_per_day(
+    df: pd.DataFrame, n_samples_per_day: int = 24
+) -> pd.DataFrame:
+    """
+    Remove days with less than the specified amount of samples from the DataFrame.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        the DataFrame used for the conversion.
+    n_samples_per_day : integer
+        the amount of samples each day in the DataFrame.
+
+    Returns
+    -------
+    pandas.DataFrame
+        the given DataFrame, now with a consistent amount of samples each day.
+    """
+    # Create a list of booleans, where each day with 'less than n_samples_per_day' samples is denoted with 'True'
+    mask = df.groupby(pd.Grouper(freq="D")).apply(len)
+    mask = (mask < n_samples_per_day)
+
+    bad_days = list(chain.from_iterable([list(pd.date_range(start=b, periods=n_samples_per_day, freq=f'{(24 * 60) // n_samples_per_day}Min'))
+                for b in mask[mask].index]))
+
+    return df[~df.index.isin(bad_days)]
+
+
+
+# Cell
 class FilterInconsistentSamplesPerDay(RenewablesTabularProc):
     order=100
     include_in_new=True
