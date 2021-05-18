@@ -279,6 +279,7 @@ class FilterInconsistentSamplesPerDay(RenewablesTabularProc):
     def encodes(self, to):
         to.items = _apply_group_by(to.items, self.group_by_col, _create_consistent_number_of_sampler_per_day,
                         n_samples_per_day=self.n_samples_per_day)
+#         to.items = _create_consistent_number_of_sampler_per_day(to.items, n_samples_per_day=self.n_samples_per_day)
 
         assert (to.items.shape[0]%self.n_samples_per_day) == 0, "Incorrect number of samples after filter"
 
@@ -317,8 +318,8 @@ class FilterByCol(RenewablesTabularProc):
 
     def encodes(self, to):
         mask = to.items[self.col_name].astype(bool).values
-        if not self.drop: mask = ~mask
-        to.items.drop(to.items[mask].index, inplace=True)
+        if self.drop: mask = ~mask
+        to.items = to.items[mask]
         if self.drop_col_after_filter: to.items.drop(self.col_name, axis=1, inplace=True, errors="ignore")
 
 # Cell
@@ -426,78 +427,11 @@ def _add_prop(cls, o):
     setattr(cls, camel2snake(o.__class__.__name__), o)
 
 # Cell
-# class TabularRenewables(TabularPandas):
-#     def __init__(self, dfs, procs=None, cat_names=None, cont_names=None, do_setup=True, reduce_memory=False,
-#                  y_names=None, add_y_to_x=False, add_x_to_y=False, pre_process=None, device=None, splits=None, y_block=RegressionBlock()):
-
-#         self.pre_process = listify(pre_process)
-#         cont_names = listify(cont_names)
-#         cat_names = listify(cat_names)
-#         y_names = listify(y_names)
-#         procs = listify(procs)
-
-#         # TODO: add_y_to_x, add_x_to_y? can also achieved through cont_names and y_names
-
-#         for pp in procs:
-#             if isinstance(pp, RenewablesTabularProc):
-#                 warnings.warn(f"Element {pp} of procs is RenewablesTabularProc, might not work with TabularPandas.")
-
-
-
-#         if len(self.pre_process) > 0:
-#             self.prepared_to = TabularPandas(dfs, y_names=y_names,
-#                                              procs=self.pre_process,
-#                                              cont_names=cont_names,
-# #                                              cat_names=cat_names,
-#                                              y_block=y_block,
-#                                              do_setup=True,
-#                                              reduce_memory=False)
-#             self.pre_process = self.prepared_to.procs
-#             prepared_df = self.prepared_to.items
-#             for pp in self.pre_process:
-#                 if getattr(pp, "include_in_new", False): _add_prop(self, pp)
-
-#             print(prepared_df.PowerGeneration)
-#             new_cat_names = [c for c in cat_names if c in prepared_df.columns ]
-#             new_cont_names = [c for c in cont_names if c in prepared_df.columns]
-#             new_y_names = [c for c in y_names if c in prepared_df.columns]
-
-#             def _warn_removed_features(newcs,oldcs):
-#                 if len(newcs) != len(oldcs): warnings.warn(f"Removed features from {oldcs} to be {newcs}.")
-#             _warn_removed_features(new_cat_names, cat_names)
-#             _warn_removed_features(new_cont_names, cont_names)
-#             _warn_removed_features(new_y_names, y_names)
-#         else:
-#             prepared_df = dfs
-
-
-
-#         if splits is not None: splits = splits(range_of(prepared_df))
-#         super().__init__(prepared_df,
-#             procs=procs,
-#             cat_names=cat_names,
-#             cont_names=cont_names,
-#             y_names=y_names,
-#             splits=splits,
-#             do_setup=do_setup,
-#             inplace=True,
-#             y_block=y_block,
-#             reduce_memory=reduce_memory)
-
-#     def new(self, df, pre_process=None, splits=None):
-#         return type(self)(df, do_setup=False, reduce_memory=False, y_block=TransformBlock(),
-#                           pre_process=pre_process, splits=splits,
-#                           **attrdict(self, 'procs','cat_names','cont_names','y_names', 'device'))
-
-#     def show(self, max_n=10, **kwargs):
-#         to_tmp = self.new(self.all_cols[:max_n])
-#         to_tmp.items["TaskID"] = self.items.TaskID[:max_n]
-# #         display_df(to_tmp.items)
-#         display_df(to_tmp.decode().items)
-
 class TabularRenewables(TabularPandas):
     def __init__(self, dfs, procs=None, cat_names=None, cont_names=None, do_setup=True, reduce_memory=False,
-                 y_names=None, add_y_to_x=False, add_x_to_y=False, pre_process=None, device=None, splits=None, y_block=RegressionBlock()):
+                 y_names=None, add_y_to_x=False, add_x_to_y=False,
+                 pre_process=None, device=None, splits=None, y_block=RegressionBlock(),
+                inplace=False):
 
         self.pre_process = pre_process
         self._original_pre_process = self.pre_process
@@ -514,7 +448,7 @@ class TabularRenewables(TabularPandas):
         if len(self.pre_process) > 0:
             self.prepared_to = TabularPandas(dfs, y_names=y_names,
                                              procs=self.pre_process, cont_names=cont_names,
-                                          do_setup=True, reduce_memory=False)
+                                          do_setup=True, reduce_memory=False, inplace=inplace, y_block=y_block)
             self.pre_process = self.prepared_to.procs
             prepared_df = self.prepared_to.items
             for pp in self.pre_process:
@@ -530,7 +464,7 @@ class TabularRenewables(TabularPandas):
             y_names=y_names,
             splits=splits,
             do_setup=do_setup,
-            inplace=True,
+            inplace=inplace,
             y_block=y_block,
             reduce_memory=reduce_memory)
 
