@@ -11,7 +11,7 @@ entries:
       url: /
     - output: web,pdf
       title: Title
-      url: losses.html
+      url: timeseries_core.html
     - output: web,pdf
       title: core
       url: tabular.core.html
