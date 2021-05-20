@@ -3,8 +3,8 @@
 __all__ = ['str_to_path', 'read_hdf', 'read_csv', 'read_files', 'RenewablesTabularProc', 'CreateTimeStampIndex',
            'get_samples_per_day', 'Interpolate', 'FilterInconsistentSamplesPerDay', 'AddSeasonalFeatures',
            'FilterByCol', 'FilterYear', 'FilterMonths', 'FilterDays', 'DropCols', 'Normalize', 'BinFeatures',
-           'TabularRenewables', 'ReadTabBatchRenewables', 'TabDataLoaderRenewables', 'NormalizePerTask', 'TabDataset',
-           'TabDataLoader', 'TabDataLoaders']
+           'RenewableSplits', 'ByWeeksSplitter', 'TabularRenewables', 'ReadTabBatchRenewables',
+           'TabDataLoaderRenewables', 'NormalizePerTask', 'TabDataset', 'TabDataLoader', 'TabDataLoaders']
 
 # Cell
 #export
@@ -151,7 +151,8 @@ def get_samples_per_day(df, n_samples_to_check=100, expected_samples=[8,24,96]):
 
     if samples_per_day == -1:
         raise ValueError(f"{mins} is an unknown sampling time.")
-    return samples_per_day
+
+    return int(samples_per_day)
 
 
 
@@ -427,6 +428,28 @@ def _add_prop(cls, o):
     setattr(cls, camel2snake(o.__class__.__name__), o)
 
 # Cell
+class RenewableSplits:
+    pass
+
+
+class ByWeeksSplitter(RenewableSplits):
+    def __init__(self, every_n_weeks: int = 4):
+        self.every_n_weeks = every_n_weeks
+#         self.for_n_weeks = for_n_weeks
+
+
+    @staticmethod
+    def _inner(cur_dataset, every_n_weeks):
+        # plus one for one week of validation data
+        mask = ((cur_dataset.index.isocalendar().week % (every_n_weeks+1)) == 0).values
+        indices = np.arange(len(cur_dataset))
+        return list(indices[list(~mask)]), list(indices[list(mask)])
+
+
+    def __call__(self, o):
+        return self._inner(o, self.every_n_weeks)
+
+# Cell
 class TabularRenewables(TabularPandas):
     def __init__(self, dfs, procs=None, cat_names=None, cont_names=None, do_setup=True, reduce_memory=False,
                  y_names=None, add_y_to_x=False, add_x_to_y=False,
@@ -440,7 +463,7 @@ class TabularRenewables(TabularPandas):
         y_names = listify(y_names)
         self.pre_process = listify(pre_process)
 
-        for pp in procs:
+        for pp in listify(procs):
             if isinstance(pp, RenewablesTabularProc):
                 warnings.warn(f"Element {pp} of procs is RenewablesTabularProc, might not work with TabularPandas.")
 
@@ -456,13 +479,18 @@ class TabularRenewables(TabularPandas):
         else:
             prepared_df = dfs
 
-        if splits is not None: splits = splits(range_of(prepared_df))
+        if splits is not None:
+            if isinstance(splits, RenewableSplits): self.splits = splits(prepared_df)
+            else: self.splits = splits(range_of(prepared_df))
+        else:
+            self.splits = None
+
         super().__init__(prepared_df,
             procs=procs,
             cat_names=cat_names,
             cont_names=cont_names,
             y_names=y_names,
-            splits=splits,
+            splits=self.splits,
             do_setup=do_setup,
             inplace=inplace,
             y_block=y_block,

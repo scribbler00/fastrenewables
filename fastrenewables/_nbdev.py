@@ -2,7 +2,8 @@
 
 __all__ = ["index", "modules", "custom_doc_links", "git_url"]
 
-index = {"VILoss": "00_losses.ipynb",
+index = {"contains_instance": "00a_utils.ipynb",
+         "VILoss": "00b_losses.ipynb",
          "str_to_path": "01_tabular.core.ipynb",
          "read_hdf": "01_tabular.core.ipynb",
          "read_csv": "01_tabular.core.ipynb",
@@ -20,6 +21,8 @@ index = {"VILoss": "00_losses.ipynb",
          "DropCols": "01_tabular.core.ipynb",
          "Normalize": "01_tabular.core.ipynb",
          "BinFeatures": "01_tabular.core.ipynb",
+         "RenewableSplits": "01_tabular.core.ipynb",
+         "ByWeeksSplitter": "01_tabular.core.ipynb",
          "TabularRenewables": "01_tabular.core.ipynb",
          "ReadTabBatchRenewables": "01_tabular.core.ipynb",
          "TabDataLoaderRenewables": "01_tabular.core.ipynb",
@@ -36,11 +39,13 @@ index = {"VILoss": "00_losses.ipynb",
          "RenewableLearner": "04_tabular.learner.ipynb",
          "renewable_learner": "04_tabular.learner.ipynb"}
 
-modules = ["losses.py",
+modules = ["utils.py",
+           "losses.py",
            "tabular/core.py",
            "tabular/data.py",
            "tabular/model.py",
-           "tabular/learner.py"]
+           "tabular/learner.py",
+           "timeseries/core.py"]
 
 doc_url = "https://scribbler00.github.io/fastrenewables/"
 
