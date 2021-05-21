@@ -38,8 +38,9 @@ index = {"contains_instance": "00a_utils.ipynb",
          "get_structure": "03_tabular.model.ipynb",
          "RenewableLearner": "04_tabular.learner.ipynb",
          "renewable_learner": "04_tabular.learner.ipynb",
-         "Timeseries": "05_timeseries_core.ipynb",
-         "TimeseriesTransform": "05_timeseries_core.ipynb"}
+         "TimeseriesTransform": "05_timeseries_core.ipynb",
+         "TimeseriesDataset": "05_timeseries_core.ipynb",
+         "TimeSeriesDataLoaders": "05_timeseries_core.ipynb"}
 
 modules = ["utils.py",
            "losses.py",

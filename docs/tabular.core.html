@@ -1367,7 +1367,7 @@ Therefore, we should normalize before filtering the data.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabularRenewables" class="doc_header"><code>class</code> <code>TabularRenewables</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L453" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabularRenewables</code>(<strong><code>dfs</code></strong>, <strong><code>procs</code></strong>=<em><code>None</code></em>, <strong><code>cat_names</code></strong>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>reduce_memory</code></strong>=<em><code>False</code></em>, <strong><code>y_names</code></strong>=<em><code>None</code></em>, <strong><code>add_y_to_x</code></strong>=<em><code>False</code></em>, <strong><code>add_x_to_y</code></strong>=<em><code>False</code></em>, <strong><code>pre_process</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>y_block</code></strong>=<em><code>&lt;fastai.data.block.TransformBlock object at 0x7f877ea33730&gt;</code></em>, <strong><code>inplace</code></strong>=<em><code>False</code></em>) :: <code>TabularPandas</code></p>
+<h2 id="TabularRenewables" class="doc_header"><code>class</code> <code>TabularRenewables</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L453" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabularRenewables</code>(<strong><code>dfs</code></strong>, <strong><code>procs</code></strong>=<em><code>None</code></em>, <strong><code>cat_names</code></strong>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>reduce_memory</code></strong>=<em><code>False</code></em>, <strong><code>y_names</code></strong>=<em><code>None</code></em>, <strong><code>add_y_to_x</code></strong>=<em><code>False</code></em>, <strong><code>add_x_to_y</code></strong>=<em><code>False</code></em>, <strong><code>pre_process</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>y_block</code></strong>=<em><code>&lt;fastai.data.block.TransformBlock object at 0x7f36c5312700&gt;</code></em>, <strong><code>inplace</code></strong>=<em><code>False</code></em>) :: <code>TabularPandas</code></p>
 </blockquote>
 <p>A <code>Tabular</code> object with transforms</p>
 
@@ -1602,7 +1602,7 @@ Therefore, we should normalize before filtering the data.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabDataLoaders" class="doc_header"><code>class</code> <code>TabDataLoaders</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L672" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabDataLoaders</code>(<strong><code>to</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>'cpu'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>DataLoaders</code></p>
+<h2 id="TabDataLoaders" class="doc_header"><code>class</code> <code>TabDataLoaders</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L673" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabDataLoaders</code>(<strong><code>to</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>'cpu'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>DataLoaders</code></p>
 </blockquote>
 <p>Basic wrapper around several <code>DataLoader</code>s.</p>
 
@@ -1808,25 +1808,6 @@ Name: week, dtype: UInt32</pre>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># def show_batch(x: TabDataset, y, its, max_n=10, ctxs=None):</span>
-<span class="c1">#     print(&quot;a&quot;)</span>
-<span class="c1">#     x.show()</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">original_df</span><span class="p">,</span> <span class="n">to</span> <span class="o">=</span> <span class="n">get_test_data_task_normalization</span><span class="p">()</span>
 <span class="n">dl</span> <span class="o">=</span> <span class="n">to</span><span class="o">.</span><span class="n">dataloaders</span><span class="p">(</span><span class="n">bs</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 </pre></div>
@@ -1838,6 +1819,13 @@ Name: week, dtype: UInt32</pre>
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>normalized data:</strong></p>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -1974,6 +1962,13 @@ Name: week, dtype: UInt32</pre>
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>decode data (denormalized)</strong></p>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -2095,72 +2090,13 @@ Name: week, dtype: UInt32</pre>
 </div>
     {% endraw %}
 
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">range_of</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>&lt;function fastcore.basics.range_of(a, b=None, step=None)&gt;</pre>
-</div>
-
-</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>the original input dataframe:</strong></p>
 
 </div>
 </div>
-
 </div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">ByWeeksSplitter</span><span class="p">())</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>False</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -2319,18 +2255,18 @@ Name: week, dtype: UInt32</pre>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(tensor([[2],
-         [1],
+<pre>(tensor([[1],
+         [2],
          [2],
          [1]], device=&#39;cuda:0&#39;),
- tensor([[-1.4142, -1.4142],
-         [ 0.7071,  0.7071],
+ tensor([[-0.7071, -0.7071],
+         [ 1.4142,  1.4142],
          [ 0.0000,  0.0000],
-         [-0.7071, -0.7071]], device=&#39;cuda:0&#39;),
- tensor([[26.],
-         [24.],
+         [-1.4142, -1.4142]], device=&#39;cuda:0&#39;),
+ tensor([[22.],
+         [30.],
          [28.],
-         [22.]], device=&#39;cuda:0&#39;))</pre>
+         [21.]], device=&#39;cuda:0&#39;))</pre>
 </div>
 
 </div>
@@ -2883,30 +2819,30 @@ Name: week, dtype: UInt32</pre>
     <tr>
       <th>0</th>
       <td>3</td>
-      <td>7.0</td>
-      <td>17.0</td>
-      <td>27.0</td>
+      <td>10.0</td>
+      <td>20.0</td>
+      <td>30.0</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>3</td>
-      <td>9.0</td>
-      <td>19.0</td>
-      <td>29.0</td>
-    </tr>
-    <tr>
-      <th>2</th>
       <td>3</td>
       <td>6.0</td>
       <td>16.0</td>
       <td>26.0</td>
     </tr>
     <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>8.0</td>
+      <td>18.0</td>
+      <td>28.0</td>
+    </tr>
+    <tr>
       <th>3</th>
       <td>3</td>
-      <td>10.0</td>
-      <td>20.0</td>
-      <td>30.0</td>
+      <td>9.0</td>
+      <td>19.0</td>
+      <td>29.0</td>
     </tr>
   </tbody>
 </table>

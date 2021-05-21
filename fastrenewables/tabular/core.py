@@ -603,14 +603,14 @@ class TabDataset(fastuple):
     "A dataset from a `TabularRenewable` object"
     # Stolen from https://muellerzr.github.io/fastblog/2020/04/22/TabularNumpy.html
     def __init__(self, to):
-        self.cats = tensor(to.cats.to_numpy().astype(np.long))
-        self.conts = tensor(to.conts.to_numpy().astype(np.float32))
+        self.cats = tensor(to_np(to.cats).astype(np.long))
+        self.conts = tensor(to_np(to.conts).astype(np.float32))
 
         if getattr(to, 'regression_setup', False):
             ys_type = np.float32
         else:
             ys_type = np.long
-        self.ys = tensor(to.ys.to_numpy().astype(ys_type))
+        self.ys = tensor(to_np(to.ys).astype(ys_type))
 
         self.cont_names = to.cont_names
         self.cat_names = to.cat_names
@@ -636,7 +636,8 @@ class TabDataset(fastuple):
 class TabDataLoader(DataLoader):
     def __init__(self, dataset, bs=32, num_workers=0, device='cuda',
                  to_device=True, shuffle=False, drop_last=True,**kwargs):
-        "A `DataLoader` based on a `TabDataset`"
+        "A `DataLoader` based on a `TabDataset"
+        device = device if torch.cuda.is_available() else "cpu"
         super().__init__(dataset, bs=bs, num_workers=num_workers, shuffle=shuffle,
                          device=device, drop_last=drop_last, **kwargs)
         self.dataset.bs=bs
