@@ -38,9 +38,17 @@ index = {"contains_instance": "00a_utils.ipynb",
          "get_structure": "03_tabular.model.ipynb",
          "RenewableLearner": "04_tabular.learner.ipynb",
          "renewable_learner": "04_tabular.learner.ipynb",
-         "TimeseriesTransform": "05_timeseries_core.ipynb",
-         "TimeseriesDataset": "05_timeseries_core.ipynb",
-         "TimeSeriesDataLoaders": "05_timeseries_core.ipynb"}
+         "TimeseriesTransform": "05_timeseries.core.ipynb",
+         "TimeseriesDataset": "05_timeseries.core.ipynb",
+         "TimeSeriesDataLoaders": "05_timeseries.core.ipynb",
+         "RenewableTimeSeriesDataLoaders": "06_timeseries.data.ipynb",
+         "Chomp1d": "07_timeseries.model.ipynb",
+         "BasicTemporalBlock": "07_timeseries.model.ipynb",
+         "ResidualBlock": "07_timeseries.model.ipynb",
+         "TemporalConvNet": "07_timeseries.model.ipynb",
+         "TemporalCNN": "07_timeseries.model.ipynb",
+         "RenewableTimeseriesLearner": "08_timeseries.learner.ipynb",
+         "renewable_timeseries_learner": "08_timeseries.learner.ipynb"}
 
 modules = ["utils.py",
            "losses.py",
@@ -48,7 +56,10 @@ modules = ["utils.py",
            "tabular/data.py",
            "tabular/model.py",
            "tabular/learner.py",
-           "timeseries/core.py"]
+           "timeseries/core.py",
+           "timeseries/data.py",
+           "timeseries/model.py",
+           "timeseries/learner.py"]
 
 doc_url = "https://scribbler00.github.io/fastrenewables/"
 

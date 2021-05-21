@@ -10,6 +10,9 @@ _tmp*
 tmp*
 tags
 
+nbs/*.h5
+nbs/*.csv
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
