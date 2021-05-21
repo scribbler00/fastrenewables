@@ -4,6 +4,9 @@ __all__ = ["index", "modules", "custom_doc_links", "git_url"]
 
 index = {"contains_instance": "00a_utils.ipynb",
          "VILoss": "00b_losses.ipynb",
+         "convert_layer_to_bayesian": "00c_utils_blitz.ipynb",
+         "convert_to_bayesian_model": "00c_utils_blitz.ipynb",
+         "set_train_mode": "00c_utils_blitz.ipynb",
          "str_to_path": "01_tabular.core.ipynb",
          "read_hdf": "01_tabular.core.ipynb",
          "read_csv": "01_tabular.core.ipynb",
@@ -52,6 +55,7 @@ index = {"contains_instance": "00a_utils.ipynb",
 
 modules = ["utils.py",
            "losses.py",
+           "utils_blitz.py",
            "tabular/core.py",
            "tabular/data.py",
            "tabular/model.py",

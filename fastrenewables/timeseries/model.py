@@ -12,7 +12,7 @@ from .data import *
 # Cell
 #hide
 import numpy as np
-from dies.utils_blitz import set_train_mode
+# from dies.utils_blitz import set_train_mode
 import warnings
 from collections import OrderedDict, defaultdict
 from torch import nn
@@ -24,6 +24,7 @@ from fastai.layers import *
 from ..tabular.model import *
 # from dies.abstracts import Transfer
 # from dies.utils_pytorch import freeze, unfreeze
+from ..utils_blitz import set_train_mode
 from torch.nn import BatchNorm1d
 from enum import Enum
 

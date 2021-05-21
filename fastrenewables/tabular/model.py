@@ -8,6 +8,7 @@ from fastai.data.all import *
 from fastai.tabular.data import *
 from fastai.tabular.core import *
 from .data import *
+from ..utils_blitz import set_train_mode
 
 # Cell
 
@@ -261,7 +262,7 @@ from blitz.utils import variational_estimator
 
 # from dies.utils_pytorch import freeze, unfreeze
 # from dies.abstracts import Transfer
-# from dies.utils_blitz import set_train_mode
+
 
 
 @variational_estimator
@@ -371,9 +372,9 @@ class MultiLayerPerceptron(TabularModel):
 
         return splitter, lr
 # TODO:
-#     def train(self, mode: bool = True):
-#         super().train(mode)
-#         set_train_mode(self, mode)
+    def train(self, mode: bool = True):
+        super().train(mode)
+        set_train_mode(self, mode)
 
 
 # Cell
