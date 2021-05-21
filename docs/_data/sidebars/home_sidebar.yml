@@ -11,19 +11,19 @@ entries:
       url: /
     - output: web,pdf
       title: Title
-      url: timeseries_core.html
+      url: timeseries.core.html
     - output: web,pdf
       title: core
       url: tabular.core.html
     - output: web,pdf
       title: data
-      url: tabular.data.html
+      url: timeseries.data.html
     - output: web,pdf
       title: model
-      url: tabular.model.html
+      url: timeseries.model.html
     - output: web,pdf
       title: learner
-      url: tabular.learner.html
+      url: timeseries.learner.html
     output: web
     title: fastrenewables
   output: web
