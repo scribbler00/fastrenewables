@@ -1,10 +1,16 @@
 {
   "fastrenewables": {
     "Overview": "/",
-    "Title": "timeseries.core.html",
-    "core": "tabular.core.html",
-    "data": "timeseries.data.html",
-    "model": "timeseries.model.html",
-    "learner": "timeseries.learner.html"
+    "Title": "utils.html",
+    "losses": "losses.html",
+    "uitls_blitz": "utils_blitz.html",
+    "tabular.core": "tabular.core.html",
+    "tabular.data": "tabular.data.html",
+    "tabular.model": "tabular.model.html",
+    "tabular.learner": "tabular.learner.html",
+    "timeseries.core": "timeseries.core.html",
+    "timeseries.data": "timeseries.data.html",
+    "timeseries.model": "timeseries.model.html",
+    "timeseries.learner": "timeseries.learner.html"
   }
 }

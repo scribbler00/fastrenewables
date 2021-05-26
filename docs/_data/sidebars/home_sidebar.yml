@@ -11,18 +11,36 @@ entries:
       url: /
     - output: web,pdf
       title: Title
-      url: timeseries.core.html
+      url: utils.html
     - output: web,pdf
-      title: core
+      title: losses
+      url: losses.html
+    - output: web,pdf
+      title: uitls_blitz
+      url: utils_blitz.html
+    - output: web,pdf
+      title: tabular.core
       url: tabular.core.html
     - output: web,pdf
-      title: data
+      title: tabular.data
+      url: tabular.data.html
+    - output: web,pdf
+      title: tabular.model
+      url: tabular.model.html
+    - output: web,pdf
+      title: tabular.learner
+      url: tabular.learner.html
+    - output: web,pdf
+      title: timeseries.core
+      url: timeseries.core.html
+    - output: web,pdf
+      title: timeseries.data
       url: timeseries.data.html
     - output: web,pdf
-      title: model
+      title: timeseries.model
       url: timeseries.model.html
     - output: web,pdf
-      title: learner
+      title: timeseries.learner
       url: timeseries.learner.html
     output: web
     title: fastrenewables

@@ -454,6 +454,7 @@ class TabularRenewables(TabularPandas):
     def __init__(self, dfs, procs=None, cat_names=None, cont_names=None, do_setup=True, reduce_memory=False,
                  y_names=None, add_y_to_x=False, add_x_to_y=False,
                  pre_process=None, device=None, splits=None, y_block=RegressionBlock(),
+                 group_id="TaskID",
                 inplace=False):
 
         self.pre_process = pre_process
@@ -462,6 +463,7 @@ class TabularRenewables(TabularPandas):
         cat_names = listify(cat_names)
         y_names = listify(y_names)
         self.pre_process = listify(pre_process)
+        self.group_id = group_id
 
         for pp in listify(procs):
             if isinstance(pp, RenewablesTabularProc):
@@ -505,7 +507,7 @@ class TabularRenewables(TabularPandas):
 
         return type(self)(df, do_setup=False, reduce_memory=False, y_block=TransformBlock(),
                           pre_process=pre_process, splits=splits,
-                          **attrdict(self, 'procs','cat_names','cont_names','y_names', 'device'))
+                          **attrdict(self, 'procs','cat_names','cont_names','y_names', 'device', 'group_id'))
 
     def show(self, max_n=10, **kwargs):
         to_tmp = self.new(self.all_cols[:max_n])
