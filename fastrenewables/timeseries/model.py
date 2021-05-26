@@ -318,6 +318,7 @@ class TemporalCNN(nn.Module):
         input_sequence_length=None,
         output_sequence_length=None,
         transpose=False,
+        sequence_transform = None
     ):
         """[summary]
 
@@ -374,14 +375,14 @@ class TemporalCNN(nn.Module):
             transpose=self.transpose,
         )
 
-        if output_sequence_length != None and input_sequence_length != None:
+        if output_sequence_length != None and input_sequence_length != None and sequence_transform is not None:
             # TODO: can this replace with a 1D-CNN with kernel size 1?
             self.sequence_transform = nn.Linear(
                 self.cnn_structure[-1] * self.input_sequence_length,
                 self.cnn_structure[-1] * self.output_sequence_length,
             )
         else:
-            self.sequence_transform = None
+            self.sequence_transform = sequence_transform
 
 
 

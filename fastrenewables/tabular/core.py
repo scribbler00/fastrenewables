@@ -640,8 +640,10 @@ class TabDataLoader(DataLoader):
                  to_device=True, shuffle=False, drop_last=True,**kwargs):
         "A `DataLoader` based on a `TabDataset"
         device = device if torch.cuda.is_available() else "cpu"
+
         super().__init__(dataset, bs=bs, num_workers=num_workers, shuffle=shuffle,
                          device=device, drop_last=drop_last, **kwargs)
+
         self.dataset.bs=bs
         if to_device:self.to_device()
 
