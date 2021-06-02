@@ -4,7 +4,8 @@ __all__ = ['str_to_path', 'read_hdf', 'read_csv', 'read_files', 'RenewablesTabul
            'get_samples_per_day', 'Interpolate', 'FilterInconsistentSamplesPerDay', 'AddSeasonalFeatures',
            'FilterByCol', 'FilterYear', 'FilterHalf', 'FilterMonths', 'FilterDays', 'DropCols', 'Normalize',
            'BinFeatures', 'RenewableSplits', 'ByWeeksSplitter', 'TabularRenewables', 'ReadTabBatchRenewables',
-           'TabDataLoaderRenewables', 'NormalizePerTask', 'TabDataset', 'TabDataLoader', 'TabDataLoaders']
+           'TabDataLoaderRenewables', 'NormalizePerTask', 'VerifyAndNormalizeTarget', 'TabDataset', 'TabDataLoader',
+           'TabDataLoaders']
 
 # Cell
 #export
@@ -621,7 +622,7 @@ class NormalizePerTask(TabularProc):
 
             mask = to.loc[:,self.task_id_col] == task_id
 
-            to.loc[mask, self.relevant_cols] = ((to.conts[mask] - self.means.loc[task_id]) / self.stds.loc[task_id])
+            to.loc[mask, self.relevant_cols] = ((to.loc[mask, self.relevant_cols] - self.means.loc[task_id]) / self.stds.loc[task_id])
 
     def decodes(self, to, split_idx=None):
         for task_id in to.items[self.task_id_col].unique():
@@ -633,6 +634,51 @@ class NormalizePerTask(TabularProc):
 
             to.loc[mask, self.relevant_cols] = to.conts[mask] * self.stds.loc[task_id] + self.means.loc[task_id]
         return to
+
+# Cell
+class VerifyAndNormalizeTarget(TabularProc):
+    "Normalize per TaskId"
+    order = 1
+    include_in_new=True
+    def __init__(self, reset_min_value=0.0, reset_max_value=1.05, \
+                 max_value_for_normalization=1.5, task_id_col="TaskID",):
+        self.task_id_col = task_id_col
+        self.reset_min_value, self.reset_max_value = reset_min_value, reset_max_value
+        self.max_value_for_normalization = max_value_for_normalization
+    def setups(self, to:Tabular):
+        self.relevant_cols = to.y_names
+
+        self.maxs = getattr(to, 'train', to)[self.relevant_cols + "TaskID"].groupby("TaskID").max()
+        self.mins = getattr(to, 'train', to)[self.relevant_cols + "TaskID"].groupby("TaskID").min()+1e-9
+
+
+    def encodes(self, to):
+#         return
+        to.loc[:, self.relevant_cols] = to.loc[:, self.relevant_cols].astype(np.float64)
+        for task_id in to.items[self.task_id_col].unique():
+            # in case this is a new task, we update the maxs and mins
+            if task_id not in self.maxs.index:
+                task_max = getattr(to, 'train', to)[self.relevant_cols + "TaskID"].groupby("TaskID").max()
+                task_min = getattr(to, 'train', to)[self.relevant_cols + "TaskID"].groupby("TaskID").min()+1e-9
+
+                self.maxs.append(task_max)
+                self.mins.append(task_min)
+
+
+            mask = to.loc[:,self.task_id_col] == task_id
+
+
+            if (to.loc[mask, self.relevant_cols].max() > self.max_value_for_normalization).any():
+                to.loc[mask, self.relevant_cols] = (to.loc[mask, self.relevant_cols] - self.mins.loc[task_id]) \
+                                                            / (self.maxs.loc[task_id] - self.mins.loc[task_id])
+
+            for cur_relevant_column in self.relevant_cols:
+                to.loc[mask, cur_relevant_column] = to.loc[mask, cur_relevant_column].where(~(to.loc[mask, cur_relevant_column] > self.reset_max_value),
+                                                       self.reset_max_value)
+                to.loc[mask, cur_relevant_column] = to.loc[mask, cur_relevant_column].where(~(to.loc[mask, cur_relevant_column] < self.reset_min_value),
+                                                       self.reset_min_value)
+        return to
+
 
 # Cell
 class TabDataset(fastuple):
