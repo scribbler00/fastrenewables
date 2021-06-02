@@ -2,8 +2,8 @@
 
 __all__ = ['str_to_path', 'read_hdf', 'read_csv', 'read_files', 'RenewablesTabularProc', 'CreateTimeStampIndex',
            'get_samples_per_day', 'Interpolate', 'FilterInconsistentSamplesPerDay', 'AddSeasonalFeatures',
-           'FilterByCol', 'FilterYear', 'FilterMonths', 'FilterDays', 'DropCols', 'Normalize', 'BinFeatures',
-           'RenewableSplits', 'ByWeeksSplitter', 'TabularRenewables', 'ReadTabBatchRenewables',
+           'FilterByCol', 'FilterYear', 'FilterHalf', 'FilterMonths', 'FilterDays', 'DropCols', 'Normalize',
+           'BinFeatures', 'RenewableSplits', 'ByWeeksSplitter', 'TabularRenewables', 'ReadTabBatchRenewables',
            'TabDataLoaderRenewables', 'NormalizePerTask', 'TabDataset', 'TabDataLoader', 'TabDataLoaders']
 
 # Cell
@@ -339,6 +339,36 @@ class FilterYear(RenewablesTabularProc):
             cur_mask = to.items.index.year == y
             if mask is None: mask = cur_mask
             else: mask = mask | cur_mask
+
+        if not self.drop: mask = ~mask
+        to.items.drop(to.items[mask].index, inplace=True)
+
+# Cell
+class FilterHalf(RenewablesTabularProc):
+    "First half of the data is used for training and the other half of validation/testing."
+    order = 9
+    def __init__(self, drop=False, bydate=True):
+        """
+        Whether to drop or keep the first half.
+        When bydate is true the average date, between the first and last date is used to filter the data.
+        If bydate is false the amount of data is splitted by half, so that train and validation/testing have an equal amount of available data.
+        """
+        self.drop = drop
+        self.bydate = bydate
+
+    def setups(self, to: Tabular):
+        df = to.items.sort_index()
+        if self.bydate:
+
+            self.first_date = df.index[0]
+            self.last_date = df.index[-1]
+            self.split_date = self.first_date + (self.last_date-self.first_date)/2
+        else:
+            idx = len(df)//2
+            self.split_date = df.index[idx]
+
+    def encodes(self, to):
+        mask = to.items.index < self.split_date
 
         if not self.drop: mask = ~mask
         to.items.drop(to.items[mask].index, inplace=True)

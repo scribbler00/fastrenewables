@@ -281,6 +281,7 @@ class TimeseriesTransform(Transform, FilteredBase):
     @property
     def train(self):
         return self.subset(0)
+
     @property
     def valid(self):
         return self.subset(1)
@@ -453,8 +454,16 @@ class TimeSeriesDataLoader(DataLoader):
 # Cell
 class TimeSeriesDataLoaders(DataLoaders):
     def __init__(self, to, bs=64, val_bs=None, shuffle_train=True, device='cpu', **kwargs):
-        train_ds = to.train
-        valid_ds = to.valid
+        if isinstance(to, TimeseriesTransform):
+            train_ds = to.train
+            valid_ds = to.valid
+#         elif isinstance(to, TimeseriesDataset):
+        else:
+            train_ds = to
+            valid_ds = to.new_empty()
+#         else:
+#             raise ValueError("Unsupported dadatype.")
+
         val_bs = bs if val_bs is None else val_bs
         train = TimeSeriesDataLoader(train_ds, bs=bs, shuffle=shuffle_train, device=device, **kwargs)
         valid = TimeSeriesDataLoader(valid_ds, bs=val_bs, shuffle=False, device=device, **kwargs)

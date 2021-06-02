@@ -178,6 +178,65 @@ nb_path: "nbs/05_timeseries.core.ipynb"
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>x1</th>
+      <th>x2</th>
+      <th>cat</th>
+      <th>TID</th>
+      <th>y</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2021-01-12 12:00:00</th>
+      <td>46.0</td>
+      <td>1.5</td>
+      <td>1</td>
+      <td>1.0</td>
+      <td>-0.240680</td>
+    </tr>
+    <tr>
+      <th>2021-01-02 03:00:00</th>
+      <td>4.5</td>
+      <td>43.0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>-0.181689</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -416,6 +475,22 @@ nb_path: "nbs/05_timeseries.core.ipynb"
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(torch.Size([12, 1, 8]), torch.Size([12, 2, 8]), torch.Size([12, 1, 8]))</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -432,6 +507,22 @@ nb_path: "nbs/05_timeseries.core.ipynb"
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(torch.Size([12, 1, 8]), torch.Size([12, 2, 8]), torch.Size([12, 1, 8]))</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -467,6 +558,21 @@ nb_path: "nbs/05_timeseries.core.ipynb"
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>&lt;ipython-input-21-1c0d6a704443&gt;:15: UserWarning: Dropped 2 elements due to inconsistent categoricals in a sequence.
+  warnings.warn(
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -530,7 +636,7 @@ nb_path: "nbs/05_timeseries.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TimeseriesDataset" class="doc_header"><code>class</code> <code>TimeseriesDataset</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L377" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeseriesDataset</code>(<strong><code>x</code></strong>=<em><code>None</code></em>, <strong>*<code>rest</code></strong>) :: <code>fastuple</code></p>
+<h2 id="TimeseriesDataset" class="doc_header"><code>class</code> <code>TimeseriesDataset</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L378" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeseriesDataset</code>(<strong><code>x</code></strong>=<em><code>None</code></em>, <strong>*<code>rest</code></strong>) :: <code>fastuple</code></p>
 </blockquote>
 <p>A dataset from a <a href="/fastrenewables/timeseries.core.html#TimeseriesTransform"><code>TimeseriesTransform</code></a> object</p>
 
@@ -562,7 +668,7 @@ nb_path: "nbs/05_timeseries.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TimeSeriesDataLoader" class="doc_header"><code>class</code> <code>TimeSeriesDataLoader</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L415" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeSeriesDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>32</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>device</code></strong>=<em><code>'cuda'</code></em>, <strong><code>to_device</code></strong>=<em><code>True</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>drop_last</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>DataLoader</code></p>
+<h2 id="TimeSeriesDataLoader" class="doc_header"><code>class</code> <code>TimeSeriesDataLoader</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L416" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeSeriesDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>32</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>device</code></strong>=<em><code>'cuda'</code></em>, <strong><code>to_device</code></strong>=<em><code>True</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>drop_last</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>DataLoader</code></p>
 </blockquote>
 <p>API compatible with PyTorch DataLoader, with a lot more callbacks and flexibility</p>
 
@@ -594,7 +700,7 @@ nb_path: "nbs/05_timeseries.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TimeSeriesDataLoaders" class="doc_header"><code>class</code> <code>TimeSeriesDataLoaders</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L454" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeSeriesDataLoaders</code>(<strong><code>to</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>'cpu'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>DataLoaders</code></p>
+<h2 id="TimeSeriesDataLoaders" class="doc_header"><code>class</code> <code>TimeSeriesDataLoaders</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L455" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeSeriesDataLoaders</code>(<strong><code>to</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>'cpu'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>DataLoaders</code></p>
 </blockquote>
 <p>Basic wrapper around several <code>DataLoader</code>s.</p>
 
@@ -611,30 +717,6 @@ nb_path: "nbs/05_timeseries.core.ipynb"
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># class TimeSeriesDataLoaders(DataLoaders):</span>
-<span class="c1">#     def __init__(self, to, bs=64, val_bs=None, shuffle_train=True, device=&#39;cpu&#39;, **kwargs):</span>
-<span class="c1">#         train_ds = to.train</span>
-<span class="c1">#         valid_ds = to.valid</span>
-<span class="c1">#         val_bs = bs if val_bs is None else val_bs</span>
-<span class="c1">#         train = TabDataLoader(train_ds, bs=bs, shuffle=shuffle_train, device=device, **kwargs)</span>
-<span class="c1">#         valid = TabDataLoader(valid_ds, bs=val_bs, shuffle=False, device=device, **kwargs)</span>
-<span class="c1">#         super().__init__(train, valid, device=device, **kwargs)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
 
 </div>
     {% endraw %}
@@ -707,6 +789,22 @@ nb_path: "nbs/05_timeseries.core.ipynb"
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(torch.Size([2, 1, 8]), torch.Size([2, 2, 8]), torch.Size([2, 1, 8]))</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -738,7 +836,7 @@ nb_path: "nbs/05_timeseries.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="reduce_target_timeseries_to_element" class="doc_header"><code>reduce_target_timeseries_to_element</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L464" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>reduce_target_timeseries_to_element</code>(<strong><code>cats</code></strong>, <strong><code>conts</code></strong>, <strong><code>ys</code></strong>, <strong><code>element_pos</code></strong>=<em><code>0</code></em>)</p>
+<h4 id="reduce_target_timeseries_to_element" class="doc_header"><code>reduce_target_timeseries_to_element</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L473" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>reduce_target_timeseries_to_element</code>(<strong><code>cats</code></strong>, <strong><code>conts</code></strong>, <strong><code>ys</code></strong>, <strong><code>element_pos</code></strong>=<em><code>0</code></em>)</p>
 </blockquote>
 <p>Simple transform to shorten the target timeseries.</p>
 
@@ -774,6 +872,24 @@ nb_path: "nbs/05_timeseries.core.ipynb"
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor([[[0., 0., 0., 0., 0., 0., 0., 0.]],
+
+        [[0., 0., 0., 0., 0., 0., 0., 0.]]])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -793,6 +909,22 @@ nb_path: "nbs/05_timeseries.core.ipynb"
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>torch.Size([12, 1, 1])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -807,6 +939,24 @@ nb_path: "nbs/05_timeseries.core.ipynb"
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor([[[0.]],
+
+        [[0.]]])</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 

@@ -375,14 +375,19 @@ class TemporalCNN(nn.Module):
             transpose=self.transpose,
         )
 
+        self.custom_output_sequence=False
         if output_sequence_length != None and input_sequence_length != None and sequence_transform is not None:
             # TODO: can this replace with a 1D-CNN with kernel size 1?
             self.sequence_transform = nn.Linear(
                 self.cnn_structure[-1] * self.input_sequence_length,
                 self.cnn_structure[-1] * self.output_sequence_length,
             )
-        else:
+        elif sequence_transform is not None:
             self.sequence_transform = sequence_transform
+            self.custom_output_sequence=True
+        else:
+            self.sequence_transform = None
+            self.custom_output_sequence=False
 
 
 
@@ -416,7 +421,12 @@ class TemporalCNN(nn.Module):
 
         x = self.layers(categorical_data, continuous_data)
 
-        if self.sequence_transform is not None:
+        if self.custom_output_sequence:
+            x = x.reshape(-1, self.cnn_structure[-1] * self.input_sequence_length)
+            x = self.sequence_transform(categorical_data, x)
+            x = x.unsqueeze(1)
+
+        elif self.sequence_transform is not None:
             x = x.reshape(-1, self.cnn_structure[-1] * self.input_sequence_length)
             x = self.sequence_transform(x)
             x = x.unsqueeze(1)
