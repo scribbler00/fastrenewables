@@ -598,26 +598,30 @@ class NormalizePerTask(TabularProc):
     "Normalize per TaskId"
     order = 1
     include_in_new=True
-    def __init__(self, task_id_col="TaskID"):
+    def __init__(self, task_id_col="TaskID", ignore_cont_cols=[]):
         self.task_id_col = task_id_col
+        self.ignore_cont_cols = ignore_cont_cols
     def setups(self, to:Tabular):
-        self.means = getattr(to, 'train', to)[to.cont_names + "TaskID"].groupby("TaskID").mean()
-        self.stds = getattr(to, 'train', to)[to.cont_names + "TaskID"].groupby("TaskID").std(ddof=0)+1e-7
+        self.relevant_cols = L(c for c in to.cont_names if c not in self.ignore_cont_cols)
+
+        self.means = getattr(to, 'train', to)[self.relevant_cols + "TaskID"].groupby("TaskID").mean()
+        self.stds = getattr(to, 'train', to)[self.relevant_cols + "TaskID"].groupby("TaskID").std(ddof=0)+1e-7
 
 
     def encodes(self, to):
+        to.loc[:, self.relevant_cols] = to.loc[:, self.relevant_cols].astype(np.float64)
         for task_id in to.items[self.task_id_col].unique():
             # in case this is a new task, we update the means and stds
             if task_id not in self.means.index:
-                mu = getattr(to, 'train', to)[to.cont_names + "TaskID"].groupby("TaskID").mean()
+                mu = getattr(to, 'train', to)[self.relevant_cols + "TaskID"].groupby("TaskID").mean()
 
                 self.means= self.means.append(mu)
-                self.stds = self.stds.append(getattr(to, 'train', to)[to.cont_names + "TaskID"].groupby("TaskID").std(ddof=0)+1e-7)
+                self.stds = self.stds.append(getattr(to, 'train', to)[self.relevant_cols + "TaskID"].groupby("TaskID").std(ddof=0)+1e-7)
 
 
             mask = to.loc[:,self.task_id_col] == task_id
 
-            to.loc[mask, to.cont_names] = ((to.conts[mask] - self.means.loc[task_id]) / self.stds.loc[task_id])
+            to.loc[mask, self.relevant_cols] = ((to.conts[mask] - self.means.loc[task_id]) / self.stds.loc[task_id])
 
     def decodes(self, to, split_idx=None):
         for task_id in to.items[self.task_id_col].unique():
@@ -627,7 +631,7 @@ class NormalizePerTask(TabularProc):
 
             mask = to.loc[:,self.task_id_col] == task_id
 
-            to.loc[mask, to.cont_names] = to.conts[mask] * self.stds.loc[task_id] + self.means.loc[task_id]
+            to.loc[mask, self.relevant_cols] = to.conts[mask] * self.stds.loc[task_id] + self.means.loc[task_id]
         return to
 
 # Cell
