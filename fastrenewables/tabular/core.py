@@ -3,9 +3,9 @@
 __all__ = ['str_to_path', 'read_hdf', 'read_csv', 'read_files', 'RenewablesTabularProc', 'CreateTimeStampIndex',
            'get_samples_per_day', 'Interpolate', 'FilterInconsistentSamplesPerDay', 'AddSeasonalFeatures',
            'FilterByCol', 'FilterYear', 'FilterHalf', 'FilterMonths', 'FilterDays', 'DropCols', 'Normalize',
-           'BinFeatures', 'RenewableSplits', 'ByWeeksSplitter', 'TabularRenewables', 'ReadTabBatchRenewables',
-           'TabDataLoaderRenewables', 'NormalizePerTask', 'VerifyAndNormalizeTarget', 'TabDataset', 'TabDataLoader',
-           'TabDataLoaders']
+           'BinFeatures', 'RenewableSplits', 'ByWeeksSplitter', 'TrainTestSplitByDays', 'TabularRenewables',
+           'ReadTabBatchRenewables', 'TabDataLoaderRenewables', 'NormalizePerTask', 'VerifyAndNormalizeTarget',
+           'TabDataset', 'TabDataLoader', 'TabDataLoaders']
 
 # Cell
 #export
@@ -18,6 +18,7 @@ from fastai.tabular.all import *
 import fastai
 from fastai.tabular.core import _maybe_expand
 from itertools import chain
+from sklearn.model_selection import train_test_split
 
 # Cell
 #export
@@ -466,8 +467,6 @@ class RenewableSplits:
 class ByWeeksSplitter(RenewableSplits):
     def __init__(self, every_n_weeks: int = 4):
         self.every_n_weeks = every_n_weeks
-#         self.for_n_weeks = for_n_weeks
-
 
     @staticmethod
     def _inner(cur_dataset, every_n_weeks):
@@ -479,6 +478,26 @@ class ByWeeksSplitter(RenewableSplits):
 
     def __call__(self, o):
         return self._inner(o, self.every_n_weeks)
+
+
+class TrainTestSplitByDays(RenewableSplits):
+    def __init__(self, test_size: float = 0.25):
+        self.test_size = test_size
+
+    @staticmethod
+    def _inner(cur_dataset, test_size):
+        unique_days = np.unique(cur_dataset.index.date)
+        train_days, test_days = train_test_split(
+            unique_days, random_state=42, test_size=0.25
+        )
+        train_mask = np.array([True if d in train_days else False for d in cur_dataset.index.date])
+
+        indices = np.arange(len(cur_dataset))
+        return list(indices[list(train_mask)]), list(indices[list(~train_mask)])
+
+
+    def __call__(self, o):
+        return self._inner(o, self.test_size)
 
 # Cell
 class TabularRenewables(TabularPandas):
