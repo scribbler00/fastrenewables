@@ -146,9 +146,10 @@ def get_samples_per_day(df, n_samples_to_check=100, expected_samples=[8,24,96]):
     if len(df) == 0: return samples_per_day
 
     df_sorted = df.sort_index()
+    indexes = df_sorted.index.unique()
     mins = 0
-    for i in range(1, min(n_samples_to_check,len(df_sorted))):
-        mins = (df_sorted.index[i] - df_sorted.index[i -1]).seconds // 60
+    for i in range(1, min(n_samples_to_check+1,len(indexes))):
+        mins = (indexes[i] - indexes[i -1]).seconds // 60
         if mins == 0: continue
         if (24*60)%mins==0:
             samples_per_day = (24*60)/mins
