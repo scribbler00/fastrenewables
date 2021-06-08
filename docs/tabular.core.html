@@ -1567,7 +1567,7 @@ Therefore, we should normalize before filtering the data.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabularRenewables" class="doc_header"><code>class</code> <code>TabularRenewables</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L538" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabularRenewables</code>(<strong><code>dfs</code></strong>, <strong><code>procs</code></strong>=<em><code>None</code></em>, <strong><code>cat_names</code></strong>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>reduce_memory</code></strong>=<em><code>False</code></em>, <strong><code>y_names</code></strong>=<em><code>None</code></em>, <strong><code>add_y_to_x</code></strong>=<em><code>False</code></em>, <strong><code>add_x_to_y</code></strong>=<em><code>False</code></em>, <strong><code>pre_process</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>y_block</code></strong>=<em><code>&lt;fastai.data.block.TransformBlock object at 0x7fbddc1d0070&gt;</code></em>, <strong><code>group_id</code></strong>=<em><code>'TaskID'</code></em>, <strong><code>inplace</code></strong>=<em><code>False</code></em>) :: <code>TabularPandas</code></p>
+<h2 id="TabularRenewables" class="doc_header"><code>class</code> <code>TabularRenewables</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L538" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabularRenewables</code>(<strong><code>dfs</code></strong>, <strong><code>procs</code></strong>=<em><code>None</code></em>, <strong><code>cat_names</code></strong>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>reduce_memory</code></strong>=<em><code>False</code></em>, <strong><code>y_names</code></strong>=<em><code>None</code></em>, <strong><code>add_y_to_x</code></strong>=<em><code>False</code></em>, <strong><code>add_x_to_y</code></strong>=<em><code>False</code></em>, <strong><code>pre_process</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>y_block</code></strong>=<em><code>&lt;fastai.data.block.TransformBlock object at 0x7f2c279f91c0&gt;</code></em>, <strong><code>group_id</code></strong>=<em><code>'TaskID'</code></em>, <strong><code>inplace</code></strong>=<em><code>False</code></em>) :: <code>TabularPandas</code></p>
 </blockquote>
 <p>A <code>Tabular</code> object with transforms</p>
 
@@ -1669,7 +1669,31 @@ Therefore, we should normalize before filtering the data.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="NormalizePerTask" class="doc_header"><code>class</code> <code>NormalizePerTask</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L652" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NormalizePerTask</code>(<strong><code>task_id_col</code></strong>=<em><code>'TaskID'</code></em>, <strong><code>ignore_cont_cols</code></strong>=<em><code>[]</code></em>, <strong><code>norm_type</code></strong>=<em><code>'znorm'</code></em>) :: <code>TabularProc</code></p>
+<h4 id="unique_cols" class="doc_header"><code>unique_cols</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L653" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>unique_cols</code>(<strong><code>df</code></strong>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="NormalizePerTask" class="doc_header"><code>class</code> <code>NormalizePerTask</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L657" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NormalizePerTask</code>(<strong><code>task_id_col</code></strong>=<em><code>'TaskID'</code></em>, <strong><code>ignore_cont_cols</code></strong>=<em><code>[]</code></em>, <strong><code>norm_type</code></strong>=<em><code>'znorm'</code></em>) :: <code>TabularProc</code></p>
 </blockquote>
 <p>Normalize per TaskId. Either via z-normalization (znorm) or min-max normalization (minmaxnorm)</p>
 
@@ -1787,7 +1811,7 @@ Therefore, we should normalize before filtering the data.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="VerifyAndNormalizeTarget" class="doc_header"><code>class</code> <code>VerifyAndNormalizeTarget</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L734" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>VerifyAndNormalizeTarget</code>(<strong><code>reset_min_value</code></strong>=<em><code>0.0</code></em>, <strong><code>reset_max_value</code></strong>=<em><code>1.05</code></em>, <strong><code>max_value_for_normalization</code></strong>=<em><code>1.5</code></em>, <strong><code>task_id_col</code></strong>=<em><code>'TaskID'</code></em>) :: <code>TabularProc</code></p>
+<h2 id="VerifyAndNormalizeTarget" class="doc_header"><code>class</code> <code>VerifyAndNormalizeTarget</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L741" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>VerifyAndNormalizeTarget</code>(<strong><code>reset_min_value</code></strong>=<em><code>0.0</code></em>, <strong><code>reset_max_value</code></strong>=<em><code>1.05</code></em>, <strong><code>max_value_for_normalization</code></strong>=<em><code>1.5</code></em>, <strong><code>task_id_col</code></strong>=<em><code>'TaskID'</code></em>) :: <code>TabularProc</code></p>
 </blockquote>
 <p>Normalize per TaskId</p>
 
@@ -1888,7 +1912,7 @@ Therefore, we should normalize before filtering the data.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabDataset" class="doc_header"><code>class</code> <code>TabDataset</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L779" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabDataset</code>(<strong><code>x</code></strong>=<em><code>None</code></em>, <strong>*<code>rest</code></strong>) :: <code>fastuple</code></p>
+<h2 id="TabDataset" class="doc_header"><code>class</code> <code>TabDataset</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L786" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabDataset</code>(<strong><code>x</code></strong>=<em><code>None</code></em>, <strong>*<code>rest</code></strong>) :: <code>fastuple</code></p>
 </blockquote>
 <p>A dataset from a <code>TabularRenewable</code> object</p>
 
@@ -1920,7 +1944,7 @@ Therefore, we should normalize before filtering the data.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabDataLoader" class="doc_header"><code>class</code> <code>TabDataLoader</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L813" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>32</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>device</code></strong>=<em><code>'cuda'</code></em>, <strong><code>to_device</code></strong>=<em><code>True</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>drop_last</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>DataLoader</code></p>
+<h2 id="TabDataLoader" class="doc_header"><code>class</code> <code>TabDataLoader</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L820" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>32</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>device</code></strong>=<em><code>'cuda'</code></em>, <strong><code>to_device</code></strong>=<em><code>True</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>drop_last</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>DataLoader</code></p>
 </blockquote>
 <p>API compatible with PyTorch DataLoader, with a lot more callbacks and flexibility</p>
 
@@ -1952,7 +1976,7 @@ Therefore, we should normalize before filtering the data.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabDataLoaders" class="doc_header"><code>class</code> <code>TabDataLoaders</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L852" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabDataLoaders</code>(<strong><code>to</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>'cpu'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>DataLoaders</code></p>
+<h2 id="TabDataLoaders" class="doc_header"><code>class</code> <code>TabDataLoaders</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L859" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabDataLoaders</code>(<strong><code>to</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>'cpu'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>DataLoaders</code></p>
 </blockquote>
 <p>Basic wrapper around several <code>DataLoader</code>s.</p>
 

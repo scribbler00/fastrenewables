@@ -4,7 +4,7 @@ __all__ = ['str_to_path', 'read_hdf', 'read_csv', 'read_files', 'RenewablesTabul
            'get_samples_per_day', 'Interpolate', 'FilterInconsistentSamplesPerDay', 'AddSeasonalFeatures',
            'FilterInfinity', 'FilterByCol', 'FilterYear', 'FilterHalf', 'FilterMonths', 'FilterDays', 'DropCols',
            'Normalize', 'BinFeatures', 'RenewableSplits', 'ByWeeksSplitter', 'TrainTestSplitByDays',
-           'TabularRenewables', 'ReadTabBatchRenewables', 'TabDataLoaderRenewables', 'NormalizePerTask',
+           'TabularRenewables', 'ReadTabBatchRenewables', 'TabDataLoaderRenewables', 'unique_cols', 'NormalizePerTask',
            'VerifyAndNormalizeTarget', 'TabDataset', 'TabDataLoader', 'TabDataLoaders']
 
 # Cell
@@ -649,6 +649,11 @@ class TabDataLoaderRenewables(TfmdDL):
 TabularRenewables._dl_type = TabDataLoaderRenewables
 
 # Cell
+
+def unique_cols(df):
+    a = df.to_numpy() # df.values (pandas<0.24)
+    return (a[0] == a).all(0)
+
 class NormalizePerTask(TabularProc):
     "Normalize per TaskId. Either via z-normalization (znorm) or min-max normalization (minmaxnorm)"
     order = 1
@@ -671,7 +676,9 @@ class NormalizePerTask(TabularProc):
 
         # find columns that have the same value for every row
         for task_id in to.items[self.task_id_col].unique():
-            column_mask = to.items[to.cont_names].apply(pd.Series.nunique) == 1
+#             column_mask = to.items[to.cont_names].eq(to.items[to.cont_names][1], axis='index').all(1)
+            #to.items[to.cont_names].apply(pd.Series.nunique) == 1
+            column_mask = unique_cols(to.items[to.cont_names])
             cols_to_exclude = to.cont_names[column_mask]
             if len(cols_to_exclude)>0:
                 self.cols_to_exclude_in_task_due_to_same_value[task_id]= cols_to_exclude
