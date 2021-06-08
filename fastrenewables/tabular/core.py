@@ -316,7 +316,7 @@ class AddSeasonalFeatures(RenewablesTabularProc):
             to.items["Hour"] = to.items.index.hour
 
 # Cell
-class FilterInfinity(RenewablesTabularProc):
+class FilterInfinity(TabularProc):
     order=0
     include_in_new=True
     def __init__(self, cols_to_replace="", value_to_replace_with=-1,
