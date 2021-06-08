@@ -619,17 +619,22 @@ TabularRenewables._dl_type = TabDataLoaderRenewables
 
 # Cell
 class NormalizePerTask(TabularProc):
-    "Normalize per TaskId"
+    "Normalize per TaskId. Either via z-normalization (znorm) or min-max normalization (minmaxnorm)"
     order = 1
     include_in_new=True
-    def __init__(self, task_id_col="TaskID", ignore_cont_cols=[]):
+    def __init__(self, task_id_col="TaskID", ignore_cont_cols=[], norm_type="znorm"):
         self.task_id_col = task_id_col
         self.ignore_cont_cols = ignore_cont_cols
+        self.norm_type = norm_type
+        if self.norm_type not in ["znorm", "minmaxnorm"]:
+            raise ValueError("normtype needs to one of znorm or minmaxnorm")
     def setups(self, to:Tabular):
         self.relevant_cols = L(c for c in to.cont_names if c not in self.ignore_cont_cols)
 
         self.means = getattr(to, 'train', to)[self.relevant_cols + "TaskID"].groupby("TaskID").mean()
         self.stds = getattr(to, 'train', to)[self.relevant_cols + "TaskID"].groupby("TaskID").std(ddof=0)+1e-7
+        self.mins = getattr(to, 'train', to)[self.relevant_cols + "TaskID"].groupby("TaskID").min()+1e-12
+        self.maxs = getattr(to, 'train', to)[self.relevant_cols + "TaskID"].groupby("TaskID").max()+1e-12
 
 
     def encodes(self, to):
@@ -638,24 +643,36 @@ class NormalizePerTask(TabularProc):
             # in case this is a new task, we update the means and stds
             if task_id not in self.means.index:
                 mu = getattr(to, 'train', to)[self.relevant_cols + "TaskID"].groupby("TaskID").mean()
+                std = getattr(to, 'train', to)[self.relevant_cols + "TaskID"].groupby("TaskID").std(ddof=0)+1e-7
+                min_v = getattr(to, 'train', to)[self.relevant_cols + "TaskID"].groupby("TaskID").min()+1e-12
+                max_v = getattr(to, 'train', to)[self.relevant_cols + "TaskID"].groupby("TaskID").max()+1e-12
 
                 self.means= self.means.append(mu)
-                self.stds = self.stds.append(getattr(to, 'train', to)[self.relevant_cols + "TaskID"].groupby("TaskID").std(ddof=0)+1e-7)
+                self.stds = self.stds.append(std)
+                self.mins= self.means.append(min_v)
+                self.maxs = self.stds.append(max_v)
 
 
             mask = to.loc[:,self.task_id_col] == task_id
+            if self.norm_type == "znorm":
+                to.loc[mask, self.relevant_cols] = ((to.loc[mask, self.relevant_cols] - self.means.loc[task_id]) / self.stds.loc[task_id])
+            elif self.norm_type == "minmaxnorm":
+                to.loc[mask, self.relevant_cols] = ((to.loc[mask, self.relevant_cols] - self.mins.loc[task_id]) / (self.maxs.loc[task_id]-self.mins.loc[task_id]))
 
-            to.loc[mask, self.relevant_cols] = ((to.loc[mask, self.relevant_cols] - self.means.loc[task_id]) / self.stds.loc[task_id])
+
 
     def decodes(self, to, split_idx=None):
+
         for task_id in to.items[self.task_id_col].unique():
             # in case this is a new task, we update the means and stds
             if task_id not in self.means.index:
                 warnings.warn("Missing task id, could not decode.")
 
             mask = to.loc[:,self.task_id_col] == task_id
-
-            to.loc[mask, self.relevant_cols] = to.conts[mask] * self.stds.loc[task_id] + self.means.loc[task_id]
+            if self.norm_type == "znorm":
+                to.loc[mask, self.relevant_cols] = to.conts[mask] * self.stds.loc[task_id] + self.means.loc[task_id]
+            elif self.norm_type == "minmaxnorm":
+                to.loc[mask, self.relevant_cols] = to.conts[mask] * (self.maxs.loc[task_id]-self.mins.loc[task_id]) + self.mins.loc[task_id]
         return to
 
 # Cell
