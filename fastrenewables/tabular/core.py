@@ -195,7 +195,7 @@ def _apply_group_by(to:pd.DataFrame, group_by_col, func, **kwargs):
 
 # Cell
 class Interpolate(RenewablesTabularProc):
-    order=50
+    order=0
     include_in_new=True
     def __init__(self, sample_time = "15Min", limit=5, drop_na=True, group_by_col="TaskID"):
         self.sample_time = sample_time
@@ -317,7 +317,7 @@ class AddSeasonalFeatures(RenewablesTabularProc):
 
 # Cell
 class FilterInfinity(TabularProc):
-    order=0
+    order=50
     include_in_new=True
     def __init__(self, cols_to_replace="", value_to_replace_with=-1,
                  replace_not_matching_cols=True):
@@ -659,6 +659,8 @@ class NormalizePerTask(TabularProc):
         self.norm_type = norm_type
         if self.norm_type not in ["znorm", "minmaxnorm"]:
             raise ValueError("normtype needs to one of znorm or minmaxnorm")
+
+        self.cols_to_exclude_in_task_due_to_same_value = defaultdict(list)
     def setups(self, to:Tabular):
         self.relevant_cols = L(c for c in to.cont_names if c not in self.ignore_cont_cols)
 
@@ -666,6 +668,16 @@ class NormalizePerTask(TabularProc):
         self.stds = getattr(to, 'train', to)[self.relevant_cols + "TaskID"].groupby("TaskID").std(ddof=0)+1e-7
         self.mins = getattr(to, 'train', to)[self.relevant_cols + "TaskID"].groupby("TaskID").min()+1e-12
         self.maxs = getattr(to, 'train', to)[self.relevant_cols + "TaskID"].groupby("TaskID").max()+1e-12
+
+        # find columns that have the same value for every row
+        for task_id in to.items[self.task_id_col].unique():
+            column_mask = to.items[to.cont_names].apply(pd.Series.nunique) == 1
+            cols_to_exclude = to.cont_names[column_mask]
+            if len(cols_to_exclude)>0:
+                self.cols_to_exclude_in_task_due_to_same_value[task_id]= cols_to_exclude
+
+                warn_log = f"Task {task_id} has the same value in columns {cols_to_exclude}. Setting all to zero."
+                warnings.warn(warn_log)
 
 
     def encodes(self, to):
@@ -683,12 +695,24 @@ class NormalizePerTask(TabularProc):
                 self.mins= self.means.append(min_v)
                 self.maxs = self.stds.append(max_v)
 
+                # find columns that have the same value for every row
+                column_mask = to.items[to.cont_names].apply(pd.Series.nunique) == 1
+                cols_to_exclude = to.cont_names[column_mask]
+                if len(cols_to_exclude)>0:
+                    self.cols_to_exclude_in_task_due_to_same_value[task_id]= cols_to_exclude
 
             mask = to.loc[:,self.task_id_col] == task_id
+
+            current_cols = self.relevant_cols
+            cols_to_exclude = self.cols_to_exclude_in_task_due_to_same_value.get(task_id, False)
+            if cols_to_exclude:
+                current_cols = [c for c in current_cols if c not in cols_to_exclude]
+                to.loc[mask, cols_to_exclude] = 0
+
             if self.norm_type == "znorm":
-                to.loc[mask, self.relevant_cols] = ((to.loc[mask, self.relevant_cols] - self.means.loc[task_id]) / self.stds.loc[task_id])
+                to.loc[mask, current_cols] = ((to.loc[mask, current_cols] - self.means.loc[task_id]) / self.stds.loc[task_id])
             elif self.norm_type == "minmaxnorm":
-                to.loc[mask, self.relevant_cols] = ((to.loc[mask, self.relevant_cols] - self.mins.loc[task_id]) / (self.maxs.loc[task_id]-self.mins.loc[task_id]))
+                to.loc[mask, current_cols] = ((to.loc[mask, current_cols] - self.mins.loc[task_id]) / (self.maxs.loc[task_id]-self.mins.loc[task_id]))
 
 
 
