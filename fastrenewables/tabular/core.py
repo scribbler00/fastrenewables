@@ -2,10 +2,10 @@
 
 __all__ = ['str_to_path', 'read_hdf', 'read_csv', 'read_files', 'RenewablesTabularProc', 'CreateTimeStampIndex',
            'get_samples_per_day', 'Interpolate', 'FilterInconsistentSamplesPerDay', 'AddSeasonalFeatures',
-           'FilterByCol', 'FilterYear', 'FilterHalf', 'FilterMonths', 'FilterDays', 'DropCols', 'Normalize',
-           'BinFeatures', 'RenewableSplits', 'ByWeeksSplitter', 'TrainTestSplitByDays', 'TabularRenewables',
-           'ReadTabBatchRenewables', 'TabDataLoaderRenewables', 'NormalizePerTask', 'VerifyAndNormalizeTarget',
-           'TabDataset', 'TabDataLoader', 'TabDataLoaders']
+           'FilterInfinity', 'FilterByCol', 'FilterYear', 'FilterHalf', 'FilterMonths', 'FilterDays', 'DropCols',
+           'Normalize', 'BinFeatures', 'RenewableSplits', 'ByWeeksSplitter', 'TrainTestSplitByDays',
+           'TabularRenewables', 'ReadTabBatchRenewables', 'TabDataLoaderRenewables', 'NormalizePerTask',
+           'VerifyAndNormalizeTarget', 'TabDataset', 'TabDataLoader', 'TabDataLoaders']
 
 # Cell
 #export
@@ -19,6 +19,7 @@ import fastai
 from fastai.tabular.core import _maybe_expand
 from itertools import chain
 from sklearn.model_selection import train_test_split
+import warnings
 
 # Cell
 #export
@@ -313,6 +314,36 @@ class AddSeasonalFeatures(RenewablesTabularProc):
             to.items["Month"] = to.items.index.month
             to.items["Day"] = to.items.index.day
             to.items["Hour"] = to.items.index.hour
+
+# Cell
+class FilterInfinity(RenewablesTabularProc):
+    order=0
+    include_in_new=True
+    def __init__(self, cols_to_replace="", value_to_replace_with=-1,
+                 replace_not_matching_cols=True):
+        self.cols_to_replace = cols_to_replace
+        self.value_to_replace_with = value_to_replace_with
+        self.replace_not_matching_cols = replace_not_matching_cols
+
+    def encodes(self, to):
+
+        inf_values = to.conts.isin([np.inf, -np.inf])
+        cols_with_infs = to.conts.columns.to_series()[inf_values.any()]
+
+        matching_cols = [c for c in cols_with_infs if c in self.cols_to_replace]
+        not_matching_cols = [c for c in cols_with_infs if c not in self.cols_to_replace]
+
+
+        not_matching_cols_for_print = str(not_matching_cols)
+        if len(matching_cols)>0:
+            to.items[matching_cols] = to.items[matching_cols].replace([np.inf, -np.inf], -1)
+        if self.replace_not_matching_cols and len(not_matching_cols)>0:
+            to.items[not_matching_cols] = to.items[not_matching_cols].replace([np.inf, -np.inf], -1)
+            warning_message = f"Unexpected infinity values in following columns {not_matching_cols} that were replaced."
+            warnings.warn(warning_message)
+        elif len(not_matching_cols)>0:
+            warning_message = f"Unexpected infinity values in following columns {not_matching_cols} that were not replaced."
+            warnings.warn(warning_message)
 
 # Cell
 class FilterByCol(RenewablesTabularProc):
