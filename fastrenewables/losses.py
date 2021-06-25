@@ -48,8 +48,10 @@ class VILoss(nn.Module):
         """
         base_loss = self.base_loss(y, y_hat)
 
+        n_samples = max(len(y), 1)
+
         if self.scale_log_likelihood:
-            base_loss = base_loss*len(y)
+            base_loss = base_loss * n_samples
 
         kl = self.model.nn_kl_divergence()
 
