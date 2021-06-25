@@ -23,13 +23,13 @@ class VILoss(nn.Module):
         model,
         base_loss=torch.nn.MSELoss(),
         kl_weight=0.1,
-        log_likelihood_scale=1
+        scale_log_likelihood=True
     ):
         super(VILoss, self).__init__()
         self.base_loss = base_loss
         self.model = model
         self.kl_weight = kl_weight
-        self.log_likelihood_scale=log_likelihood_scale
+        self.scale_log_likelihood=scale_log_likelihood
 
     def forward(self, y, y_hat):
         """
@@ -48,8 +48,12 @@ class VILoss(nn.Module):
         """
         base_loss = self.base_loss(y, y_hat)
 
+        if self.scale_log_likelihood:
+            base_loss = base_loss*len(y)
+
         kl = self.model.nn_kl_divergence()
-        loss = self.log_likelihood_scale * base_loss + self.kl_weight * kl
+
+        loss = base_loss + self.kl_weight * kl
 
         return loss
 
