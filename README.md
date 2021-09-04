@@ -10,7 +10,7 @@ We hope this project will help you to get excelent results for limited data in r
 
 ## Install
 
-`pip install git+https://github.com/scribbler00/fastrenewables`
+`pip install fastrenewables`
 
 ## How to use
 

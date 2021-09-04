@@ -11,13 +11,16 @@ entries:
       url: /
     - output: web,pdf
       title: Title
-      url: utils.html
+      url: gan.core.html
     - output: web,pdf
       title: losses
       url: losses.html
     - output: web,pdf
       title: uitls_blitz
       url: utils_blitz.html
+    - output: web,pdf
+      title: baselines
+      url: baselines.html
     - output: web,pdf
       title: tabular.core
       url: tabular.core.html

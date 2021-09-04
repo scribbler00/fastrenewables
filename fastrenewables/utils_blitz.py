@@ -11,9 +11,17 @@ from torch import nn
 import torch
 
 # Cell
-def convert_layer_to_bayesian(layer):
+def convert_layer_to_bayesian(layer, config: dict):
     if isinstance(layer, torch.nn.Linear):
-        new_layer = BayesianLinear(layer.in_features, layer.out_features)
+        new_layer = BayesianLinear(
+            layer.in_features,
+            layer.out_features,
+            prior_sigma_1=config["prior_sigma_1"],
+            prior_sigma_2=config["prior_sigma_2"],
+            prior_pi=config["prior_pi"],
+            posterior_mu_init=config["posterior_mu_init"],
+            posterior_rho_init=config["posterior_rho_init"],
+        )
     elif isinstance(layer, nn.Embedding):
         new_layer = BayesianEmbedding(layer.num_embeddings, layer.embedding_dim)
     elif isinstance(layer, nn.Conv1d):
@@ -33,17 +41,15 @@ def convert_layer_to_bayesian(layer):
 
     return new_layer
 
-
-
 # Cell
-def convert_to_bayesian_model(model):
+def convert_to_bayesian_model(model, config: dict):
     for p in model.named_children():
         cur_layer_name = p[0]
         cur_layer = p[1]
         if len(list(cur_layer.named_children())) > 0:
-            convert_to_bayesian_model(cur_layer)
+            convert_to_bayesian_model(cur_layer, config)
         elif not isinstance(cur_layer, BayesianModule):
-            new_layer = convert_layer_to_bayesian(cur_layer)
+            new_layer = convert_layer_to_bayesian(cur_layer, config)
             setattr(model, cur_layer_name, new_layer)
 
     return model
