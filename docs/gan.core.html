@@ -151,8 +151,7 @@ nb_path: "nbs/09_gan.core.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data_path</span> <span class="o">=</span> <span class="s2">&quot;/home/scribbler/data/DAF_ICON_Synthetic_Wind_Power_processed/&quot;</span>
-<span class="n">file_name</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;00011.h5&quot;</span><span class="p">,</span><span class="s2">&quot;01303.h5&quot;</span><span class="p">,</span><span class="s2">&quot;02559.h5&quot;</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># file_name = [&quot;00011.h5&quot;,&quot;01303.h5&quot;,&quot;02559.h5&quot;]</span>
 </pre></div>
 
     </div>
@@ -169,67 +168,10 @@ nb_path: "nbs/09_gan.core.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ls</span> <span class="p">{</span><span class="n">data_path</span><span class="p">}</span>
+<div class=" highlight hl-ipython3"><pre><span></span> 
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>00011.h5  01303.h5  02559.h5  03651.h5  05347.h5  06344.h5
-00090.h5  01346.h5  02564.h5  03668.h5  05349.h5  07341.h5
-00161.h5  01357.h5  02573.h5  03730.h5  05371.h5  07351.h5
-00164.h5  01358.h5  02597.h5  03761.h5  05397.h5  07367.h5
-00183.h5  01379.h5  02601.h5  03811.h5  05404.h5  07368.h5
-00197.h5  01420.h5  02638.h5  03821.h5  05412.h5  07369.h5
-00198.h5  01443.h5  02667.h5  03897.h5  05426.h5  07370.h5
-00232.h5  01468.h5  02712.h5  03925.h5  05440.h5  07374.h5
-00282.h5  01490.h5  02794.h5  03946.h5  05480.h5  07389.h5
-00298.h5  01503.h5  02812.h5  03987.h5  05490.h5  07391.h5
-00303.h5  01544.h5  02856.h5  04024.h5  05516.h5  07392.h5
-00342.h5  01550.h5  02878.h5  04032.h5  05538.h5  07393.h5
-00427.h5  01580.h5  02897.h5  04036.h5  05546.h5  07394.h5
-00430.h5  01587.h5  02907.h5  04039.h5  05629.h5  07395.h5
-00433.h5  01605.h5  02925.h5  04094.h5  05705.h5  07396.h5
-00460.h5  01612.h5  02928.h5  04104.h5  05779.h5  07403.h5
-00591.h5  01639.h5  02932.h5  04177.h5  05792.h5  07410.h5
-00596.h5  01684.h5  02961.h5  04271.h5  05797.h5  07412.h5
-00603.h5  01691.h5  02985.h5  04279.h5  05800.h5  07416.h5
-00619.h5  01694.h5  03015.h5  04280.h5  05825.h5  10510.h5
-00642.h5  01757.h5  03023.h5  04336.h5  05839.h5  13674.h5
-00656.h5  01759.h5  03028.h5  04371.h5  05851.h5  13676.h5
-00662.h5  01766.h5  03032.h5  04393.h5  05856.h5  13693.h5
-00691.h5  01803.h5  03086.h5  04464.h5  05871.h5  13701.h5
-00701.h5  01832.h5  03093.h5  04466.h5  05877.h5  13711.h5
-00704.h5  01869.h5  03098.h5  04501.h5  05906.h5  13901.h5
-00722.h5  01886.h5  03126.h5  04625.h5  05930.h5  13932.h5
-00788.h5  01963.h5  03158.h5  04642.h5  06091.h5  13952.h5
-00840.h5  01975.h5  03166.h5  04745.h5  06096.h5  13965.h5
-00853.h5  01993.h5  03167.h5  04880.h5  06097.h5  15000.h5
-00856.h5  02014.h5  03196.h5  04887.h5  06099.h5  15044.h5
-00867.h5  02023.h5  03231.h5  04911.h5  06101.h5  15120.h5
-00880.h5  02044.h5  03244.h5  04919.h5  06102.h5  15122.h5
-00891.h5  02100.h5  03268.h5  04928.h5  06103.h5  15189.h5
-00953.h5  02171.h5  03287.h5  04931.h5  06106.h5  15190.h5
-00963.h5  02252.h5  03321.h5  04947.h5  06107.h5  15200.h5
-01001.h5  02261.h5  03362.h5  05029.h5  06108.h5  15207.h5
-01011.h5  02290.h5  03366.h5  05078.h5  06159.h5  15214.h5
-01013.h5  02349.h5  03376.h5  05100.h5  06163.h5  15444.h5
-01048.h5  02377.h5  03379.h5  05109.h5  06196.h5  15520.h5
-01078.h5  02429.h5  03402.h5  05142.h5  06197.h5  15547.h5
-01200.h5  02483.h5  03513.h5  05158.h5  06211.h5  <span class="ansi-magenta-intense-fg ansi-bold">scatter_sample.png</span>
-01262.h5  02485.h5  03534.h5  05319.h5  06253.h5  <span class="ansi-magenta-intense-fg ansi-bold">timesersies_sample.png</span>
-01270.h5  02497.h5  03631.h5  05327.h5  06314.h5
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -269,8 +211,7 @@ nb_path: "nbs/09_gan.core.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dls</span> <span class="o">=</span> <span class="n">get_synthetic_wind_data</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
-<span class="n">config</span><span class="p">[</span><span class="s2">&quot;n_features&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">cont_names</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># config[&quot;n_features&quot;] = len(dls.cont_names)</span>
 </pre></div>
 
     </div>
@@ -287,7 +228,7 @@ nb_path: "nbs/09_gan.core.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">cat</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">dls</span><span class="o">.</span><span class="n">one_batch</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span> 
 </pre></div>
 
     </div>
@@ -304,7 +245,7 @@ nb_path: "nbs/09_gan.core.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+<div class=" highlight hl-ipython3"><pre><span></span> 
 </pre></div>
 
     </div>
@@ -337,26 +278,10 @@ nb_path: "nbs/09_gan.core.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="p">(</span><span class="n">x</span><span class="o">==</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">==</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span> 
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>tensor(True)</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -549,40 +474,6 @@ nb_path: "nbs/09_gan.core.ipynb"
 </pre></div>
 
     </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">BCELoss</span><span class="p">()</span>
-<span class="n">a</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>BCELoss()</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -868,7 +759,7 @@ nb_path: "nbs/09_gan.core.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">config</span>
+<div class=" highlight hl-ipython3"><pre><span></span> 
 </pre></div>
 
     </div>
@@ -927,7 +818,7 @@ nb_path: "nbs/09_gan.core.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">cat</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">dls</span><span class="o">.</span><span class="n">one_batch</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span> 
 </pre></div>
 
     </div>
@@ -1007,29 +898,6 @@ nb_path: "nbs/09_gan.core.ipynb"
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_text output_error">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
-<span class="ansi-green-fg">&lt;ipython-input-26-0be79e0a67f5&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
-<span class="ansi-green-intense-fg ansi-bold">     41</span> <span class="ansi-red-fg"># fake = gan_model.generate_samples(cat,x, &#34;cpu&#34;)</span>
-<span class="ansi-green-intense-fg ansi-bold">     42</span> bs <span class="ansi-blue-fg">=</span> x<span class="ansi-blue-fg">.</span>shape<span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">]</span>
-<span class="ansi-green-fg">---&gt; 43</span><span class="ansi-red-fg"> </span>noise <span class="ansi-blue-fg">=</span> gan_model<span class="ansi-blue-fg">.</span>_input_noise<span class="ansi-blue-fg">(</span>bs<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">.</span>to<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#34;cpu&#34;</span><span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">     44</span> fake <span class="ansi-blue-fg">=</span> generator<span class="ansi-blue-fg">(</span>cat<span class="ansi-blue-fg">,</span> noise<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">     45</span> <span class="ansi-red-fg"># # noise</span>
-
-<span class="ansi-red-fg">NameError</span>: name &#39;gan_model&#39; is not defined</pre>
-</div>
-</div>
-
 </div>
 </div>
 
