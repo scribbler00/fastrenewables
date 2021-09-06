@@ -550,6 +550,12 @@ class TabularRenewables(TabularPandas):
         self.pre_process = listify(pre_process)
         self.group_id = group_id
 
+        if callable(y_block):
+            self.original_y_block = y_block()
+            self.original_y_block = self.original_y_block.type_tfms
+        else:
+            self.original_y_block = y_block.type_tfms
+
         for pp in listify(procs):
             if isinstance(pp, RenewablesTabularProc):
                 warnings.warn(f"Element {pp} of procs is RenewablesTabularProc, might not work with TabularPandas.")
@@ -558,7 +564,8 @@ class TabularRenewables(TabularPandas):
         if len(self.pre_process) > 0:
             self.prepared_to = TabularPandas(dfs, y_names=y_names,
                                              procs=self.pre_process, cont_names=cont_names,
-                                          do_setup=True, reduce_memory=False, inplace=inplace, y_block=y_block)
+                                             do_setup=True, reduce_memory=False, inplace=inplace,
+                                             y_block=y_block)
             self.pre_process = self.prepared_to.procs
             prepared_df = self.prepared_to.items
             for pp in self.pre_process:
@@ -583,14 +590,41 @@ class TabularRenewables(TabularPandas):
             y_block=y_block,
             reduce_memory=reduce_memory)
 
-    def new(self, df, pre_process=None, splits=None, include_preprocess=False):
+    def update_ys(self, new_y_names, new_y_block):
+        """
+            new_y_columns a list of the new output features
+            new_y_block can be either RegressionBlock or CategoryBlock
+        """
+
+
+        self.y_names = new_y_names
+
+        if callable(new_y_block):
+            new_y_block = new_y_block()
+
+        new_y_block_tfms = new_y_block.type_tfms
+        keep_categorify = len(self.cat_names) > 0 or type(new_y_block_tfms) == Categorify
+
+        new_pipeline = L()
+        for proc in self.procs:
+
+            if type(proc) == type(self.original_y_block[0]):
+                new_pipeline += new_y_block_tfms
+                self.original_y_block = new_y_block_tfms
+            else:
+                new_pipeline += proc
+        self.new_pipeline = new_pipeline
+        self.procs = Pipeline(new_pipeline)
+        self.setup()
+
+    def new(self, df, pre_process=None, splits=None, include_preprocess=False, y_block=TransformBlock()):
         pre_process = listify(pre_process)
         if include_preprocess:
             for pp in self._original_pre_process:
                 if getattr(pp, "include_in_new", False):
                     pre_process += [pp]
 
-        return type(self)(df, do_setup=False, reduce_memory=False, y_block=TransformBlock(),
+        return type(self)(df, do_setup=False, reduce_memory=False, y_block=y_block,
                           pre_process=pre_process, splits=splits,
                           **attrdict(self, 'procs','cat_names','cont_names','y_names', 'device', 'group_id'))
 
@@ -755,7 +789,6 @@ class VerifyAndNormalizeTarget(TabularProc):
 
 
     def encodes(self, to):
-#         return
         to.loc[:, self.relevant_cols] = to.loc[:, self.relevant_cols].astype(np.float64)
         for task_id in to.items[self.task_id_col].unique():
             # in case this is a new task, we update the maxs and mins
