@@ -5,10 +5,11 @@ __all__ = ['convert_layer_to_bayesian', 'convert_to_bayesian_model', 'set_train_
 # Cell
 #hide
 from blitz.modules import BayesianLinear
-from blitz.modules import BayesianEmbedding, BayesianConv1d
+from blitz.modules import BayesianEmbedding, BayesianConv1d, BayesianConv2d, BayesianConv3d
 from blitz.modules.base_bayesian_module import BayesianModule
 from torch import nn
 import torch
+from fastcore.basics import patch
 
 # Cell
 def convert_layer_to_bayesian(layer, config: dict):
@@ -23,15 +24,36 @@ def convert_layer_to_bayesian(layer, config: dict):
             posterior_rho_init=config["posterior_rho_init"],
         )
     elif isinstance(layer, nn.Embedding):
-        new_layer = BayesianEmbedding(layer.num_embeddings, layer.embedding_dim)
-    elif isinstance(layer, nn.Conv1d):
-        new_layer = BayesianConv1d(
+        new_layer = BayesianEmbedding(
+            layer.num_embeddings,
+            layer.embedding_dim,
+            prior_sigma_1=config["prior_sigma_1"],
+            prior_sigma_2=config["prior_sigma_2"],
+            prior_pi=config["prior_pi"],
+            posterior_mu_init=config["posterior_mu_init"],
+            posterior_rho_init=config["posterior_rho_init"],
+        )
+    elif isinstance(layer, (nn.Conv1d, nn.Conv2d, nn.Conv3d)):
+        matching_class = BayesianConv1d
+        kernel_size = layer.kernel_size[0]
+        if type(layer) == nn.Conv2d:
+            kernel_size = layer.kernel_size
+            matching_class = BayesianConv2d
+        elif type(layer) == nn.Conv3d:
+            matching_class = BayesianConv3d
+            kernel_size = layer.kernel_size
+        new_layer = matching_class(
             layer.in_channels,
             layer.out_channels,
-            kernel_size=layer.kernel_size[0],
+            kernel_size=kernel_size,
             groups=layer.groups,
             padding=layer.padding,
             dilation=layer.dilation,
+            prior_sigma_1=config["prior_sigma_1"],
+            prior_sigma_2=config["prior_sigma_2"],
+            prior_pi=config["prior_pi"],
+            posterior_mu_init=config["posterior_mu_init"],
+            posterior_rho_init=config["posterior_rho_init"],
         )
     else:
         Warning(

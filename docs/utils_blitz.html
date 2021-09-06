@@ -32,6 +32,37 @@ nb_path: "nbs/00c_utils_blitz.ipynb"
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nd">@patch</span>
+<span class="k">def</span> <span class="nf">extra_repr</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">BayesianLinear</span><span class="p">):</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Shape: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weight_sampler</span><span class="o">.</span><span class="n">mu</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="nd">@patch</span>
+<span class="k">def</span> <span class="nf">extra_repr</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">BayesianConv1d</span><span class="p">):</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;in_channels=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">in_channels</span><span class="si">}</span><span class="s2">, out_channels=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">out_channels</span><span class="si">}</span><span class="s2">, kernelel_size=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">kernel_size</span><span class="si">}</span><span class="s2">, stride=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">stride</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="nd">@patch</span>
+<span class="k">def</span> <span class="nf">extra_repr</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">BayesianConv2d</span><span class="p">):</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;in_channels=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">in_channels</span><span class="si">}</span><span class="s2">, out_channels=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">out_channels</span><span class="si">}</span><span class="s2">, kernelel_size=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">kernel_size</span><span class="si">}</span><span class="s2">, stride=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">stride</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="nd">@patch</span>
+<span class="k">def</span> <span class="nf">extra_repr</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">BayesianConv3d</span><span class="p">):</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;in_channels=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">in_channels</span><span class="si">}</span><span class="s2">, out_channels=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">out_channels</span><span class="si">}</span><span class="s2">, kernelel_size=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">kernel_size</span><span class="si">}</span><span class="s2">, stride=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">stride</span><span class="si">}</span><span class="s2">&quot;</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
 <div class="output">
@@ -40,7 +71,7 @@ nb_path: "nbs/00c_utils_blitz.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="convert_layer_to_bayesian" class="doc_header"><code>convert_layer_to_bayesian</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/utils_blitz.py#L14" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>convert_layer_to_bayesian</code>(<strong><code>layer</code></strong>, <strong><code>config</code></strong>:<code>dict</code>)</p>
+<h4 id="convert_layer_to_bayesian" class="doc_header"><code>convert_layer_to_bayesian</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/utils_blitz.py#L15" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>convert_layer_to_bayesian</code>(<strong><code>layer</code></strong>, <strong><code>config</code></strong>:<code>dict</code>)</p>
 </blockquote>
 
 </div>
@@ -63,6 +94,243 @@ nb_path: "nbs/00c_utils_blitz.ipynb"
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;prior_sigma_1&quot;</span><span class="p">:</span><span class="mf">0.1</span><span class="p">,</span>
+            <span class="s2">&quot;prior_sigma_2&quot;</span><span class="p">:</span><span class="mf">0.4</span><span class="p">,</span>
+            <span class="s2">&quot;prior_pi&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span>
+            <span class="s2">&quot;posterior_mu_init&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;posterior_rho_init&quot;</span><span class="p">:</span><span class="o">-</span><span class="mi">7</span><span class="p">}</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">convert_layer_to_bayesian</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">config</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>BayesianLinear(
+  Shape: [2, 10]
+  (weight_sampler): TrainableRandomDistribution()
+  (bias_sampler): TrainableRandomDistribution()
+  (weight_prior_dist): PriorWeightDistribution()
+  (bias_prior_dist): PriorWeightDistribution()
+)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">convert_layer_to_bayesian</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">config</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>BayesianEmbedding(
+  (weight_sampler): TrainableRandomDistribution()
+  (weight_prior_dist): PriorWeightDistribution()
+)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">convert_layer_to_bayesian</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Conv1d</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">config</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>&lt;class &#39;blitz.modules.conv_bayesian_layer.BayesianConv1d&#39;&gt;
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>BayesianConv1d(
+  in_channels=1, out_channels=2, kernelel_size=3, stride=1
+  (weight_sampler): TrainableRandomDistribution()
+  (bias_sampler): TrainableRandomDistribution()
+  (weight_prior_dist): PriorWeightDistribution()
+  (bias_prior_dist): PriorWeightDistribution()
+)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">convert_layer_to_bayesian</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">)),</span> <span class="n">config</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>&lt;class &#39;blitz.modules.conv_bayesian_layer.BayesianConv2d&#39;&gt;
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>BayesianConv2d(
+  in_channels=1, out_channels=2, kernelel_size=(3, 3), stride=1
+  (weight_sampler): TrainableRandomDistribution()
+  (bias_sampler): TrainableRandomDistribution()
+  (weight_prior_dist): PriorWeightDistribution()
+  (bias_prior_dist): PriorWeightDistribution()
+)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">convert_layer_to_bayesian</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span> <span class="n">config</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>&lt;class &#39;blitz.modules.conv_bayesian_layer.BayesianConv2d&#39;&gt;
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>BayesianConv2d(
+  in_channels=1, out_channels=2, kernelel_size=(3, 3, 3), stride=1
+  (weight_sampler): TrainableRandomDistribution()
+  (bias_sampler): TrainableRandomDistribution()
+  (weight_prior_dist): PriorWeightDistribution()
+  (bias_prior_dist): PriorWeightDistribution()
+)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
 <div class="output">
@@ -71,7 +339,7 @@ nb_path: "nbs/00c_utils_blitz.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="convert_to_bayesian_model" class="doc_header"><code>convert_to_bayesian_model</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/utils_blitz.py#L45" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>convert_to_bayesian_model</code>(<strong><code>model</code></strong>, <strong><code>config</code></strong>:<code>dict</code>)</p>
+<h4 id="convert_to_bayesian_model" class="doc_header"><code>convert_to_bayesian_model</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/utils_blitz.py#L67" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>convert_to_bayesian_model</code>(<strong><code>model</code></strong>, <strong><code>config</code></strong>:<code>dict</code>)</p>
 </blockquote>
 
 </div>
@@ -94,6 +362,54 @@ nb_path: "nbs/00c_utils_blitz.ipynb"
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">convert_to_bayesian_model</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">)),</span> <span class="n">config</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Sequential(
+  (0): BayesianLinear(
+    Shape: [4, 3]
+    (weight_sampler): TrainableRandomDistribution()
+    (bias_sampler): TrainableRandomDistribution()
+    (weight_prior_dist): PriorWeightDistribution()
+    (bias_prior_dist): PriorWeightDistribution()
+  )
+  (1): BayesianLinear(
+    Shape: [1, 4]
+    (weight_sampler): TrainableRandomDistribution()
+    (bias_sampler): TrainableRandomDistribution()
+    (weight_prior_dist): PriorWeightDistribution()
+    (bias_prior_dist): PriorWeightDistribution()
+  )
+)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
 <div class="output">
@@ -102,7 +418,7 @@ nb_path: "nbs/00c_utils_blitz.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="set_train_mode" class="doc_header"><code>set_train_mode</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/utils_blitz.py#L59" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>set_train_mode</code>(<strong><code>model</code></strong>, <strong><code>mode</code></strong>)</p>
+<h4 id="set_train_mode" class="doc_header"><code>set_train_mode</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/utils_blitz.py#L81" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>set_train_mode</code>(<strong><code>model</code></strong>, <strong><code>mode</code></strong>)</p>
 </blockquote>
 
 </div>
