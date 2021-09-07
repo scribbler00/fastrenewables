@@ -34,7 +34,7 @@ def _get_samples_per_day_single_task(to):
 
 # Cell
 def _correct_types(to, cats, conts, ys):
-    if len(to.cats) > 0:
+    if len(cats) > 0:
         cats = cats.long()
     # continious/regression output
     if contains_instance(list(to.procs), RegressionSetup):
