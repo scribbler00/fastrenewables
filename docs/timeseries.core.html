@@ -567,7 +567,7 @@ nb_path: "nbs/05_timeseries.core.ipynb"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>&lt;ipython-input-21-1c0d6a704443&gt;:15: UserWarning: Dropped 2 elements due to inconsistent categoricals in a sequence.
+<pre>&lt;ipython-input-23-1c0d6a704443&gt;:15: UserWarning: Dropped 2 elements due to inconsistent categoricals in a sequence.
   warnings.warn(
 </pre>
 </div>
@@ -604,7 +604,7 @@ nb_path: "nbs/05_timeseries.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TimeseriesTransform" class="doc_header"><code>class</code> <code>TimeseriesTransform</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L191" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeseriesTransform</code>(<strong><code>to</code></strong>:<a href="/fastrenewables/tabular.core.html#TabularRenewables"><code>TabularRenewables</code></a>, <strong><code>ts_x_length</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>ts_y_length</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>step_size</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>y_timeseries_offset</code></strong>=<em><code>0</code></em>, <strong><code>batch_first</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>sequence_last</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>drop_inconsistent_cats</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>post_hooks</code></strong>=<em><code>[]</code></em>) :: <code>Transform</code></p>
+<h2 id="TimeseriesTransform" class="doc_header"><code>class</code> <code>TimeseriesTransform</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L197" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeseriesTransform</code>(<strong><code>to</code></strong>:<a href="/fastrenewables/tabular.core.html#TabularRenewables"><code>TabularRenewables</code></a>, <strong><code>ts_x_length</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>ts_y_length</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>step_size</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>y_timeseries_offset</code></strong>=<em><code>0</code></em>, <strong><code>batch_first</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>sequence_last</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>drop_inconsistent_cats</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>post_hooks</code></strong>=<em><code>[]</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>Delegates (<code>__call__</code>,<code>decode</code>,<code>setup</code>) to (<code>encodes</code>,<code>decodes</code>,<code>setups</code>) if <code>split_idx</code> matches</p>
 
@@ -636,7 +636,7 @@ nb_path: "nbs/05_timeseries.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TimeseriesDataset" class="doc_header"><code>class</code> <code>TimeseriesDataset</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L378" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeseriesDataset</code>(<strong><code>x</code></strong>=<em><code>None</code></em>, <strong>*<code>rest</code></strong>) :: <code>fastuple</code></p>
+<h2 id="TimeseriesDataset" class="doc_header"><code>class</code> <code>TimeseriesDataset</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L384" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeseriesDataset</code>(<strong><code>x</code></strong>=<em><code>None</code></em>, <strong>*<code>rest</code></strong>) :: <code>fastuple</code></p>
 </blockquote>
 <p>A dataset from a <a href="/fastrenewables/timeseries.core.html#TimeseriesTransform"><code>TimeseriesTransform</code></a> object</p>
 
@@ -668,7 +668,7 @@ nb_path: "nbs/05_timeseries.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TimeSeriesDataLoader" class="doc_header"><code>class</code> <code>TimeSeriesDataLoader</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L416" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeSeriesDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>32</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>device</code></strong>=<em><code>'cuda'</code></em>, <strong><code>to_device</code></strong>=<em><code>True</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>drop_last</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>DataLoader</code></p>
+<h2 id="TimeSeriesDataLoader" class="doc_header"><code>class</code> <code>TimeSeriesDataLoader</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L422" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeSeriesDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>32</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>device</code></strong>=<em><code>'cuda'</code></em>, <strong><code>to_device</code></strong>=<em><code>True</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>drop_last</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>DataLoader</code></p>
 </blockquote>
 <p>API compatible with PyTorch DataLoader, with a lot more callbacks and flexibility</p>
 
@@ -700,7 +700,7 @@ nb_path: "nbs/05_timeseries.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TimeSeriesDataLoaders" class="doc_header"><code>class</code> <code>TimeSeriesDataLoaders</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L455" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeSeriesDataLoaders</code>(<strong><code>to</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>'cpu'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>DataLoaders</code></p>
+<h2 id="TimeSeriesDataLoaders" class="doc_header"><code>class</code> <code>TimeSeriesDataLoaders</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L461" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeSeriesDataLoaders</code>(<strong><code>to</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>'cpu'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>DataLoaders</code></p>
 </blockquote>
 <p>Basic wrapper around several <code>DataLoader</code>s.</p>
 
@@ -836,7 +836,7 @@ nb_path: "nbs/05_timeseries.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="reduce_target_timeseries_to_element" class="doc_header"><code>reduce_target_timeseries_to_element</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L473" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>reduce_target_timeseries_to_element</code>(<strong><code>cats</code></strong>, <strong><code>conts</code></strong>, <strong><code>ys</code></strong>, <strong><code>element_pos</code></strong>=<em><code>0</code></em>)</p>
+<h4 id="reduce_target_timeseries_to_element" class="doc_header"><code>reduce_target_timeseries_to_element</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L479" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>reduce_target_timeseries_to_element</code>(<strong><code>cats</code></strong>, <strong><code>conts</code></strong>, <strong><code>ys</code></strong>, <strong><code>element_pos</code></strong>=<em><code>0</code></em>)</p>
 </blockquote>
 <p>Simple transform to shorten the target timeseries.</p>
 

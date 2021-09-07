@@ -34,7 +34,7 @@ def _get_samples_per_day_single_task(to):
 
 # Cell
 def _correct_types(to, cats, conts, ys):
-    if len(to.cat_names) > 0:
+    if len(to.cats) > 0:
         cats = cats.long()
     # continious/regression output
     if contains_instance(list(to.procs), RegressionSetup):
@@ -50,6 +50,9 @@ def convert_to_timeseries_representation(to:TabularRenewables, timeseries_length
     [n_samples, timeseries length, number features]."
     cats, conts, ys= [], [], []
     has_cats = len(to.cat_names) > 0
+
+    to[to.cont_names] = to.items[to.cont_names].apply(lambda x: x.astype(np.float64))
+
     for task_id, df in to.items.groupby(to.group_id):
         df = df.sort_index()
         conts.append(_reshape_dataframe_to_timeseries_representation(df, timeseries_length, to.cont_names))
@@ -57,7 +60,10 @@ def convert_to_timeseries_representation(to:TabularRenewables, timeseries_length
         if has_cats:
             cats.append(_reshape_dataframe_to_timeseries_representation(df, timeseries_length, to.cat_names).long())
     # batch, seq, features -> batch, features, seq
-    cats, conts, ys = torch.cat(cats).permute(0, 2, 1), torch.cat(conts).permute(0, 2, 1), torch.cat(ys).permute(0, 2, 1)
+    if has_cats:
+        cats =  torch.cat(cats).permute(0, 2, 1)
+    conts, ys = torch.cat(conts).permute(0, 2, 1), torch.cat(ys).permute(0, 2, 1)
+
     return _correct_types(to, cats, conts, ys)
 
 # Cell
