@@ -818,7 +818,7 @@ class VerifyAndNormalizeTarget(TabularProc):
 # Cell
 class TabDataset(fastuple):
     "A dataset from a `TabularRenewable` object"
-    # Stolen from https://muellerzr.github.io/fastblog/2020/04/22/TabularNumpy.html
+    # inspired by https://muellerzr.github.io/fastblog/2020/04/22/TabularNumpy.html
     def __init__(self, to):
         self.cats = tensor(to_np(to.cats).astype(np.long))
         self.conts = tensor(to_np(to.conts).astype(np.float32))

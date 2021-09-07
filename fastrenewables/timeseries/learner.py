@@ -15,12 +15,12 @@ from .core import *
 from .data import *
 from .model import *
 from ..losses import VILoss
-
+import pandas as pd
 
 # Cell
 class RenewableTimeseriesLearner(Learner):
     "`Learner` for renewable data"
-    def predict(self, ds_idx=1, test_dl=None, filter=True):
+    def predict(self, ds_idx=1, test_dl=None, filter=True, as_df=False):
         device = next(self.model.parameters()).device
         preds, targets = None, None
         if test_dl is not None:
@@ -31,7 +31,6 @@ class RenewableTimeseriesLearner(Learner):
             to = self.dls.valid_ds
 
         # to increase speed we direclty predict on all tensors
-#         print(to)
         if isinstance(to, (TimeseriesDataset)):
             with torch.no_grad():
                 preds = self.model(to.cats.to(device), to.conts.to(device))
@@ -43,7 +42,10 @@ class RenewableTimeseriesLearner(Learner):
         else:
             raise NotImplementedError("Unknown type")
 
-        return preds, targets
+        if as_df:
+            return pd.DataFrame({"Prediction": preds, "Target":targets}, index=to.indexes.reshape(-1))
+        else:
+            return preds, targets
 
 # Cell
 @delegates(Learner.__init__)
@@ -53,7 +55,8 @@ def renewable_timeseries_learner(dls, layers=None, emb_szs=None, config=None,
     "Get a `Learner` using `dls`, with `metrics`, including a `TabularModel` created using the remaining params."
     if config is None: config = tabular_config()
 
-#     if n_out is None: n_out = get_c(dls)
+#     if n_out is None:
+#         n_out = get_c(dls)
     n_out = dls.train_ds.ys.shape[1]
 
     assert n_out, "`n_out` is not defined, and could not be inferred from data, set `dls.c` or pass `n_out`"

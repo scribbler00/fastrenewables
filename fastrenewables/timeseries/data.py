@@ -16,7 +16,9 @@ class RenewableTimeSeriesDataLoaders(DataLoaders):
 
     @classmethod
     @delegates(Tabular.dataloaders, but=["dl_type", "dl_kwargs"])
-    def from_df(cls, df, path='.', procs=None, pre_procs=None, cat_names=None, cont_names=None, y_names=None, y_block=None,
+    def from_df(cls, df, path='.', procs=None, pre_procs=None, \
+                cat_names=None, cont_names=None, \
+                y_names=None, y_block=RegressionBlock(),\
                 splits=None, **kwargs):
 
         "Create from `df` in `path` using `procs`"
@@ -41,14 +43,13 @@ class RenewableTimeSeriesDataLoaders(DataLoaders):
             y_names=y_names,
             pre_process=pre_procs,
             procs=procs,
+            y_block=y_block,
             splits=None,
         )
         splits = RandomSplitter(valid_pct=0.2) if splits is None else splits
-        tt = TimeseriesTransform(to, splits=splits)
+        tt = Timeseries(to, splits=splits)
 
         return TimeSeriesDataLoaders(tt, **kwargs)
-#         return tt.dataloaders(path=path, **kwargs)
-
 
     @classmethod
     def from_files(cls, files,  **kwargs):
@@ -61,5 +62,3 @@ class RenewableTimeSeriesDataLoaders(DataLoaders):
             kwargs["cat_names"] = ["TaskID"]
 
         return cls.from_df(dfs, **kwargs)
-
-# TimeseriesTransform._dbunch_type = TimeSeriesDataLoaders

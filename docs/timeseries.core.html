@@ -50,115 +50,6 @@ nb_path: "nbs/05_timeseries.core.ipynb"
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="n">splits</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">TabularRenewables</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">dfs</span><span class="p">),</span> 
-                       <span class="n">pre_process</span><span class="o">=</span><span class="n">FilterInconsistentSamplesPerDay</span><span class="p">,</span> 
-                       <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span>
-                       <span class="n">cat_names</span><span class="o">=</span><span class="s2">&quot;TaskID&quot;</span><span class="p">,</span>
-                       <span class="n">cont_names</span> <span class="o">=</span> <span class="p">[</span> <span class="s1">&#39;WindSpeed58m&#39;</span><span class="p">,</span> <span class="s1">&#39;WindSpeed60m&#39;</span><span class="p">],</span>
-                       <span class="n">y_names</span><span class="o">=</span><span class="s2">&quot;PowerGeneration&quot;</span><span class="p">,</span>
-                       <span class="n">procs</span><span class="o">=</span><span class="n">Categorify</span><span class="p">,</span>
-                      <span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_test_df</span><span class="p">():</span>
-    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
-    <span class="n">cont1</span><span class="p">,</span> <span class="n">cont2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">48</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">48</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">conts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">cont1</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">cont2</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">cat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span> <span class="mi">96</span><span class="p">)</span>
-    <span class="n">task_ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">96</span><span class="p">)</span>
-    <span class="n">task_ids</span><span class="p">[</span><span class="o">-</span><span class="mi">16</span><span class="p">:]</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">((</span><span class="mi">96</span><span class="p">))</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">conts</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;x1&quot;</span><span class="p">,</span> <span class="s2">&quot;x2&quot;</span><span class="p">])</span>
-    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;cat&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cat</span>
-    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;TID&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">task_ids</span>
-    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
-    <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="s2">&quot;1/1/2021&quot;</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s2">&quot;3H&quot;</span><span class="p">,</span> <span class="n">periods</span><span class="o">=</span><span class="mi">96</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">df</span>
-
-<span class="k">def</span> <span class="nf">get_test_tabular</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">):</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">get_test_df</span><span class="p">()</span>
-    
-    <span class="k">return</span> <span class="n">TabularRenewables</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">frac</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">cat_names</span><span class="o">=</span><span class="s2">&quot;cat&quot;</span><span class="p">,</span> <span class="n">y_names</span><span class="o">=</span><span class="n">target</span><span class="p">,</span> 
-                             <span class="n">cont_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;x1&quot;</span><span class="p">,</span> <span class="s2">&quot;x2&quot;</span><span class="p">],</span> <span class="n">group_id</span><span class="o">=</span><span class="s2">&quot;TID&quot;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">expected_first_cont_tensor</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mf">47.5</span><span class="p">],</span>
-       <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">47</span><span class="p">],</span>
-       <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mf">46.5</span><span class="p">],</span>
-       <span class="p">[</span><span class="mf">1.5</span><span class="p">,</span><span class="mi">46</span><span class="p">],</span>
-       <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mf">45.5</span><span class="p">],</span>
-       <span class="p">[</span><span class="mf">2.5</span><span class="p">,</span><span class="mi">45</span><span class="p">],</span>
-       <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mf">44.5</span><span class="p">],</span>
-       <span class="p">[</span><span class="mf">3.5</span><span class="p">,</span><span class="mi">44</span><span class="p">],])</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">expected_first_cont_tensor</span><span class="p">,</span> <span class="n">_reshape_dataframe_to_timeseries_representation</span><span class="p">(</span><span class="n">get_test_df</span><span class="p">(),</span> <span class="mi">24</span><span class="o">//</span><span class="mi">3</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;x1&quot;</span><span class="p">,</span> <span class="s2">&quot;x2&quot;</span><span class="p">])[</span><span class="mi">0</span><span class="p">])</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -280,7 +171,9 @@ nb_path: "nbs/05_timeseries.core.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">expected_first_cont_tensor</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">convert_to_timeseries_representation</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> <span class="mi">24</span><span class="o">//</span><span class="mi">3</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">expected_first_cont_tensor</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">convert_to_timeseries_representation</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> <span class="mi">24</span><span class="o">//</span><span class="mi">3</span><span class="p">)[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">convert_to_timeseries_representation</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> <span class="mi">24</span><span class="o">//</span><span class="mi">3</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">to</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">convert_to_timeseries_representation</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> <span class="mi">24</span><span class="o">//</span><span class="mi">3</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">to</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 </pre></div>
 
     </div>
@@ -297,8 +190,24 @@ nb_path: "nbs/05_timeseries.core.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># TODO: should work with typedispatch for convert_to_timeseries_representation</span>
-<span class="c1"># but is not redirecting correctly</span>
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># but is not redirecting correctly</span>
 <span class="c1"># @typedispatch</span>
 <span class="k">def</span> <span class="nf">_reshape_dataframe_to_timeseries_representation_different_lengths</span><span class="p">(</span><span class="n">df</span><span class="p">:</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">cont_names</span><span class="p">:</span><span class="nb">list</span><span class="p">,</span> 
                                          <span class="n">cat_names</span><span class="p">:</span><span class="nb">list</span><span class="p">,</span> <span class="n">y_names</span><span class="p">:</span><span class="nb">list</span><span class="p">,</span>
@@ -312,6 +221,7 @@ nb_path: "nbs/05_timeseries.core.ipynb"
 
     <span class="n">conts</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">samples_tensor</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cont_names</span><span class="p">),</span> <span class="n">ts_x_length</span><span class="p">))</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
     <span class="n">ys</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">samples_tensor</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cat_names</span><span class="p">),</span> <span class="n">ts_y_length</span><span class="p">))</span>
+    <span class="n">indexes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">samples_tensor</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ts_x_length</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;datetime64[s]&#39;</span><span class="p">)</span>
 
     <span class="n">cats</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">has_cats</span><span class="p">:</span>
@@ -328,6 +238,8 @@ nb_path: "nbs/05_timeseries.core.ipynb"
         <span class="n">conts</span><span class="p">[</span><span class="n">sample_id</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span>
             <span class="n">df</span><span class="p">[</span><span class="n">cont_names</span><span class="p">][</span><span class="n">start_x</span><span class="p">:</span><span class="n">end_x</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">ts_x_length</span><span class="p">)</span>
         <span class="p">)</span>
+        <span class="n">indexes</span><span class="p">[</span><span class="n">sample_id</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">start_x</span><span class="p">:</span><span class="n">end_x</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">ts_x_length</span><span class="p">)</span>
+        
         <span class="k">if</span> <span class="n">has_cats</span><span class="p">:</span>
             <span class="n">cats</span><span class="p">[</span><span class="n">sample_id</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span>
                 <span class="n">df</span><span class="p">[</span><span class="n">cat_names</span><span class="p">][</span><span class="n">start_x</span><span class="p">:</span><span class="n">end_x</span><span class="p">]</span>
@@ -341,7 +253,7 @@ nb_path: "nbs/05_timeseries.core.ipynb"
             <span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">ts_y_length</span><span class="p">)</span>
         <span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">cats</span><span class="p">,</span> <span class="n">conts</span><span class="p">,</span> <span class="n">ys</span>
+    <span class="k">return</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">cats</span><span class="p">,</span> <span class="n">conts</span><span class="p">,</span> <span class="n">ys</span>
 
 <span class="c1"># @typedispatch</span>
 <span class="k">def</span> <span class="nf">convert_to_timeseries_representation_different_lengths</span><span class="p">(</span><span class="n">to</span><span class="p">:</span><span class="n">TabularRenewables</span><span class="p">,</span> 
@@ -356,11 +268,11 @@ nb_path: "nbs/05_timeseries.core.ipynb"
 <span class="s2">    step_size: The shift for the output. Similar to a sliding window. </span><span class="se">\</span>
 <span class="s2">    y_timeseries_offset: The (initial) offset of the output compared to the input.&quot;</span>
     
-    <span class="n">cats</span><span class="p">,</span> <span class="n">conts</span><span class="p">,</span> <span class="n">ys</span><span class="o">=</span> <span class="n">L</span><span class="p">(),</span> <span class="n">L</span><span class="p">(),</span> <span class="n">L</span><span class="p">()</span>
+    <span class="n">indexes</span><span class="p">,</span> <span class="n">cats</span><span class="p">,</span> <span class="n">conts</span><span class="p">,</span> <span class="n">ys</span><span class="o">=</span> <span class="n">L</span><span class="p">(),</span> <span class="n">L</span><span class="p">(),</span> <span class="n">L</span><span class="p">(),</span> <span class="n">L</span><span class="p">()</span>
     <span class="n">has_cats</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">to</span><span class="o">.</span><span class="n">cat_names</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">task_id</span><span class="p">,</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">to</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">to</span><span class="o">.</span><span class="n">group_id</span><span class="p">):</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
-        <span class="n">cat</span><span class="p">,</span> <span class="n">cont</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">_reshape_dataframe_to_timeseries_representation_different_lengths</span><span class="p">(</span><span class="n">df</span><span class="p">,</span>  
+        <span class="n">index</span><span class="p">,</span> <span class="n">cat</span><span class="p">,</span> <span class="n">cont</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">_reshape_dataframe_to_timeseries_representation_different_lengths</span><span class="p">(</span><span class="n">df</span><span class="p">,</span>  
                                                             <span class="n">cont_names</span><span class="o">=</span><span class="n">to</span><span class="o">.</span><span class="n">cont_names</span><span class="p">,</span> 
                                                             <span class="n">cat_names</span><span class="o">=</span><span class="n">to</span><span class="o">.</span><span class="n">cat_names</span><span class="p">,</span> 
                                                             <span class="n">y_names</span><span class="o">=</span><span class="n">to</span><span class="o">.</span><span class="n">y_names</span><span class="p">,</span> 
@@ -370,12 +282,30 @@ nb_path: "nbs/05_timeseries.core.ipynb"
                                                             <span class="n">y_timeseries_offset</span><span class="o">=</span><span class="n">y_timeseries_offset</span><span class="p">)</span>
         <span class="n">conts</span> <span class="o">+=</span> <span class="n">cont</span>
         <span class="n">ys</span> <span class="o">+=</span> <span class="n">y</span>
+        <span class="n">indexes</span> <span class="o">+=</span> <span class="n">index</span>
         <span class="k">if</span> <span class="n">has_cats</span><span class="p">:</span>
             <span class="n">cats</span> <span class="o">+=</span> <span class="n">cat</span>
-    <span class="n">cats</span><span class="p">,</span> <span class="n">conts</span><span class="p">,</span> <span class="n">ys</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">cats</span><span class="p">)),</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">conts</span><span class="p">)),</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">ys</span><span class="p">))</span>
+    <span class="n">indexes</span><span class="p">,</span> <span class="n">cats</span><span class="p">,</span> <span class="n">conts</span><span class="p">,</span> <span class="n">ys</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">indexes</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">cats</span><span class="p">)),</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">conts</span><span class="p">)),</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">ys</span><span class="p">))</span>
 
-    <span class="k">return</span> <span class="n">_correct_types</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> <span class="n">cats</span><span class="p">,</span> <span class="n">conts</span><span class="p">,</span> <span class="n">ys</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">indexes</span><span class="p">,</span> <span class="o">*</span><span class="n">_correct_types</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> <span class="n">cats</span><span class="p">,</span> <span class="n">conts</span><span class="p">,</span> <span class="n">ys</span><span class="p">)</span>
     
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
 </pre></div>
 
     </div>
@@ -397,7 +327,7 @@ nb_path: "nbs/05_timeseries.core.ipynb"
 <span class="n">ts_y_length</span><span class="o">=</span><span class="n">n_samples_per_day</span><span class="o">-</span><span class="n">y_timeseries_offset</span>
 <span class="n">step_size</span><span class="o">=</span><span class="n">n_samples_per_day</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">get_test_df</span><span class="p">()</span>
-<span class="n">cats</span><span class="p">,</span> <span class="n">conts</span><span class="p">,</span> <span class="n">ys</span> <span class="o">=</span> <span class="n">convert_to_timeseries_representation_different_lengths</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> 
+<span class="n">indexes</span><span class="p">,</span> <span class="n">cats</span><span class="p">,</span> <span class="n">conts</span><span class="p">,</span> <span class="n">ys</span> <span class="o">=</span> <span class="n">convert_to_timeseries_representation_different_lengths</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> 
                                                       <span class="n">ts_x_length</span><span class="o">=</span><span class="n">n_samples_per_day</span><span class="p">,</span>
                                                       <span class="n">ts_y_length</span><span class="o">=</span><span class="n">ts_y_length</span><span class="p">,</span>
                                                       <span class="n">step_size</span><span class="o">=</span><span class="n">step_size</span><span class="p">,</span>
@@ -413,36 +343,9 @@ nb_path: "nbs/05_timeseries.core.ipynb"
 <span class="n">test_eq</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">][</span><span class="n">y_timeseries_offset</span><span class="o">+</span><span class="n">step_size</span><span class="o">+</span><span class="n">ts_y_length</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">ys</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 <span class="c1"># as we reduced the length of y by the offset, the last element should still be the last element</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">ys</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">y_timeseries_offset</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="n">ts_y_length</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="n">ts_x_length</span> <span class="o">=</span> <span class="mi">2</span>
-<span class="n">step_size</span><span class="o">=</span><span class="mi">2</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">get_test_df</span><span class="p">()</span>
-<span class="n">cats</span><span class="p">,</span> <span class="n">conts</span><span class="p">,</span> <span class="n">ys</span> <span class="o">=</span> <span class="n">convert_to_timeseries_representation_different_lengths</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> 
-                                                      <span class="n">ts_x_length</span><span class="o">=</span><span class="n">ts_x_length</span><span class="p">,</span>
-                                                      <span class="n">ts_y_length</span><span class="o">=</span><span class="n">ts_y_length</span><span class="p">,</span>
-                                                      <span class="n">step_size</span><span class="o">=</span><span class="n">step_size</span><span class="p">,</span>
-                                                      <span class="n">y_timeseries_offset</span><span class="o">=</span><span class="n">y_timeseries_offset</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">][</span><span class="n">y_timeseries_offset</span><span class="p">],</span> <span class="n">ys</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">][</span><span class="n">y_timeseries_offset</span><span class="o">+</span><span class="n">step_size</span><span class="p">],</span> <span class="n">ys</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">][</span><span class="n">y_timeseries_offset</span><span class="o">+</span><span class="n">step_size</span><span class="p">],</span> <span class="n">ys</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">][</span><span class="n">y_timeseries_offset</span><span class="o">+</span><span class="n">step_size</span><span class="o">+</span><span class="n">ts_y_length</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">ys</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="c1"># check correct reshape of indexes</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">indexes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">to</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">indexes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">to</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 </pre></div>
 
     </div>
@@ -467,27 +370,18 @@ nb_path: "nbs/05_timeseries.core.ipynb"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">to</span> <span class="o">=</span> <span class="n">get_test_tabular</span><span class="p">()</span>
-<span class="n">ts_lengths</span><span class="p">,</span> <span class="n">cats</span><span class="p">,</span> <span class="n">conts</span><span class="p">,</span> <span class="n">ys</span> <span class="o">=</span> <span class="n">_convert_tabular_pandas_to_timeseries</span><span class="p">(</span><span class="n">to</span><span class="p">)</span>
-<span class="n">cats</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">conts</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">ys</span><span class="o">.</span><span class="n">shape</span>
+<span class="n">_</span><span class="p">,</span> <span class="n">indexes_implicit</span><span class="p">,</span> <span class="n">cats_implicit</span><span class="p">,</span> <span class="n">conts_implicit</span><span class="p">,</span> <span class="n">ys_implicit</span> <span class="o">=</span> <span class="n">_convert_tabular_pandas_to_timeseries</span><span class="p">(</span><span class="n">to</span><span class="p">)</span>
+<span class="n">_</span><span class="p">,</span> <span class="n">indexes_explicit</span><span class="p">,</span> <span class="n">cats_explicit</span><span class="p">,</span> <span class="n">conts_explicit</span><span class="p">,</span> <span class="n">ys_explicit</span> <span class="o">=</span> \
+    <span class="n">_convert_tabular_pandas_to_timeseries</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> <span class="n">ts_x_length</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">ts_y_length</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">step_size</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+    
+<span class="c1"># check whether correct values of dataframe are determined</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">indexes_implicit</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">indexes_explicit</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">cats_implicit</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">cats_explicit</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">conts_implicit</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">conts_explicit</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">ys_implicit</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">ys_explicit</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>(torch.Size([12, 1, 8]), torch.Size([12, 2, 8]), torch.Size([12, 1, 8]))</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -497,84 +391,6 @@ nb_path: "nbs/05_timeseries.core.ipynb"
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">to</span> <span class="o">=</span> <span class="n">get_test_tabular</span><span class="p">()</span>
-<span class="n">ts_lengths</span><span class="p">,</span> <span class="n">cats</span><span class="p">,</span> <span class="n">conts</span><span class="p">,</span> <span class="n">ys</span> <span class="o">=</span> <span class="n">_convert_tabular_pandas_to_timeseries</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> <span class="n">ts_x_length</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">ts_y_length</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">step_size</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
-<span class="n">cats</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">conts</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">ys</span><span class="o">.</span><span class="n">shape</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>(torch.Size([12, 1, 8]), torch.Size([12, 2, 8]), torch.Size([12, 1, 8]))</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">to</span> <span class="o">=</span> <span class="n">get_test_tabular</span><span class="p">()</span>
-<span class="n">_</span><span class="p">,</span> <span class="n">cats</span><span class="p">,</span> <span class="n">conts</span><span class="p">,</span> <span class="n">ys</span> <span class="o">=</span> <span class="n">_convert_tabular_pandas_to_timeseries</span><span class="p">(</span><span class="n">to</span><span class="p">)</span>
-<span class="c1"># simulate that all catecoricals have the same value along the timerseries axis</span>
-<span class="n">cats</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">cats</span><span class="p">)</span>
-<span class="c1"># fake two incorrect values</span>
-<span class="n">cats</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span>
-<span class="n">cats</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="mi">3</span>
-<span class="n">cats_checked</span><span class="p">,</span> <span class="n">conts_checked</span><span class="p">,</span> <span class="n">ys_checked</span> <span class="o">=</span> <span class="n">_check_categoricals</span><span class="p">(</span><span class="n">conts</span><span class="p">,</span> <span class="n">cats</span><span class="p">,</span> <span class="n">ys</span><span class="p">)</span>
-<span class="c1"># check if two values have been removed in all input/output and catecoricals</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">cats</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">cats_checked</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">conts</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">conts_checked</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">ys</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">ys_checked</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>&lt;ipython-input-23-1c0d6a704443&gt;:15: UserWarning: Dropped 2 elements due to inconsistent categoricals in a sequence.
-  warnings.warn(
-</pre>
-</div>
-</div>
-
-</div>
-</div>
 
 </div>
     {% endraw %}
@@ -604,7 +420,7 @@ nb_path: "nbs/05_timeseries.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TimeseriesTransform" class="doc_header"><code>class</code> <code>TimeseriesTransform</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L197" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeseriesTransform</code>(<strong><code>to</code></strong>:<a href="/fastrenewables/tabular.core.html#TabularRenewables"><code>TabularRenewables</code></a>, <strong><code>ts_x_length</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>ts_y_length</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>step_size</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>y_timeseries_offset</code></strong>=<em><code>0</code></em>, <strong><code>batch_first</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>sequence_last</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>drop_inconsistent_cats</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>post_hooks</code></strong>=<em><code>[]</code></em>) :: <code>Transform</code></p>
+<h2 id="Timeseries" class="doc_header"><code>class</code> <code>Timeseries</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L203" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Timeseries</code>(<strong><code>to</code></strong>:<a href="/fastrenewables/tabular.core.html#TabularRenewables"><code>TabularRenewables</code></a>, <strong><code>ts_x_length</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>ts_y_length</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>step_size</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>y_timeseries_offset</code></strong>=<em><code>0</code></em>, <strong><code>batch_first</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>sequence_last</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>drop_inconsistent_cats</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>post_hooks</code></strong>=<em><code>[]</code></em>) :: <code>Transform</code></p>
 </blockquote>
 <p>Delegates (<code>__call__</code>,<code>decode</code>,<code>setup</code>) to (<code>encodes</code>,<code>decodes</code>,<code>setups</code>) if <code>split_idx</code> matches</p>
 
@@ -628,6 +444,23 @@ nb_path: "nbs/05_timeseries.core.ipynb"
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
 <div class="output">
@@ -636,9 +469,9 @@ nb_path: "nbs/05_timeseries.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TimeseriesDataset" class="doc_header"><code>class</code> <code>TimeseriesDataset</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L384" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeseriesDataset</code>(<strong><code>x</code></strong>=<em><code>None</code></em>, <strong>*<code>rest</code></strong>) :: <code>fastuple</code></p>
+<h2 id="TimeseriesDataset" class="doc_header"><code>class</code> <code>TimeseriesDataset</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L382" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeseriesDataset</code>(<strong><code>x</code></strong>=<em><code>None</code></em>, <strong>*<code>rest</code></strong>) :: <code>fastuple</code></p>
 </blockquote>
-<p>A dataset from a <a href="/fastrenewables/timeseries.core.html#TimeseriesTransform"><code>TimeseriesTransform</code></a> object</p>
+<p>A dataset from a <a href="/fastrenewables/timeseries.core.html#Timeseries"><code>Timeseries</code></a> object</p>
 
 </div>
 
@@ -653,6 +486,23 @@ nb_path: "nbs/05_timeseries.core.ipynb"
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
 
 </div>
     {% endraw %}
@@ -668,7 +518,7 @@ nb_path: "nbs/05_timeseries.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TimeSeriesDataLoader" class="doc_header"><code>class</code> <code>TimeSeriesDataLoader</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L422" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeSeriesDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>32</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>device</code></strong>=<em><code>'cuda'</code></em>, <strong><code>to_device</code></strong>=<em><code>True</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>drop_last</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>DataLoader</code></p>
+<h2 id="TimeSeriesDataLoader" class="doc_header"><code>class</code> <code>TimeSeriesDataLoader</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L424" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeSeriesDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>32</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>device</code></strong>=<em><code>'cuda'</code></em>, <strong><code>to_device</code></strong>=<em><code>True</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>drop_last</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>DataLoader</code></p>
 </blockquote>
 <p>API compatible with PyTorch DataLoader, with a lot more callbacks and flexibility</p>
 
@@ -700,7 +550,7 @@ nb_path: "nbs/05_timeseries.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TimeSeriesDataLoaders" class="doc_header"><code>class</code> <code>TimeSeriesDataLoaders</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L461" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeSeriesDataLoaders</code>(<strong><code>to</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>'cpu'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>DataLoaders</code></p>
+<h2 id="TimeSeriesDataLoaders" class="doc_header"><code>class</code> <code>TimeSeriesDataLoaders</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L463" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeSeriesDataLoaders</code>(<strong><code>to</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>'cpu'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>DataLoaders</code></p>
 </blockquote>
 <p>Basic wrapper around several <code>DataLoader</code>s.</p>
 
@@ -728,10 +578,468 @@ nb_path: "nbs/05_timeseries.core.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tt</span> <span class="o">=</span> <span class="n">TimeseriesTransform</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">RandomSplitter</span><span class="p">(),</span> <span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Timeseries</span><span class="o">.</span><span class="n">_dl_type</span> <span class="o">=</span> <span class="n">TimeSeriesDataLoader</span>
 </pre></div>
 
     </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">to</span> <span class="o">=</span> <span class="n">get_test_tabular</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="s2">&quot;cat&quot;</span><span class="p">,</span> <span class="n">y_block</span><span class="o">=</span><span class="n">CategoryBlock</span><span class="p">())</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">to</span><span class="o">.</span><span class="n">loss_func</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>FlattenedLoss of CrossEntropyLoss()</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tt</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">RandomSplitter</span><span class="p">(),</span> <span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tt</span><span class="o">.</span><span class="n">loss_func</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>FlattenedLoss of CrossEntropyLoss()</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dl</span> <span class="o">=</span> <span class="n">tt</span><span class="o">.</span><span class="n">dataloaders</span><span class="p">(</span><span class="n">bs</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dl</span><span class="o">.</span><span class="n">train_ds</span><span class="o">.</span><span class="n">loss_func</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>FlattenedLoss of CrossEntropyLoss()</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dl</span><span class="o">.</span><span class="n">train_ds</span><span class="o">.</span><span class="n">conts</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>torch.Size([10, 2, 8])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dl</span><span class="o">.</span><span class="n">train_ds</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>index:
+ [[[&#39;2021-01-06T00:00:00.000000000&#39; &#39;2021-01-06T03:00:00.000000000&#39;
+   &#39;2021-01-06T06:00:00.000000000&#39; &#39;2021-01-06T09:00:00.000000000&#39;
+   &#39;2021-01-06T12:00:00.000000000&#39; &#39;2021-01-06T15:00:00.000000000&#39;
+   &#39;2021-01-06T18:00:00.000000000&#39; &#39;2021-01-06T21:00:00.000000000&#39;]]
+
+ [[&#39;2021-01-03T00:00:00.000000000&#39; &#39;2021-01-03T03:00:00.000000000&#39;
+   &#39;2021-01-03T06:00:00.000000000&#39; &#39;2021-01-03T09:00:00.000000000&#39;
+   &#39;2021-01-03T12:00:00.000000000&#39; &#39;2021-01-03T15:00:00.000000000&#39;
+   &#39;2021-01-03T18:00:00.000000000&#39; &#39;2021-01-03T21:00:00.000000000&#39;]]
+
+ [[&#39;2021-01-07T00:00:00.000000000&#39; &#39;2021-01-07T03:00:00.000000000&#39;
+   &#39;2021-01-07T06:00:00.000000000&#39; &#39;2021-01-07T09:00:00.000000000&#39;
+   &#39;2021-01-07T12:00:00.000000000&#39; &#39;2021-01-07T15:00:00.000000000&#39;
+   &#39;2021-01-07T18:00:00.000000000&#39; &#39;2021-01-07T21:00:00.000000000&#39;]]
+
+ [[&#39;2021-01-08T00:00:00.000000000&#39; &#39;2021-01-08T03:00:00.000000000&#39;
+   &#39;2021-01-08T06:00:00.000000000&#39; &#39;2021-01-08T09:00:00.000000000&#39;
+   &#39;2021-01-08T12:00:00.000000000&#39; &#39;2021-01-08T15:00:00.000000000&#39;
+   &#39;2021-01-08T18:00:00.000000000&#39; &#39;2021-01-08T21:00:00.000000000&#39;]]
+
+ [[&#39;2021-01-11T00:00:00.000000000&#39; &#39;2021-01-11T03:00:00.000000000&#39;
+   &#39;2021-01-11T06:00:00.000000000&#39; &#39;2021-01-11T09:00:00.000000000&#39;
+   &#39;2021-01-11T12:00:00.000000000&#39; &#39;2021-01-11T15:00:00.000000000&#39;
+   &#39;2021-01-11T18:00:00.000000000&#39; &#39;2021-01-11T21:00:00.000000000&#39;]]
+
+ [[&#39;2021-01-01T00:00:00.000000000&#39; &#39;2021-01-01T03:00:00.000000000&#39;
+   &#39;2021-01-01T06:00:00.000000000&#39; &#39;2021-01-01T09:00:00.000000000&#39;
+   &#39;2021-01-01T12:00:00.000000000&#39; &#39;2021-01-01T15:00:00.000000000&#39;
+   &#39;2021-01-01T18:00:00.000000000&#39; &#39;2021-01-01T21:00:00.000000000&#39;]]
+
+ [[&#39;2021-01-12T00:00:00.000000000&#39; &#39;2021-01-12T03:00:00.000000000&#39;
+   &#39;2021-01-12T06:00:00.000000000&#39; &#39;2021-01-12T09:00:00.000000000&#39;
+   &#39;2021-01-12T12:00:00.000000000&#39; &#39;2021-01-12T15:00:00.000000000&#39;
+   &#39;2021-01-12T18:00:00.000000000&#39; &#39;2021-01-12T21:00:00.000000000&#39;]]
+
+ [[&#39;2021-01-10T00:00:00.000000000&#39; &#39;2021-01-10T03:00:00.000000000&#39;
+   &#39;2021-01-10T06:00:00.000000000&#39; &#39;2021-01-10T09:00:00.000000000&#39;
+   &#39;2021-01-10T12:00:00.000000000&#39; &#39;2021-01-10T15:00:00.000000000&#39;
+   &#39;2021-01-10T18:00:00.000000000&#39; &#39;2021-01-10T21:00:00.000000000&#39;]]
+
+ [[&#39;2021-01-04T00:00:00.000000000&#39; &#39;2021-01-04T03:00:00.000000000&#39;
+   &#39;2021-01-04T06:00:00.000000000&#39; &#39;2021-01-04T09:00:00.000000000&#39;
+   &#39;2021-01-04T12:00:00.000000000&#39; &#39;2021-01-04T15:00:00.000000000&#39;
+   &#39;2021-01-04T18:00:00.000000000&#39; &#39;2021-01-04T21:00:00.000000000&#39;]]
+
+ [[&#39;2021-01-09T00:00:00.000000000&#39; &#39;2021-01-09T03:00:00.000000000&#39;
+   &#39;2021-01-09T06:00:00.000000000&#39; &#39;2021-01-09T09:00:00.000000000&#39;
+   &#39;2021-01-09T12:00:00.000000000&#39; &#39;2021-01-09T15:00:00.000000000&#39;
+   &#39;2021-01-09T18:00:00.000000000&#39; &#39;2021-01-09T21:00:00.000000000&#39;]]]
+[&#39;cat&#39;]:
+tensor([[[2, 0, 3, 2, 2, 2, 2, 4]],
+
+        [[4, 0, 0, 4, 1, 3, 2, 4]],
+
+        [[3, 3, 4, 4, 3, 2, 0, 4]],
+
+        [[3, 1, 3, 2, 1, 2, 4, 0]],
+
+        [[1, 2, 3, 3, 3, 3, 0, 1]],
+
+        [[2, 4, 2, 1, 3, 2, 3, 1]],
+
+        [[3, 1, 4, 3, 1, 2, 3, 4]],
+
+        [[0, 0, 3, 1, 3, 3, 3, 1]],
+
+        [[2, 4, 0, 0, 1, 3, 4, 4]],
+
+        [[1, 4, 2, 1, 1, 3, 4, 1]]])
+
+[&#39;x1&#39;, &#39;x2&#39;]:
+tensor([[[20.0000, 20.5000, 21.0000, 21.5000, 22.0000, 22.5000, 23.0000,
+          23.5000],
+         [27.5000, 27.0000, 26.5000, 26.0000, 25.5000, 25.0000, 24.5000,
+          24.0000]],
+
+        [[ 8.0000,  8.5000,  9.0000,  9.5000, 10.0000, 10.5000, 11.0000,
+          11.5000],
+         [39.5000, 39.0000, 38.5000, 38.0000, 37.5000, 37.0000, 36.5000,
+          36.0000]],
+
+        [[24.0000, 24.5000, 25.0000, 25.5000, 26.0000, 26.5000, 27.0000,
+          27.5000],
+         [23.5000, 23.0000, 22.5000, 22.0000, 21.5000, 21.0000, 20.5000,
+          20.0000]],
+
+        [[28.0000, 28.5000, 29.0000, 29.5000, 30.0000, 30.5000, 31.0000,
+          31.5000],
+         [19.5000, 19.0000, 18.5000, 18.0000, 17.5000, 17.0000, 16.5000,
+          16.0000]],
+
+        [[40.0000, 40.5000, 41.0000, 41.5000, 42.0000, 42.5000, 43.0000,
+          43.5000],
+         [ 7.5000,  7.0000,  6.5000,  6.0000,  5.5000,  5.0000,  4.5000,
+           4.0000]],
+
+        [[ 0.0000,  0.5000,  1.0000,  1.5000,  2.0000,  2.5000,  3.0000,
+           3.5000],
+         [47.5000, 47.0000, 46.5000, 46.0000, 45.5000, 45.0000, 44.5000,
+          44.0000]],
+
+        [[44.0000, 44.5000, 45.0000, 45.5000, 46.0000, 46.5000, 47.0000,
+          47.5000],
+         [ 3.5000,  3.0000,  2.5000,  2.0000,  1.5000,  1.0000,  0.5000,
+           0.0000]],
+
+        [[36.0000, 36.5000, 37.0000, 37.5000, 38.0000, 38.5000, 39.0000,
+          39.5000],
+         [11.5000, 11.0000, 10.5000, 10.0000,  9.5000,  9.0000,  8.5000,
+           8.0000]],
+
+        [[12.0000, 12.5000, 13.0000, 13.5000, 14.0000, 14.5000, 15.0000,
+          15.5000],
+         [35.5000, 35.0000, 34.5000, 34.0000, 33.5000, 33.0000, 32.5000,
+          32.0000]],
+
+        [[32.0000, 32.5000, 33.0000, 33.5000, 34.0000, 34.5000, 35.0000,
+          35.5000],
+         [15.5000, 15.0000, 14.5000, 14.0000, 13.5000, 13.0000, 12.5000,
+          12.0000]]])
+
+[&#39;cat&#39;]:
+tensor([[[2, 0, 3, 2, 2, 2, 2, 4]],
+
+        [[4, 0, 0, 4, 1, 3, 2, 4]],
+
+        [[3, 3, 4, 4, 3, 2, 0, 4]],
+
+        [[3, 1, 3, 2, 1, 2, 4, 0]],
+
+        [[1, 2, 3, 3, 3, 3, 0, 1]],
+
+        [[2, 4, 2, 1, 3, 2, 3, 1]],
+
+        [[3, 1, 4, 3, 1, 2, 3, 4]],
+
+        [[0, 0, 3, 1, 3, 3, 3, 1]],
+
+        [[2, 4, 0, 0, 1, 3, 4, 4]],
+
+        [[1, 4, 2, 1, 1, 3, 4, 1]]])
+</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dl</span><span class="o">.</span><span class="n">train_ds</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>x1</th>
+      <th>x2</th>
+      <th>cat</th>
+      <th>cat</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2021-01-06 00:00:00</th>
+      <td>20.0</td>
+      <td>20.5</td>
+      <td>2</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>2021-01-06 03:00:00</th>
+      <td>21.0</td>
+      <td>21.5</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2021-01-06 06:00:00</th>
+      <td>22.0</td>
+      <td>22.5</td>
+      <td>3</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>2021-01-06 09:00:00</th>
+      <td>23.0</td>
+      <td>23.5</td>
+      <td>2</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>2021-01-06 12:00:00</th>
+      <td>27.5</td>
+      <td>27.0</td>
+      <td>2</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>2021-01-06 15:00:00</th>
+      <td>26.5</td>
+      <td>26.0</td>
+      <td>2</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>2021-01-06 18:00:00</th>
+      <td>25.5</td>
+      <td>25.0</td>
+      <td>2</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>2021-01-06 21:00:00</th>
+      <td>24.5</td>
+      <td>24.0</td>
+      <td>4</td>
+      <td>4</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -864,7 +1172,7 @@ nb_path: "nbs/05_timeseries.core.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tt</span> <span class="o">=</span> <span class="n">TimeseriesTransform</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">RandomSplitter</span><span class="p">(),</span> <span class="n">post_hooks</span><span class="o">=</span><span class="p">[])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tt</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">RandomSplitter</span><span class="p">(),</span> <span class="n">post_hooks</span><span class="o">=</span><span class="p">[])</span>
 <span class="n">tt</span><span class="o">.</span><span class="n">ys</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
 </pre></div>
 
@@ -900,7 +1208,7 @@ nb_path: "nbs/05_timeseries.core.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tt</span> <span class="o">=</span> <span class="n">TimeseriesTransform</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">RandomSplitter</span><span class="p">(),</span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tt</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">RandomSplitter</span><span class="p">(),</span> 
                          <span class="n">post_hooks</span><span class="o">=</span><span class="p">[</span><span class="n">partial</span><span class="p">(</span><span class="n">reduce_target_timeseries_to_element</span><span class="p">,</span> <span class="n">element_pos</span><span class="o">=</span><span class="mi">0</span><span class="p">)])</span>
 <span class="n">tt</span><span class="o">.</span><span class="n">ys</span><span class="o">.</span><span class="n">shape</span>
 </pre></div>

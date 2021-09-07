@@ -302,7 +302,6 @@ class TemporalConvNet(nn.Module):
 # Cell
 @variational_estimator
 class TemporalCNN(nn.Module):
-# class TemporalCNN(Transfer):
     def __init__(
         self,
         cnn_structure,
