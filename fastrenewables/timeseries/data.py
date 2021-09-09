@@ -22,17 +22,17 @@ class RenewableTimeSeriesDataLoaders(DataLoaders):
                 splits=None, **kwargs):
 
         "Create from `df` in `path` using `procs`"
-        if cat_names is None: cat_names = []
-        if cont_names is None: cont_names = list(set(df)-set(L(cat_names))-set(L(y_names)))
+        if cat_names is None:
+            cat_names = []
 
-        if pre_procs is None: pre_procs = [
-            CreateTimeStampIndex("TimeUTC"),
-                AddSeasonalFeatures,
-            ]
+        if cont_names is None:
+            cont_names = list(set(df)-set(L(cat_names))-set(L(y_names)))
+
+        if pre_procs is None:
+            pre_procs = [CreateTimeStampIndex("TimeUTC"), AddSeasonalFeatures]
+
         if procs is None:
-            procs = [
-                NormalizePerTask,
-                    Categorify]
+            procs = [NormalizePerTask, Categorify]
 
         to = TabularRenewables(
             df,
@@ -45,7 +45,8 @@ class RenewableTimeSeriesDataLoaders(DataLoaders):
             splits=None,
         )
         splits = RandomSplitter(valid_pct=0.2) if splits is None else splits
-        tt = Timeseries(to, splits=splits)
+
+        tt = Timeseries(to, splits=splits, **kwargs)
 
         return TimeSeriesDataLoaders(tt, **kwargs)
 
@@ -54,9 +55,9 @@ class RenewableTimeSeriesDataLoaders(DataLoaders):
         dfs = read_files(files)
 
         dfs = pd.concat(dfs, axis=0)
-        if "cat_names" in kwargs.keys():
-            kwargs["cat_names"] = kwargs["cat_names"] if "TaskID" in kwargs["cat_names"] else kwargs["cat_names"] + ["TaskID"]
-        else:
-            kwargs["cat_names"] = ["TaskID"]
+#         if "cat_names" in kwargs.keys():
+#             kwargs["cat_names"] = kwargs["cat_names"] if "TaskID" in kwargs["cat_names"] else kwargs["cat_names"] + ["TaskID"]
+#         else:
+#             kwargs["cat_names"] = ["TaskID"]
 
         return cls.from_df(dfs, **kwargs)

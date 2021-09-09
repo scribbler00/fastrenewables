@@ -51,13 +51,17 @@ class RenewableTimeseriesLearner(Learner):
 @delegates(Learner.__init__)
 def renewable_timeseries_learner(dls, layers=None, emb_szs=None, config=None,
                                  n_out=None, y_range=None,
-                                 embedding_type=EmbeddingType.Normal, **kwargs):
+                                 embedding_type=EmbeddingType.Normal,
+                                 input_sequence_length=None,
+                                 output_sequence_length=None,
+                                 sequence_transform=None,
+                                 **kwargs):
     "Get a `Learner` using `dls`, with `metrics`, including a `TabularModel` created using the remaining params."
     if config is None: config = tabular_config()
 
-#     if n_out is None:
-#         n_out = get_c(dls)
-    n_out = dls.train_ds.ys.shape[1]
+    if n_out is None:
+        n_out = get_c(dls)
+#     n_out = dls.train_ds.ys.shape[1]
 
     assert n_out, "`n_out` is not defined, and could not be inferred from data, set `dls.c` or pass `n_out`"
 
@@ -71,7 +75,11 @@ def renewable_timeseries_learner(dls, layers=None, emb_szs=None, config=None,
         emb_szs = get_emb_sz(dls.train_ds, {} if emb_szs is None else emb_szs)
         emb_module = EmbeddingModule(None, embedding_dropout=embed_p, embedding_dimensions=emb_szs)
 
-    model = TemporalCNN(layers, embedding_module=emb_module, **config)
+    model = TemporalCNN(layers, embedding_module=emb_module,
+                        input_sequence_length=input_sequence_length,
+                        output_sequence_length=output_sequence_length,
+                        sequence_transform=sequence_transform,
+                        **config)
 
     if embedding_type==EmbeddingType.Bayes and "loss_func" not in kwargs.keys():
         base_loss = getattr(dls.train_ds, 'loss_func', None)

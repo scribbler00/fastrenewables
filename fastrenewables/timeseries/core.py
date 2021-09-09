@@ -301,7 +301,8 @@ class Timeseries(Transform, FilteredBase):
         sequence_last: bool = True,
         drop_inconsistent_cats: bool = True,
         splits=None,
-        post_hooks=[]
+        post_hooks=[],
+        **kwargs
     ):
         """
 
@@ -354,6 +355,8 @@ class Timeseries(Transform, FilteredBase):
 
         self.dataloaders = delegates(self._dl_type.__init__)(self.dataloaders)
 
+        self._check_shape()
+
     def _adjust_to_required_timeseries_representation(self):
         self.indexes = _adjust_ts_and_batch(
             self.indexes, self.batch_first, self.sequence_last
@@ -369,6 +372,19 @@ class Timeseries(Transform, FilteredBase):
             self.cats = _adjust_ts_and_batch(
                 self.cats, self.batch_first, self.sequence_last
             )
+
+    def _check_shape(self):
+        if not self.batch_first or not self.sequence_last:
+            raise NotImplementedError
+
+    @property
+    def input_sequence_length(self):
+        return self.conts.shape[-1]
+
+    @property
+    def output_sequence_length(self):
+        return self.ys.shape[-1]
+
     @property
     def c(self):
         return self.to.c
@@ -488,7 +504,15 @@ class TimeseriesDataset(fastuple):
     def __len__(self): return len(self.conts)
 
     def new_empty(self):
-        return TimeseriesDataset((torch.empty(0), torch.empty(0), torch.empty(0)), [[], [], []])
+        return TimeseriesDataset((np.empty(0), torch.empty(0), torch.empty(0), torch.empty(0)), [[], [], []])
+
+    @property
+    def input_sequence_length(self):
+        return self.conts.shape[-1]
+
+    @property
+    def output_sequence_length(self):
+        return self.ys.shape[-1]
 
     def as_df(self, max_n=-1):
         df_cont = pd.DataFrame(data=self.conts[:max_n].reshape(-1,self.conts.shape[1]), columns=self.cont_names)
@@ -524,6 +548,14 @@ class TimeSeriesDataLoader(DataLoader):
         if to_device:self.to_device()
 
     def create_item(self, s): return s
+
+    @property
+    def input_sequence_length(self):
+        return self.dataset.input_sequence_length
+
+    @property
+    def output_sequence_length(self):
+        return self.dataset.output_sequence_length
 
     def to_device(self, device=None):
         if device is None: device = self.device
@@ -564,11 +596,20 @@ class TimeSeriesDataLoaders(DataLoaders):
         val_bs = bs if val_bs is None else val_bs
         train = TimeSeriesDataLoader(train_ds, bs=bs, shuffle=shuffle_train, device=device, **kwargs)
         valid = TimeSeriesDataLoader(valid_ds, bs=val_bs, shuffle=False, device=device, **kwargs)
-        super().__init__(train, valid, device=device, **kwargs)
+
+        super().__init__(train, valid, device=device)
+
+    @property
+    def input_sequence_length(self):
+        return self.train.input_sequence_length
+
+    @property
+    def output_sequence_length(self):
+        return self.train.output_sequence_length
 
 # Cell
-def reduce_target_timeseries_to_element(cats, conts, ys, element_pos=0):
+def reduce_target_timeseries_to_element(indexes, cats, conts, ys, element_pos=0):
     "Simple transform to shorten the target timeseries."
     ys = ys[:,:,element_pos].reshape(-1,1,1)
 
-    return cats,conts,ys
+    return indexes, cats, conts, ys

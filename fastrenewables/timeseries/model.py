@@ -385,7 +385,7 @@ class TemporalCNN(nn.Module):
         )
 
         self.custom_output_sequence=False
-        if output_sequence_length != None and input_sequence_length != None and sequence_transform is not None:
+        if output_sequence_length != None and input_sequence_length != None and sequence_transform is None:
             # TODO: can this replace with a 1D-CNN with kernel size 1?
             self.sequence_transform = nn.Linear(
                 self.cnn_structure[-1] * self.input_sequence_length,
