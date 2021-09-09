@@ -1,7 +1,7 @@
 {
   "fastrenewables": {
     "Overview": "/",
-    "Title": "gan.core.html",
+    "utils": "utils.html",
     "losses": "losses.html",
     "uitls_blitz": "utils_blitz.html",
     "baselines": "baselines.html",
@@ -12,6 +12,7 @@
     "timeseries.core": "timeseries.core.html",
     "timeseries.data": "timeseries.data.html",
     "timeseries.model": "timeseries.model.html",
-    "timeseries.learner": "timeseries.learner.html"
+    "timeseries.learner": "timeseries.learner.html",
+    "gan.core": "gan.core.html"
   }
 }

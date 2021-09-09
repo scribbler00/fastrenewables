@@ -10,8 +10,8 @@ entries:
       title: Overview
       url: /
     - output: web,pdf
-      title: Title
-      url: gan.core.html
+      title: utils
+      url: utils.html
     - output: web,pdf
       title: losses
       url: losses.html
@@ -45,6 +45,9 @@ entries:
     - output: web,pdf
       title: timeseries.learner
       url: timeseries.learner.html
+    - output: web,pdf
+      title: gan.core
+      url: gan.core.html
     output: web
     title: fastrenewables
   output: web
