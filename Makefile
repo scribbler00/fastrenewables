@@ -19,7 +19,7 @@ docs: $(SRC)
 	touch docs
 
 test:
-	nbdev_test_nbs --vernose=True
+	nbdev_test_nbs --verbose=True
 
 release: pypi conda_release
 	nbdev_bump_version
