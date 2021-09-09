@@ -157,8 +157,7 @@ nb_path: "nbs/05_timeseries.core.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">expected_first_cont_tensor</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">convert_to_timeseries_representation</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> <span class="mi">24</span><span class="o">//</span><span class="mi">3</span><span class="p">)[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
-<span class="c1"># test_eq(convert_to_timeseries_representation(to, 24//3)[0][0,0,0], to.items.sort_index().index[0])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># test_eq(convert_to_timeseries_representation(to, 24//3)[0][0,0,0], to.items.sort_index().index[0])</span>
 <span class="c1"># test_eq(convert_to_timeseries_representation(to, 24//3)[0][-1,-1,-1], to.items.sort_index().index[-1])</span>
 </pre></div>
 
@@ -269,17 +268,18 @@ nb_path: "nbs/05_timeseries.core.ipynb"
                                                       <span class="n">ts_y_length</span><span class="o">=</span><span class="n">ts_y_length</span><span class="p">,</span>
                                                       <span class="n">step_size</span><span class="o">=</span><span class="n">step_size</span><span class="p">,</span>
                                                       <span class="n">y_timeseries_offset</span><span class="o">=</span><span class="n">y_timeseries_offset</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">expected_first_cont_tensor</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">conts</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="c1"># first element of y should be equal to the element by the offset in the dataframe</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">][</span><span class="n">y_timeseries_offset</span><span class="p">],</span> <span class="n">ys</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
-<span class="c1"># for each sample of the time series we increase by the step size</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">][</span><span class="n">y_timeseries_offset</span><span class="o">+</span><span class="n">step_size</span><span class="p">],</span> <span class="n">ys</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
-<span class="c1"># for each sample of the time series we increase by the step size</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">][</span><span class="n">y_timeseries_offset</span><span class="o">+</span><span class="n">step_size</span><span class="p">],</span> <span class="n">ys</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
-<span class="c1"># where the length of this timeseries is given by ts_y_length</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">][</span><span class="n">y_timeseries_offset</span><span class="o">+</span><span class="n">step_size</span><span class="o">+</span><span class="n">ts_y_length</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">ys</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-<span class="c1"># as we reduced the length of y by the offset, the last element should still be the last element</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">ys</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="c1"># test_eq(expected_first_cont_tensor.T, conts[0])</span>
+<span class="c1"># # first element of y should be equal to the element by the offset in the dataframe</span>
+<span class="c1"># test_eq(df[&quot;y&quot;][y_timeseries_offset], ys[0][0][0])</span>
+<span class="c1"># # for each sample of the time series we increase by the step size</span>
+<span class="c1"># test_eq(df[&quot;y&quot;][y_timeseries_offset+step_size], ys[1][0][0])</span>
+<span class="c1"># # for each sample of the time series we increase by the step size</span>
+<span class="c1"># test_eq(df[&quot;y&quot;][y_timeseries_offset+step_size], ys[1][0][0])</span>
+<span class="c1"># # where the length of this timeseries is given by ts_y_length</span>
+<span class="c1"># test_eq(df[&quot;y&quot;][y_timeseries_offset+step_size+ts_y_length-1], ys[1][0][-1])</span>
+<span class="c1"># # as we reduced the length of y by the offset, the last element should still be the last element</span>
+<span class="c1"># test_eq(df[&quot;y&quot;][-1], ys[-1][-1][-1])</span>
+
 <span class="c1"># check correct reshape of indexes</span>
 <span class="c1"># test_eq(indexes[0,0,0], to.items.sort_index().index[0])</span>
 <span class="c1"># test_eq(indexes[-1,-1,-1], to.items.sort_index().index[-1])</span>
@@ -306,9 +306,38 @@ nb_path: "nbs/05_timeseries.core.ipynb"
     
 <span class="c1"># check whether correct values of dataframe are determined</span>
 <span class="c1"># test_eq(indexes_implicit.shape, indexes_explicit.shape)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">cats_implicit</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">cats_explicit</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">conts_implicit</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">conts_explicit</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">ys_implicit</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">ys_explicit</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="c1"># test_eq(cats_implicit.shape, cats_explicit.shape)</span>
+<span class="c1"># test_eq(conts_implicit.shape, conts_explicit.shape)</span>
+<span class="c1"># test_eq(ys_implicit.shape, ys_explicit.shape)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># to = get_test_tabular()</span>
+<span class="c1"># _, indexes, cats, conts, ys = _convert_tabular_pandas_to_timeseries(to)</span>
+<span class="c1"># # simulate that all catecoricals have the same value along the timerseries axis</span>
+<span class="c1"># cats = torch.ones_like(cats)</span>
+<span class="c1"># # fake two incorrect values</span>
+<span class="c1"># cats[0][0][1]=0</span>
+<span class="c1"># cats[-1][0][1]=3</span>
+<span class="c1"># indexes_checked, cats_checked, conts_checked, ys_checked = _check_categoricals(indexes, conts, cats, ys)</span>
+<span class="c1"># # check if two values have been removed in all input/output and catecoricals</span>
+<span class="c1"># test_eq(cats.shape[0]-2, cats_checked.shape[0])</span>
+<span class="c1"># test_eq(conts.shape[0]-2, conts_checked.shape[0])</span>
+<span class="c1"># # test_eq(indexes.shape[0]-2, indexes_checked.shape[0])</span>
+<span class="c1"># test_eq(ys.shape[0]-2, ys_checked.shape[0])</span>
 </pre></div>
 
     </div>
@@ -581,60 +610,60 @@ nb_path: "nbs/05_timeseries.core.ipynb"
   </thead>
   <tbody>
     <tr>
-      <th>2021-01-12 00:00:00</th>
-      <td>44.0</td>
-      <td>44.5</td>
-      <td>3</td>
-      <td>-0.287156</td>
-    </tr>
-    <tr>
-      <th>2021-01-12 03:00:00</th>
-      <td>45.0</td>
-      <td>45.5</td>
+      <th>2021-01-11 00:00:00</th>
+      <td>40.0</td>
+      <td>40.5</td>
       <td>1</td>
-      <td>-1.031900</td>
+      <td>0.159474</td>
     </tr>
     <tr>
-      <th>2021-01-12 06:00:00</th>
-      <td>46.0</td>
-      <td>46.5</td>
-      <td>4</td>
-      <td>1.621323</td>
-    </tr>
-    <tr>
-      <th>2021-01-12 09:00:00</th>
-      <td>47.0</td>
-      <td>47.5</td>
-      <td>3</td>
-      <td>-1.972457</td>
-    </tr>
-    <tr>
-      <th>2021-01-12 12:00:00</th>
-      <td>3.5</td>
-      <td>3.0</td>
-      <td>1</td>
-      <td>-0.240680</td>
-    </tr>
-    <tr>
-      <th>2021-01-12 15:00:00</th>
-      <td>2.5</td>
-      <td>2.0</td>
+      <th>2021-01-11 03:00:00</th>
+      <td>41.0</td>
+      <td>41.5</td>
       <td>2</td>
-      <td>-0.304481</td>
+      <td>-0.800728</td>
     </tr>
     <tr>
-      <th>2021-01-12 18:00:00</th>
-      <td>1.5</td>
-      <td>1.0</td>
+      <th>2021-01-11 06:00:00</th>
+      <td>42.0</td>
+      <td>42.5</td>
       <td>3</td>
-      <td>-0.139733</td>
+      <td>-0.539045</td>
     </tr>
     <tr>
-      <th>2021-01-12 21:00:00</th>
-      <td>0.5</td>
-      <td>0.0</td>
-      <td>4</td>
-      <td>1.360318</td>
+      <th>2021-01-11 09:00:00</th>
+      <td>43.0</td>
+      <td>43.5</td>
+      <td>3</td>
+      <td>1.041620</td>
+    </tr>
+    <tr>
+      <th>2021-01-11 12:00:00</th>
+      <td>7.5</td>
+      <td>7.0</td>
+      <td>3</td>
+      <td>0.094436</td>
+    </tr>
+    <tr>
+      <th>2021-01-11 15:00:00</th>
+      <td>6.5</td>
+      <td>6.0</td>
+      <td>3</td>
+      <td>0.161052</td>
+    </tr>
+    <tr>
+      <th>2021-01-11 18:00:00</th>
+      <td>5.5</td>
+      <td>5.0</td>
+      <td>0</td>
+      <td>1.540950</td>
+    </tr>
+    <tr>
+      <th>2021-01-11 21:00:00</th>
+      <td>4.5</td>
+      <td>4.0</td>
+      <td>1</td>
+      <td>0.453532</td>
     </tr>
   </tbody>
 </table>
