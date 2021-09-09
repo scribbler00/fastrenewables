@@ -76,7 +76,6 @@ def convert_to_bayesian_model(model, config: dict):
 
     return model
 
-
 # Cell
 def set_train_mode(model, mode):
     if isinstance(model, BayesianModule):
