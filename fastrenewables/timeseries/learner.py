@@ -19,7 +19,7 @@ import pandas as pd
 
 # Cell
 class RenewableTimeseriesLearner(Learner):
-    "`Learner` for renewable data"
+    "`Learner` for renewable timerseries data."
     def predict(self, ds_idx=1, test_dl=None, filter=True, as_df=False):
         device = next(self.model.parameters()).device
         preds, targets = None, None

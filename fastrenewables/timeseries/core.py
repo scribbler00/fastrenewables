@@ -27,6 +27,7 @@ def _reshape_dataframe_to_timeseries_representation(df, ts_length, column_names)
     return tensor(reshaped_values)
 
 # Cell
+#hide
 def _get_samples_per_day_single_task(to):
     "Gets the number of samples per day, for a TabularRenewables with multiple tasks."
     task_ids = to[to.group_id].unique()
@@ -34,6 +35,7 @@ def _get_samples_per_day_single_task(to):
     return get_samples_per_day(df.sort_index())
 
 # Cell
+#hide
 def _correct_types(to, cats, conts, ys):
     if len(cats) > 0:
         cats = cats.long()
@@ -72,6 +74,59 @@ def convert_to_timeseries_representation(to:TabularRenewables, timeseries_length
     return index, cats, conts, ys
 
 # Cell
+#hide
+
+# TODO: should work with typedispatch for convert_to_timeseries_representation
+# but is not redirecting correctly
+# @typedispatch
+def _reshape_dataframe_to_timeseries_representation_different_lengths(df:pd.DataFrame, cont_names:list,
+                                         cat_names:list, y_names:list,
+                                         ts_x_length:int, ts_y_length:int,
+                                        step_size:int, y_timeseries_offset:int):
+    len_data = df.shape[0]
+    has_cats = len(cat_names)>0
+    max_samples = len_data - y_timeseries_offset - ts_y_length
+
+    samples_tensor = max_samples // step_size + 1
+
+    conts = torch.zeros((samples_tensor, len(cont_names), ts_x_length)).float()
+    ys = torch.zeros((samples_tensor, len(cat_names), ts_y_length))
+    indexes = np.zeros((samples_tensor, 1, ts_x_length), dtype='datetime64[s]')
+
+    cats = None
+    if has_cats:
+        cats = torch.zeros((samples_tensor, len(cat_names), ts_x_length)).long()
+    else:
+        cats = torch.empty(((samples_tensor, len(cat_names), ts_x_length)))
+
+    for sample_id, i in enumerate(range(0, max_samples + 1, step_size)):
+        start_x = i
+        end_x = start_x + ts_x_length
+        start_y = i + y_timeseries_offset
+        end_y = start_y + ts_y_length
+
+        conts[sample_id, :, :] = tensor(
+            df[cont_names][start_x:end_x].values.transpose().reshape(-1, ts_x_length)
+        )
+        indexes[sample_id, :, :] = df.index[start_x:end_x].values.transpose().reshape(-1, ts_x_length)
+
+        if has_cats:
+            cats[sample_id, :, :] = tensor(
+                df[cat_names][start_x:end_x]
+                .values.transpose()
+                .reshape(-1, ts_x_length)
+            ).long()
+
+        ys[sample_id, :, :] = tensor(
+            df[y_names].iloc[start_y:end_y]
+            .values.transpose()
+            .reshape(-1, ts_y_length)
+        )
+
+    return indexes, cats, conts, ys
+
+# Cell
+#hide
 def _convert_tabular_pandas_to_timeseries(
         to,
         ts_x_length=None,
@@ -107,7 +162,7 @@ def _convert_tabular_pandas_to_timeseries(
         return ts_lengths, indexes, cats, conts, ys
 
 # Cell
-
+#hide
 def _check_categoricals(indexes, conts, cats, ys, batch_first=True, sequence_last=True):
     # If selected, drop all categorical columns which do not have a constant value for each time series
     # individually.
@@ -134,7 +189,7 @@ def _check_categoricals(indexes, conts, cats, ys, batch_first=True, sequence_las
     return indexes, cats, conts, ys
 
 # Cell
-
+#hide
 def _adjust_ts_and_batch(data, batch_first, sequence_last):
     """
     Swap the dimensions of the given Tensor.
@@ -167,7 +222,7 @@ def _adjust_ts_and_batch(data, batch_first, sequence_last):
 
 
 # Cell
-
+#hide
 def _convert_to_batch_ts_feature_view(data, batch_first, sequence_last):
     """
     Converts the data to the followong dimension (batch, sequence length, features).
@@ -201,6 +256,7 @@ def _convert_to_batch_ts_feature_view(data, batch_first, sequence_last):
 
 # Cell
 class Timeseries(Transform, FilteredBase):
+    "A transform to convert a TabularRenewables object into a timerseries representation."
     def __init__(
         self,
         to: TabularRenewables,
@@ -422,6 +478,7 @@ class TimeseriesDataset(fastuple):
 
 # Cell
 class TimeSeriesDataLoader(DataLoader):
+    "A dataloader for timersiers datasets."
     def __init__(self, dataset, bs=32, num_workers=0, device='cuda',
                  to_device=True, shuffle=False, drop_last=True,**kwargs):
         "A `DataLoader` based on a `TabDataset"
@@ -461,6 +518,7 @@ class TimeSeriesDataLoader(DataLoader):
 
 # Cell
 class TimeSeriesDataLoaders(DataLoaders):
+    "Dataloader container to store the training as well as the validation dataloader."
     def __init__(self, to, bs=64, val_bs=None, shuffle_train=True, device='cpu', **kwargs):
         if isinstance(to, Timeseries):
             train_ds = to.train

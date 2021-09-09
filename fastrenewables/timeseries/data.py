@@ -13,7 +13,7 @@ import glob
 
 # Cell
 class RenewableTimeSeriesDataLoaders(DataLoaders):
-
+    """Creates a timerseries data and dataloaders."""
     @classmethod
     @delegates(Tabular.dataloaders, but=["dl_type", "dl_kwargs"])
     def from_df(cls, df, path='.', procs=None, pre_procs=None, \
@@ -33,8 +33,6 @@ class RenewableTimeSeriesDataLoaders(DataLoaders):
             procs = [
                 NormalizePerTask,
                     Categorify]
-
-
 
         to = TabularRenewables(
             df,

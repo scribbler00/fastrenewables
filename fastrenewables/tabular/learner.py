@@ -16,7 +16,7 @@ from ..losses import VILoss
 
 # Cell
 class RenewableLearner(Learner):
-    "`Learner` for renewable data"
+    "`Learner` for renewable data."
     def predict(self, ds_idx=1, test_dl=None, filter=True):
         device = next(self.model.parameters()).device
         preds, targets = None, None
@@ -53,7 +53,7 @@ class RenewableLearner(Learner):
 # Cell
 @delegates(Learner.__init__)
 def renewable_learner(dls, layers=None, emb_szs=None, config=None, n_out=None, y_range=None, embedding_type=EmbeddingType.Normal, **kwargs):
-    "Get a `Learner` using `dls`, with `metrics`, including a `TabularModel` created using the remaining params."
+    "Get a `Learner` using `dls`, with `metrics`, including a `RenewableModel` created using the remaining params."
     if config is None: config = tabular_config()
 
     if n_out is None: n_out = get_c(dls)

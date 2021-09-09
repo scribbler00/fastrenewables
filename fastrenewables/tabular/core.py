@@ -87,6 +87,7 @@ def read_files(
 # Cell
 # this is merely a class to differentiate between fastai processing and renewbale pre-processing functionality
 class RenewablesTabularProc(TabularProc):
+    "Base class to differentiate between fastai and fastrenewables pre-processing functionality."
     include_in_new=False
     pass
 
@@ -118,7 +119,7 @@ def _offset_correction(df, offset_correction):
 
 # Cell
 class CreateTimeStampIndex(RenewablesTabularProc):
-    """Assures a correc pandas timestamp."""
+    """Assures a correct pandas timestamp."""
     order=0
     include_in_new=True
     def __init__(self, index_col_name, offset_correction=None):
@@ -273,10 +274,11 @@ def _correct_dypes(to):
 
 # Cell
 class Interpolate(RenewablesTabularProc):
+    """Interpolates continous features to required sample time."""
     order=0
     include_in_new=True
     def __init__(self, sample_time = "15Min", limit=5, drop_na=True, group_by_col="TaskID"):
-        """Interpolates continous features to required sample time."""
+
         self.sample_time = sample_time
         self.limit = limit
         self.drop_na = drop_na
@@ -287,12 +289,7 @@ class Interpolate(RenewablesTabularProc):
         if self.n_samples_per_day == -1:
             warnings.warn("Could not determine samples per day. Skip processing.")
 
-
-
-
-
     def encodes(self, to):
-
         if self.n_samples_per_day == -1:
             return
 
@@ -337,11 +334,11 @@ def _create_consistent_number_of_sampler_per_day(
 
 # Cell
 class FilterInconsistentSamplesPerDay(RenewablesTabularProc):
-
+    """Filters an incosistent number of samples per day, e.g., when certain timestamps within a day are missing."""
     order=100
     include_in_new=True
     def __init__(self, group_by_col="TaskID"):
-        """Filters an incosistent number of samples per day, e.g., when certain timestamps within a day are missing."""
+
         self.group_by_col = group_by_col
 
     def setups(self, to: Tabular):
@@ -355,10 +352,11 @@ class FilterInconsistentSamplesPerDay(RenewablesTabularProc):
 
 # Cell
 class AddSeasonalFeatures(RenewablesTabularProc):
+    """Adds seasonal features, such as month of the year, as continious or categorical feature."""
     order=0
     include_in_new=True
     def __init__(self, as_cont=True):
-        """Adds seasonal features, such as month of the year, as continious or categorical feature."""
+
         self.as_cont = as_cont
 
     def encodes(self, to):
@@ -380,11 +378,12 @@ class AddSeasonalFeatures(RenewablesTabularProc):
 
 # Cell
 class FilterInfinity(TabularProc):
+    """Filter infinity values that occur for example due to preprocessing."""
     order=50
     include_in_new=True
     def __init__(self, cols_to_replace="", value_to_replace_with=-1,
                  replace_not_matching_cols=True):
-        """Filter infinity values that occur for example due to preprocessing."""
+
         self.cols_to_replace = cols_to_replace
         self.value_to_replace_with = value_to_replace_with
         self.replace_not_matching_cols = replace_not_matching_cols
@@ -411,11 +410,9 @@ class FilterInfinity(TabularProc):
 
 # Cell
 class FilterByCol(RenewablesTabularProc):
-
+    "Filter/Drops rows by a (boolean) column."
     order = 9
     def __init__(self, col_name, drop=True, drop_col_after_filter=True):
-        "Drops rows by column."
-
         self.col_name = col_name
         self.drop = drop
         self.drop_col_after_filter=drop_col_after_filter
@@ -428,11 +425,9 @@ class FilterByCol(RenewablesTabularProc):
 
 # Cell
 class FilterYear(RenewablesTabularProc):
-
+    "Filter/Drops data based on the given year. By default values from the {year} are dropped."
     order = 9
     def __init__(self, year, drop=True):
-        "Filter/drop data based on the given year. By default values from the {year} are dropped."
-
         year = listify(year)
         self.year = L(int(y) for y in year)
         self.drop = drop
@@ -449,14 +444,13 @@ class FilterYear(RenewablesTabularProc):
 
 # Cell
 class FilterHalf(RenewablesTabularProc):
-    """First half of the data is used for training and the other half of validation/testing."""
+    """
+        First half of the data is used for training and the other half of validation/testing.
+        When bydate is true the average date, between the first and last date is used to filter the data.
+        If bydate is false the amount of data is splitted by half, so that train and validation/testing have an equal amount of available data.
+    """
     order = 9
     def __init__(self, drop=False, bydate=True):
-        """
-            Whether to drop or keep the first half.
-            When bydate is true the average date, between the first and last date is used to filter the data.
-            If bydate is false the amount of data is splitted by half, so that train and validation/testing have an equal amount of available data.
-        """
         self.drop = drop
         self.bydate = bydate
 
@@ -479,10 +473,9 @@ class FilterHalf(RenewablesTabularProc):
 
 # Cell
 class FilterMonths(RenewablesTabularProc):
-
+    """Filter dataframe based on given months."""
     order = 9
     def __init__(self, months=range(1,13), drop=False):
-        """Filter dataframe for specific months."""
         self.months = listify(months)
         self.drop = drop
 
@@ -493,26 +486,27 @@ class FilterMonths(RenewablesTabularProc):
 
 # Cell
 class FilterDays(RenewablesTabularProc):
-
+    """Filter dataframe based on the last/first `n` number of days."""
     order = 10
-    def __init__(self, num_days):
-        """Filter dataframe for specific months."""
+    def __init__(self, num_days, last=True):
         self.num_days = num_days
+        self.last=last
 
     def setups(self, to: Tabular):
         self.n_samples_per_day = get_samples_per_day(to.items)
 
     def encodes(self, to):
-        to.items = to.items[-(self.n_samples_per_day * self.num_days):]
-
+        if self.last:
+            to.items = to.items[-(self.n_samples_per_day * self.num_days):]
+        else:
+            to.items = to.items[0:(self.n_samples_per_day * self.num_days)]
 
 # Cell
 class DropCols(RenewablesTabularProc):
-
+    """Drops rows by a column with boolean values."""
     include_in_new=True
     order = 10
     def __init__(self, cols):
-        """Drops rows by column name."""
         self.cols = listify(cols)
 
     def encodes(self, to):
@@ -520,11 +514,10 @@ class DropCols(RenewablesTabularProc):
 
 # Cell
 class Normalize(RenewablesTabularProc):
-
+    """Normalize per TaskId"""
     order = 1
     include_in_new=True
     def __init__(self, cols_to_ignore=[]):
-        """Normalize per TaskId"""
         self.cols_to_ignore = cols_to_ignore
 
     def setups(self, to: Tabular):
@@ -540,11 +533,11 @@ class Normalize(RenewablesTabularProc):
 
 # Cell
 class BinFeatures(TabularProc):
-
+    """Creates bin from categorical features."""
     order = 1
     include_in_new=True
     def __init__(self, column_names, bin_sizes=5):
-        """Creates bin from categorical features."""
+
         self.column_names = listify(column_names)
         self.bin_sizes = listify(bin_sizes)
         if len(self.bin_sizes) == 1:
@@ -572,6 +565,7 @@ class RenewableSplits:
 
 
 class ByWeeksSplitter(RenewableSplits):
+    """Train/Validation splits every `n` weeks."""
     def __init__(self, every_n_weeks: int = 4):
         self.every_n_weeks = every_n_weeks
 
@@ -588,6 +582,7 @@ class ByWeeksSplitter(RenewableSplits):
 
 
 class TrainTestSplitByDays(RenewableSplits):
+    """Train/Validation splits by days, so that each sample is a `complete` day."""
     def __init__(self, test_size: float = 0.25):
         self.test_size = test_size
 
@@ -608,15 +603,17 @@ class TrainTestSplitByDays(RenewableSplits):
 
 # Cell
 class TabularRenewables(TabularPandas):
+    """
+            TabularRenewables class that extends the TabularPandas class to include pre processing steps that allows for dropping values.
+            Further, the preprocessing allows handling multiple tasks at once, e.g., normalization per task.
+        """
+
     def __init__(self, dfs, procs=None, cat_names=None, cont_names=None, do_setup=True, reduce_memory=False,
                  y_names=None, add_y_to_x=False, add_x_to_y=False,
                  pre_process=None, device=None, splits=None, y_block=RegressionBlock(),
                  group_id="TaskID",
                 inplace=False):
-        """
-            TabularRenewables class that extends the TabularPandas class to include pre processing steps that allows for dropping values.
-            Further, the preprocessing allows handling multiple tasks at once, e.g., normalization per task.
-        """
+
         self.pre_process = pre_process
         self._original_pre_process = self.pre_process
         cont_names = listify(cont_names)
@@ -761,6 +758,7 @@ class ReadTabBatchRenewables(ItemTransform):
 @delegates()
 class TabDataLoaderRenewables(TfmdDL):
     "A transformed `DataLoader` for Tabular data"
+
     def __init__(self, dataset, bs=16, shuffle=False, after_batch=None, num_workers=0, **kwargs):
         if after_batch is None: after_batch = L(TransformBlock().batch_tfms)+ReadTabBatchRenewables(dataset)
         super().__init__(dataset, bs=bs, shuffle=shuffle, after_batch=after_batch, num_workers=num_workers, **kwargs)
@@ -975,6 +973,7 @@ class TabDataLoader(DataLoader):
 
 # Cell
 class TabDataLoaders(DataLoaders):
+    """A container for train and validation (tabular) dataloaders."""
     def __init__(self, to, bs=64, val_bs=None, shuffle_train=True, device='cpu', **kwargs):
         train_ds = TabDataset(to.train)
         valid_ds = TabDataset(to.valid)

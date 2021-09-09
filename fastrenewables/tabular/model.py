@@ -27,6 +27,7 @@ from blitz.utils import variational_estimator
 
 
 class EmbeddingType(Enum):
+    """Bayesian or non-Bayesian embedding type."""
     Normal = 0
     Bayes = 1
 
@@ -49,6 +50,8 @@ def get_emb_sz_list(dims: list):
 
 @variational_estimator
 class EmbeddingModule(nn.Module):
+    """A container module for a number of embeddings for categorical features."""
+
     def __init__(
         self,
         categorical_dimensions,
@@ -260,14 +263,10 @@ from fastai.vision.all import *
 
 from blitz.utils import variational_estimator
 
-# from dies.utils_pytorch import freeze, unfreeze
-# from dies.abstracts import Transfer
-
-
 
 @variational_estimator
 class MultiLayerPerceptron(TabularModel):
-#     class MultiLayerPerceptron(TabularModel, Transfer):
+    """An MLP that handles categorical as well as continous features."""
     @use_kwargs_dict(
         ps=None,
         embed_p=0.0,
@@ -371,7 +370,7 @@ class MultiLayerPerceptron(TabularModel):
             lr = L(1e-6, 1e-6, 1e-4)
 
         return splitter, lr
-# TODO:
+
     def train(self, mode: bool = True):
         super().train(mode)
         set_train_mode(self, mode)

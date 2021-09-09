@@ -12,7 +12,7 @@ import glob
 
 # Cell
 class RenewableDataLoaders(DataLoaders):
-
+    "A dataloader for `fastrenewables` tabular data."
     @classmethod
     @delegates(Tabular.dataloaders, but=["dl_type", "dl_kwargs"])
     def from_df(cls, df, path='.', procs=None, pre_procs=None, cat_names=None, cont_names=None, y_names=None, y_block=None,

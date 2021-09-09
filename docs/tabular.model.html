@@ -49,7 +49,7 @@ nb_path: "nbs/03_tabular.model.ipynb"
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="EmbeddingType" class="doc_header"><code>EmbeddingType</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/model.py#L29" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Enum</code> = [Normal, Bayes]</p>
 </blockquote>
-<p>An enumeration.</p>
+<p>Bayesian or non-Bayesian embedding type.</p>
 
 </div>
 
@@ -72,7 +72,7 @@ nb_path: "nbs/03_tabular.model.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_emb_sz_list" class="doc_header"><code>get_emb_sz_list</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/model.py#L34" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_emb_sz_list</code>(<strong><code>dims</code></strong>:<code>list</code>)</p>
+<h4 id="get_emb_sz_list" class="doc_header"><code>get_emb_sz_list</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/model.py#L35" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_emb_sz_list</code>(<strong><code>dims</code></strong>:<code>list</code>)</p>
 </blockquote>
 <p>For all elements in the given list, find a size for the respective embedding through trial and error
 Each element denotes the amount of unique values for one categorical feature</p>
@@ -102,32 +102,9 @@ Each element denotes the amount of unique values for one categorical feature</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="EmbeddingModule" class="doc_header"><code>class</code> <code>EmbeddingModule</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/model.py#L51" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>EmbeddingModule</code>(<strong><code>categorical_dimensions</code></strong>, <strong><code>embedding_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>embedding_dimensions</code></strong>=<em><code>None</code></em>, <strong><code>embedding_type</code></strong>=<em><code>&lt;EmbeddingType.Normal: 0&gt;</code></em>, <strong><code>names</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Module</code></p>
+<h2 id="EmbeddingModule" class="doc_header"><code>class</code> <code>EmbeddingModule</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/model.py#L52" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>EmbeddingModule</code>(<strong><code>categorical_dimensions</code></strong>, <strong><code>embedding_dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>embedding_dimensions</code></strong>=<em><code>None</code></em>, <strong><code>embedding_type</code></strong>=<em><code>&lt;EmbeddingType.Normal: 0&gt;</code></em>, <strong><code>names</code></strong>=<em><code>None</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Module</code></p>
 </blockquote>
-<p>Base class for all neural network modules.</p>
-<p>Your models should also subclass this class.</p>
-<p>Modules can also contain other Modules, allowing to nest them in
-a tree structure. You can assign the submodules as regular attributes::</p>
-
-<pre><code>import torch.nn as nn
-import torch.nn.functional as F
-
-class Model(nn.Module):
-    def __init__(self):
-        super(Model, self).__init__()
-        self.conv1 = nn.Conv2d(1, 20, 5)
-        self.conv2 = nn.Conv2d(20, 20, 5)
-
-    def forward(self, x):
-        x = F.relu(self.conv1(x))
-        return F.relu(self.conv2(x))
-
-</code></pre>
-<p>Submodules assigned in this way will be registered, and will have their
-parameters converted too when you call :meth:<code>to</code>, etc.</p>
-<p>:ivar training: Boolean represents whether this module is in training or
-                evaluation mode.
-:vartype training: bool</p>
+<p>A container module for a number of embeddings for categorical features.</p>
 
 </div>
 
@@ -267,9 +244,9 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MultiLayerPerceptron" class="doc_header"><code>class</code> <code>MultiLayerPerceptron</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/model.py#L269" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MultiLayerPerceptron</code>(<strong><code>ann_structure</code></strong>, <strong><code>emb_sz</code></strong>=<em><code>[]</code></em>, <strong><code>embedding_module</code></strong>=<em><code>None</code></em>, <strong><code>final_activation</code></strong>=<em><code>Identity</code></em>, <strong><code>bn_cont</code></strong>=<em><code>True</code></em>, <strong><code>ps</code></strong>=<em><code>None</code></em>, <strong><code>embed_p</code></strong>=<em><code>0.0</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>use_bn</code></strong>=<em><code>True</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU(inplace=True)</code></em>) :: <code>TabularModel</code></p>
+<h2 id="MultiLayerPerceptron" class="doc_header"><code>class</code> <code>MultiLayerPerceptron</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/model.py#L268" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MultiLayerPerceptron</code>(<strong><code>ann_structure</code></strong>, <strong><code>emb_sz</code></strong>=<em><code>[]</code></em>, <strong><code>embedding_module</code></strong>=<em><code>None</code></em>, <strong><code>final_activation</code></strong>=<em><code>Identity</code></em>, <strong><code>bn_cont</code></strong>=<em><code>True</code></em>, <strong><code>ps</code></strong>=<em><code>None</code></em>, <strong><code>embed_p</code></strong>=<em><code>0.0</code></em>, <strong><code>y_range</code></strong>=<em><code>None</code></em>, <strong><code>use_bn</code></strong>=<em><code>True</code></em>, <strong><code>bn_final</code></strong>=<em><code>False</code></em>, <strong><code>act_cls</code></strong>=<em><code>ReLU(inplace=True)</code></em>) :: <code>TabularModel</code></p>
 </blockquote>
-<p>Basic model for tabular data.</p>
+<p>An MLP that handles categorical as well as continous features.</p>
 
 </div>
 
@@ -404,7 +381,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_structure" class="doc_header"><code>get_structure</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/model.py#L381" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_structure</code>(<strong><code>initial_size</code></strong>, <strong><code>percental_reduce</code></strong>, <strong><code>min_value</code></strong>, <strong><code>input_size</code></strong>=<em><code>None</code></em>, <strong><code>final_outputs</code></strong>=<em><code>1</code></em>, <strong><code>reverse_structure</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="get_structure" class="doc_header"><code>get_structure</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/model.py#L380" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_structure</code>(<strong><code>initial_size</code></strong>, <strong><code>percental_reduce</code></strong>, <strong><code>min_value</code></strong>, <strong><code>input_size</code></strong>=<em><code>None</code></em>, <strong><code>final_outputs</code></strong>=<em><code>1</code></em>, <strong><code>reverse_structure</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Turn the given parameters into the structure of an ann model.</p>
 <p>The 'initial size' acts as the first layer, and each following layer i is of the size

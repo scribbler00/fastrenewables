@@ -12,7 +12,6 @@ from .data import *
 # Cell
 #hide
 import numpy as np
-# from dies.utils_blitz import set_train_mode
 import warnings
 from collections import OrderedDict, defaultdict
 from torch import nn
@@ -22,8 +21,6 @@ from fastcore.foundation import defaults
 from fastai.tabular.model import *
 from fastai.layers import *
 from ..tabular.model import *
-# from dies.abstracts import Transfer
-# from dies.utils_pytorch import freeze, unfreeze
 from ..utils_blitz import set_train_mode
 from torch.nn import BatchNorm1d
 from enum import Enum
@@ -35,6 +32,7 @@ from fastai.torch_core import params
 
 # Cell
 class Chomp1d(nn.Module):
+    """Removes excess padding."""
     def __init__(self, chomp_size):
         super(Chomp1d, self).__init__()
         self.chomp_size = chomp_size
@@ -44,6 +42,11 @@ class Chomp1d(nn.Module):
 
 # Cell
 class BasicTemporalBlock(nn.Module):
+    """
+        Extends fastai `ConvLayer` (CNN+normalization) to include results from an embedding layer,
+        as proposed in Task-TCN (https://2021.ecmlpkdd.org/wp-content/uploads/2021/07/main.pdf) for
+        MTL-Architectures.
+    """
     def __init__(
         self,
         n_inputs,
@@ -112,6 +115,9 @@ class BasicTemporalBlock(nn.Module):
 
 # Cell
 class ResidualBlock(nn.Module):
+    """
+        (Single) Residual block of a TCN.
+    """
     def __init__(
         self,
         n_inputs,
@@ -218,6 +224,8 @@ class ResidualBlock(nn.Module):
 
 # Cell
 class TemporalConvNet(nn.Module):
+    """Wrapper module that is capable of creating a simple CNN or a TCN."""
+
     def __init__(
         self,
         num_inputs,
@@ -293,6 +301,7 @@ class TemporalConvNet(nn.Module):
         self.temporal_blocks = nn.Sequential(*layers)
 
     def forward(self, categorical, continous=None):
+        """The categorical data can either be encoded via an embedding layer or directly applied."""
         x = continous
         for layer in self.temporal_blocks:
             x = layer(categorical, x)
@@ -302,6 +311,7 @@ class TemporalConvNet(nn.Module):
 # Cell
 @variational_estimator
 class TemporalCNN(nn.Module):
+    """Module to create a CNN based architecture for timerseries such as a simple CNN, a TCN, or a Task-TCN."""
     def __init__(
         self,
         cnn_structure,
