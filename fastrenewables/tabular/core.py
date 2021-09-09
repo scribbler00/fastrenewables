@@ -24,7 +24,7 @@ import warnings
 # Cell
 #export
 def str_to_path(file: str):
-    "Convers a string to a Posixpath."
+    "Converts a string to a Posixpath."
     if isinstance(file, str) and "~" in file:
         file = os.path.expanduser(file)
 
@@ -77,7 +77,9 @@ def read_files(
             df = read_csv(file, sep=";")
         else:
             raise f"File ending of file {file} not supported."
-        if add_task_id:df["TaskID"]=task_id
+        if add_task_id:
+            df["TaskID"]=task_id
+
         dfs += df
 
     return dfs
@@ -89,43 +91,56 @@ class RenewablesTabularProc(TabularProc):
     pass
 
 # Cell
+#hide
+def _prepare_datetime_index(df, index_col_name, drop_index=True):
+    df.reset_index(drop=drop_index, inplace=True)
+    df.rename({index_col_name: "TimeUTC"}, axis=1, inplace=True)
+    #  in case the timestamp is index give it a proper timestamp,e.g., in GermanSolarFarm dataset
+    if "0000-" in str(df.TimeUTC[0]):
+        df.TimeUTC = df.TimeUTC.apply(
+            lambda x: x.replace("0000-", "2015-").replace("0001-", "2016-")
+        )
+
+def _set_datetime_index(df):
+    df.TimeUTC = pd.to_datetime(df.TimeUTC, infer_datetime_format=True, utc=True)
+    df.set_index("TimeUTC", inplace=True)
+    df.index = df.index.rename("TimeUTC")
+
+def _offset_correction(df, offset_correction):
+    #  for GermanSolarFarm, the index is not corret. Should have a three hour resolution but is one...
+    if offset_correction is not None:
+        i, new_index = 0, []
+        for cur_index in df.index:
+            new_index.append(cur_index + pd.DateOffset(hours=i))
+            i += offset_correction
+        df.index = new_index
+
+
+# Cell
 class CreateTimeStampIndex(RenewablesTabularProc):
+    """Assures a correc pandas timestamp."""
     order=0
     include_in_new=True
-    def __init__(self, col_name, offset_correction=None):
-        self.col_name = col_name
+    def __init__(self, index_col_name, offset_correction=None):
+        self.index_col_name = index_col_name
         self.offset_correction = offset_correction
+
+
+    def _create_timestamp_index(self, df, drop_index=True):
+        _prepare_datetime_index(df, self.index_col_name, drop_index)
+        _set_datetime_index(df)
+        _offset_correction(df, self.offset_correction)
 
     def encodes(self, to):
         df = to.items
 
-        def create_timestamp_index(df, drop_index=True):
-            df.reset_index(drop=drop_index, inplace=True)
-            df.rename({self.col_name: "TimeUTC"}, axis=1, inplace=True)
-            #  in case the timestamp is index give it a proper timestamp,e.g., in GermanSolarFarm dataset
-            if "0000-" in str(df.TimeUTC[0]):
-                df.TimeUTC = df.TimeUTC.apply(
-                    lambda x: x.replace("0000-", "2015-").replace("0001-", "2016-")
-                )
-            df.TimeUTC = pd.to_datetime(df.TimeUTC, infer_datetime_format=True, utc=True)
-            df.set_index("TimeUTC", inplace=True)
-            df.index = df.index.rename("TimeUTC")
-
-            #  for GermanSolarFarm, the index is not corret. Should have a three hour resolution but is one...
-            if self.offset_correction is not None:
-                i, new_index = 0, []
-                for cur_index in df.index:
-                    new_index.append(cur_index + pd.DateOffset(hours=i))
-                    i += self.offset_correction
-                df.index = new_index
-
-        if self.col_name in df.columns:
-            create_timestamp_index(df, drop_index=True)
+        if self.index_col_name in df.columns:
+            self._create_timestamp_index(df, drop_index=True)
         # properly already processed
-        elif self.col_name == to.items.index.name:
-            create_timestamp_index(df, drop_index=False)
+        elif self.index_col_name == to.items.index.name:
+            self._create_timestamp_index(df, drop_index=False)
         else:
-            warnings.warn(f"Timetamps column {self.col_name} not in columns {df.columns} or df.index.name")
+            warnings.warn(f"Timetamps column {self.index_col_name} not in columns {df.columns} or df.index.name")
 
 # Cell
 def get_samples_per_day(df, n_samples_to_check=100, expected_samples=[8,24,96]):
@@ -142,7 +157,10 @@ def get_samples_per_day(df, n_samples_to_check=100, expected_samples=[8,24,96]):
     integer
         amount of entries per day.
     """
+    minutes_per_day = 24*60
     samples_per_day = -1
+    cur_samples_per_day = -1
+
 
     if len(df) == 0: return samples_per_day
 
@@ -151,10 +169,14 @@ def get_samples_per_day(df, n_samples_to_check=100, expected_samples=[8,24,96]):
     mins = 0
     for i in range(1, min(n_samples_to_check+1,len(indexes))):
         mins = (indexes[i] - indexes[i -1]).seconds // 60
-        if mins == 0: continue
-        if (24*60)%mins==0:
-            samples_per_day = (24*60)/mins
-            if samples_per_day in expected_samples: break
+        if mins == 0:
+            continue
+        elif (minutes_per_day)%mins==0:
+            cur_samples_per_day = (minutes_per_day)/mins
+
+        if cur_samples_per_day in expected_samples:
+            samples_per_day = cur_samples_per_day
+            break
 
     if samples_per_day == -1:
         raise ValueError(f"{mins} is an unknown sampling time.")
@@ -164,25 +186,25 @@ def get_samples_per_day(df, n_samples_to_check=100, expected_samples=[8,24,96]):
 
 
 # Cell
-def _interpolate_df(df, sample_time="15Min", limit=5, drop_na=False):
+#hide
+def _interpolate_df(df, sample_time="15Min", limit=5, drop_na=False, date_features_to_ignore=["Year", "Month", "Week", "Day", "Hour"]):
+
         df = df[~df.index.duplicated()]
         upsampled = df.resample(sample_time)
         df  = upsampled.interpolate(method="linear", limit=limit)
 
-        if drop_na: df = df.dropna(axis=0)
+        if drop_na:
+            df = df.dropna(axis=0)
 
-        if "Hour" in df.columns:
-            df["Hour"] = df.index.hour
-        if "Month" in df.columns:
-            df["Month"] = df.index.month
-        if "Day" in df.columns:
-            df["Day"] = df.index.day
-        if "Week" in df.columns:
-            df["Week"] = df.index.week
+        for date_feature in date_features_to_ignore:
+            if date_feature in df.columns:
+                df[date_feature] = getattr(df.index, date_feature.lower())
+
 
         return df
 
 # Cell
+#hide
 def _apply_group_by(to:pd.DataFrame, group_by_col, func, **kwargs):
     if group_by_col in to.columns:
         dfs = L()
@@ -194,10 +216,67 @@ def _apply_group_by(to:pd.DataFrame, group_by_col, func, **kwargs):
     return df
 
 # Cell
+#hide
+def _find_unique_and_non_unique_columns(to, group_by_col):
+        # if values of a columns are the same in each row (categorical features)
+        # we make that those stay the same during interpolation
+        # this happens e.g. if we have some meta information that is the same for all values
+
+        unique_values = defaultdict(object)
+        if group_by_col in to.items.columns:
+            non_unique_columns = L()
+            for group_id, df in to.items.groupby(group_by_col):
+                for cur_column in df.columns:
+                    if len(df[cur_column].unique())==1 and cur_column!=group_by_col:
+                        # get first value for current group and current column
+                        unique_values[(group_id,cur_column)] = df[cur_column][0]
+                    else:
+                        non_unique_columns += cur_column
+
+            non_unique_columns = np.unique(non_unique_columns)
+        else:
+            non_unique_columns = to.items.columns
+
+        return unique_values, non_unique_columns
+
+# Cell
+#hide
+def _interpolate_columns(to, unique_values, non_unique_columns, group_by_col):
+        # interpolate non unique columns
+        df = _apply_group_by(to.items.loc[:,np.unique(non_unique_columns)], group_by_col, _interpolate_df)
+        to.items = df
+        if group_by_col in to.items.columns:
+            for group_id,col_name in unique_values.keys():
+                mask = to[group_by_col]==group_id
+                to.items.loc[mask,col_name]=unique_values[(group_id, col_name)]
+
+        return to
+
+# Cell
+#hide
+def _filter_nas(to):
+    # use this for conversion
+    # in case there is an object inside, throw an error
+    if len(to.cont_names)>0:
+        mask = to[to.cont_names].isna().values[:,0]
+        to.items = to.items[~mask]
+
+    return to
+
+# Cell
+#hide
+def _correct_dypes(to):
+    # TODO: to infer dtype through pd.inferdtype
+    # pandas converts the datatype to float if np.NaN is present, lets revert that
+    to.items = to.items.convert_dtypes()
+    return to
+
+# Cell
 class Interpolate(RenewablesTabularProc):
     order=0
     include_in_new=True
     def __init__(self, sample_time = "15Min", limit=5, drop_na=True, group_by_col="TaskID"):
+        """Interpolates continous features to required sample time."""
         self.sample_time = sample_time
         self.limit = limit
         self.drop_na = drop_na
@@ -208,41 +287,23 @@ class Interpolate(RenewablesTabularProc):
         if self.n_samples_per_day == -1:
             warnings.warn("Could not determine samples per day. Skip processing.")
 
+
+
+
+
     def encodes(self, to):
 
-        if self.n_samples_per_day == -1: return
+        if self.n_samples_per_day == -1:
+            return
 
-        # if values of a columns are the same in each row (categorical features)
-        # we make that those stay the same during interpolation
-        if self.group_by_col in to.items.columns:
-            d = defaultdict(object)
-            non_unique_columns = L()
-            for group_id, df in to.items.groupby(self.group_by_col):
-                for c in df.columns:
-                    if len(df[c].unique())==1 and c!=self.group_by_col:
-                        d[(group_id,c)] = df[c][0]
-                    else:
-                        non_unique_columns += c
+        unique_values, non_unique_columns = _find_unique_and_non_unique_columns(to, self.group_by_col)
+        to = _interpolate_columns(to, unique_values, non_unique_columns, self.group_by_col)
+        to = _filter_nas(to)
+        to = _correct_dypes(to)
 
-            non_unique_columns = np.unique(non_unique_columns)
-        else:
-            non_unique_columns = to.items.columns
-        # interpolate non unique columns
-        df = _apply_group_by(to.items.loc[:,np.unique(non_unique_columns)], self.group_by_col, _interpolate_df)
-        to.items = df
-        if self.group_by_col in to.items.columns:
-            for group_id,col_name in d.keys():
-                mask = to[self.group_by_col]==group_id
-                to.items.loc[mask,col_name]=d[(group_id, col_name)]
 
-        # TODO: to infer dtype through pd.inferdtype
-        # use this for conversion
-        # in case there is an object inside, throw an error
-        if len(to.cont_names)>0:
-            mask = to[to.cont_names].isna().values[:,0]
-            to.items = to.items[~mask]
-        # pandas converts the datatype to float if np.NaN is present, lets revert that
-        to.items = to.items.convert_dtypes()
+
+
 
 # Cell
 def _create_consistent_number_of_sampler_per_day(
@@ -276,9 +337,11 @@ def _create_consistent_number_of_sampler_per_day(
 
 # Cell
 class FilterInconsistentSamplesPerDay(RenewablesTabularProc):
+
     order=100
     include_in_new=True
     def __init__(self, group_by_col="TaskID"):
+        """Filters an incosistent number of samples per day, e.g., when certain timestamps within a day are missing."""
         self.group_by_col = group_by_col
 
     def setups(self, to: Tabular):
@@ -287,7 +350,6 @@ class FilterInconsistentSamplesPerDay(RenewablesTabularProc):
     def encodes(self, to):
         to.items = _apply_group_by(to.items, self.group_by_col, _create_consistent_number_of_sampler_per_day,
                         n_samples_per_day=self.n_samples_per_day)
-#         to.items = _create_consistent_number_of_sampler_per_day(to.items, n_samples_per_day=self.n_samples_per_day)
 
         assert (to.items.shape[0]%self.n_samples_per_day) == 0, "Incorrect number of samples after filter"
 
@@ -296,6 +358,7 @@ class AddSeasonalFeatures(RenewablesTabularProc):
     order=0
     include_in_new=True
     def __init__(self, as_cont=True):
+        """Adds seasonal features, such as month of the year, as continious or categorical feature."""
         self.as_cont = as_cont
 
     def encodes(self, to):
@@ -321,6 +384,7 @@ class FilterInfinity(TabularProc):
     include_in_new=True
     def __init__(self, cols_to_replace="", value_to_replace_with=-1,
                  replace_not_matching_cols=True):
+        """Filter infinity values that occur for example due to preprocessing."""
         self.cols_to_replace = cols_to_replace
         self.value_to_replace_with = value_to_replace_with
         self.replace_not_matching_cols = replace_not_matching_cols
@@ -347,9 +411,11 @@ class FilterInfinity(TabularProc):
 
 # Cell
 class FilterByCol(RenewablesTabularProc):
-    "Drops rows by column."
+
     order = 9
     def __init__(self, col_name, drop=True, drop_col_after_filter=True):
+        "Drops rows by column."
+
         self.col_name = col_name
         self.drop = drop
         self.drop_col_after_filter=drop_col_after_filter
@@ -362,10 +428,11 @@ class FilterByCol(RenewablesTabularProc):
 
 # Cell
 class FilterYear(RenewablesTabularProc):
-    "Filter a list of years. By default the years are dropped."
+
     order = 9
     def __init__(self, year, drop=True):
-        "year(s) to filter, whether to drop or keep the years."
+        "Filter/drop data based on the given year. By default values from the {year} are dropped."
+
         year = listify(year)
         self.year = L(int(y) for y in year)
         self.drop = drop
@@ -382,13 +449,13 @@ class FilterYear(RenewablesTabularProc):
 
 # Cell
 class FilterHalf(RenewablesTabularProc):
-    "First half of the data is used for training and the other half of validation/testing."
+    """First half of the data is used for training and the other half of validation/testing."""
     order = 9
     def __init__(self, drop=False, bydate=True):
         """
-        Whether to drop or keep the first half.
-        When bydate is true the average date, between the first and last date is used to filter the data.
-        If bydate is false the amount of data is splitted by half, so that train and validation/testing have an equal amount of available data.
+            Whether to drop or keep the first half.
+            When bydate is true the average date, between the first and last date is used to filter the data.
+            If bydate is false the amount of data is splitted by half, so that train and validation/testing have an equal amount of available data.
         """
         self.drop = drop
         self.bydate = bydate
@@ -412,9 +479,10 @@ class FilterHalf(RenewablesTabularProc):
 
 # Cell
 class FilterMonths(RenewablesTabularProc):
-    "Filter dataframe for specific months."
+
     order = 9
     def __init__(self, months=range(1,13), drop=False):
+        """Filter dataframe for specific months."""
         self.months = listify(months)
         self.drop = drop
 
@@ -425,9 +493,10 @@ class FilterMonths(RenewablesTabularProc):
 
 # Cell
 class FilterDays(RenewablesTabularProc):
-    "Filter dataframe for specific months."
+
     order = 10
     def __init__(self, num_days):
+        """Filter dataframe for specific months."""
         self.num_days = num_days
 
     def setups(self, to: Tabular):
@@ -439,10 +508,11 @@ class FilterDays(RenewablesTabularProc):
 
 # Cell
 class DropCols(RenewablesTabularProc):
-    "Drops rows by column name."
+
     include_in_new=True
     order = 10
     def __init__(self, cols):
+        """Drops rows by column name."""
         self.cols = listify(cols)
 
     def encodes(self, to):
@@ -450,10 +520,11 @@ class DropCols(RenewablesTabularProc):
 
 # Cell
 class Normalize(RenewablesTabularProc):
-    "Normalize per TaskId"
+
     order = 1
     include_in_new=True
     def __init__(self, cols_to_ignore=[]):
+        """Normalize per TaskId"""
         self.cols_to_ignore = cols_to_ignore
 
     def setups(self, to: Tabular):
@@ -469,14 +540,15 @@ class Normalize(RenewablesTabularProc):
 
 # Cell
 class BinFeatures(TabularProc):
-    "Creates bin from categorical features."
+
     order = 1
     include_in_new=True
     def __init__(self, column_names, bin_sizes=5):
-        # TODO: Add possiblitiy to add custom bins
+        """Creates bin from categorical features."""
         self.column_names = listify(column_names)
         self.bin_sizes = listify(bin_sizes)
-        if len(self.bin_sizes) == 1: self.bin_sizes = L(self.bin_sizes[0] for _ in self.column_names)
+        if len(self.bin_sizes) == 1:
+            self.bin_sizes = L(self.bin_sizes[0] for _ in self.column_names)
 
     def setups(self, to:Tabular):
         train_to = getattr(to, 'train', to)
@@ -541,7 +613,10 @@ class TabularRenewables(TabularPandas):
                  pre_process=None, device=None, splits=None, y_block=RegressionBlock(),
                  group_id="TaskID",
                 inplace=False):
-
+        """
+            TabularRenewables class that extends the TabularPandas class to include pre processing steps that allows for dropping values.
+            Further, the preprocessing allows handling multiple tasks at once, e.g., normalization per task.
+        """
         self.pre_process = pre_process
         self._original_pre_process = self.pre_process
         cont_names = listify(cont_names)
@@ -613,6 +688,7 @@ class TabularRenewables(TabularPandas):
                 self.original_y_block = new_y_block_tfms
             else:
                 new_pipeline += proc
+
         self.new_pipeline = new_pipeline
         self.procs = Pipeline(new_pipeline)
         self.setup()
@@ -636,16 +712,22 @@ class TabularRenewables(TabularPandas):
 # Cell
 
 class ReadTabBatchRenewables(ItemTransform):
-    "Transform `TabularPandas` values into a `Tensor` with the ability to decode"
-    def __init__(self, to): self.to = to.new_empty()
+    """Transform `TabularPandas` values into a `Tensor` with the ability to decode"""
+
+    def __init__(self, to):
+        self.to = to.new_empty()
 
     def encodes(self, to):
         self.task_ids = to.items[["TaskID"]]
-        if not to.with_cont: res = (tensor(to.cats).long(),)
+
+        if not to.with_cont:
+            res = (tensor(to.cats).long(),)
         # TODO: some pre-processing causes to.conts.values of type object, while types
         # of the dataframe are float, therefore assure conversion through astype
         # --> this is caused by Interpolate
-        else: res = (tensor(to.cats).long(),tensor(to.conts.astype(float)).float())
+        else:
+            res = (tensor(to.cats).long(),tensor(to.conts.astype(float)).float())
+
         ys = [n for n in to.y_names if n in to.items.columns]
         # same problem as above with type of to.targ
         # preliminary bug fix
@@ -654,13 +736,19 @@ class ReadTabBatchRenewables(ItemTransform):
             ys_type = float
         else:
             ys_type = int
-        if len(ys) == len(to.y_names): res = res + (tensor(to.targ.astype(ys_type)),)
-        if to.device is not None: res = to_device(res, to.device)
+
+        if len(ys) == len(to.y_names):
+            res = res + (tensor(to.targ.astype(ys_type)),)
+
+        if to.device is not None:
+            res = to_device(res, to.device)
+
         return res
 
     def decodes(self, o):
         o = [_maybe_expand(o_) for o_ in to_np(o) if o_.size != 0]
         vals = np.concatenate(o, axis=1)
+
         try: df = pd.DataFrame(vals, columns=self.to.all_col_names)
         except: df = pd.DataFrame(vals, columns=self.to.x_names)
 
@@ -710,8 +798,6 @@ class NormalizePerTask(TabularProc):
 
         # find columns that have the same value for every row
         for task_id in to.items[self.task_id_col].unique():
-#             column_mask = to.items[to.cont_names].eq(to.items[to.cont_names][1], axis='index').all(1)
-            #to.items[to.cont_names].apply(pd.Series.nunique) == 1
             column_mask = unique_cols(to.items[to.cont_names])
             cols_to_exclude = to.cont_names[column_mask]
             if len(cols_to_exclude)>0:
@@ -755,8 +841,6 @@ class NormalizePerTask(TabularProc):
             elif self.norm_type == "minmaxnorm":
                 to.loc[mask, current_cols] = ((to.loc[mask, current_cols] - self.mins.loc[task_id]) / (self.maxs.loc[task_id]-self.mins.loc[task_id]))
 
-
-
     def decodes(self, to, split_idx=None):
 
         for task_id in to.items[self.task_id_col].unique():
@@ -778,6 +862,7 @@ class VerifyAndNormalizeTarget(TabularProc):
     include_in_new=True
     def __init__(self, reset_min_value=0.0, reset_max_value=1.05, \
                  max_value_for_normalization=1.5, task_id_col="TaskID",):
+
         self.task_id_col = task_id_col
         self.reset_min_value, self.reset_max_value = reset_min_value, reset_max_value
         self.max_value_for_normalization = max_value_for_normalization

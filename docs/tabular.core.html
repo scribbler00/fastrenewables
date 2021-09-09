@@ -172,7 +172,7 @@ nb_path: "nbs/01_tabular.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RenewablesTabularProc" class="doc_header"><code>class</code> <code>RenewablesTabularProc</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L87" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RenewablesTabularProc</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>TabularProc</code></p>
+<h2 id="RenewablesTabularProc" class="doc_header"><code>class</code> <code>RenewablesTabularProc</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L89" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RenewablesTabularProc</code>(<strong><code>enc</code></strong>=<em><code>None</code></em>, <strong><code>dec</code></strong>=<em><code>None</code></em>, <strong><code>split_idx</code></strong>=<em><code>None</code></em>, <strong><code>order</code></strong>=<em><code>None</code></em>) :: <code>TabularProc</code></p>
 </blockquote>
 <p>Base class to write a non-lazy tabular processor for dataframes</p>
 
@@ -222,9 +222,9 @@ nb_path: "nbs/01_tabular.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="CreateTimeStampIndex" class="doc_header"><code>class</code> <code>CreateTimeStampIndex</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L92" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CreateTimeStampIndex</code>(<strong><code>col_name</code></strong>, <strong><code>offset_correction</code></strong>=<em><code>None</code></em>) :: <a href="/fastrenewables/tabular.core.html#RenewablesTabularProc"><code>RenewablesTabularProc</code></a></p>
+<h2 id="CreateTimeStampIndex" class="doc_header"><code>class</code> <code>CreateTimeStampIndex</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L120" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CreateTimeStampIndex</code>(<strong><code>index_col_name</code></strong>, <strong><code>offset_correction</code></strong>=<em><code>None</code></em>) :: <a href="/fastrenewables/tabular.core.html#RenewablesTabularProc"><code>RenewablesTabularProc</code></a></p>
 </blockquote>
-<p>Base class to write a non-lazy tabular processor for dataframes</p>
+<p>Assures a correc pandas timestamp.</p>
 
 </div>
 
@@ -257,20 +257,53 @@ nb_path: "nbs/01_tabular.core.ipynb"
 <span class="c1"># tests basic functionality to set a proper timestamp based index</span>
 <span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;2015-01-01-01&#39;</span><span class="p">,</span> <span class="s1">&#39;2015-01-01-02&#39;</span><span class="p">,</span> <span class="s1">&#39;2015-01-02-03&#39;</span><span class="p">,</span> <span class="s1">&#39;2015-02-01-23&#39;</span><span class="p">,</span> <span class="s1">&#39;2015-02-01-13&#39;</span><span class="p">]</span> 
 <span class="n">to</span> <span class="o">=</span> <span class="n">get_test_data</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">CreateTimeStampIndex</span><span class="p">(</span><span class="n">col_name</span><span class="o">=</span><span class="s2">&quot;TimeStamps&quot;</span><span class="p">)(</span><span class="n">to</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">utc</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">CreateTimeStampIndex</span><span class="p">(</span><span class="n">index_col_name</span><span class="o">=</span><span class="s2">&quot;TimeStamps&quot;</span><span class="p">)(</span><span class="n">to</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">utc</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
 
 <span class="c1"># corrects missing year</span>
 <span class="n">index_missing_year</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;0000-01-01-01&#39;</span><span class="p">,</span> <span class="s1">&#39;0000-01-01-02&#39;</span><span class="p">,</span> <span class="s1">&#39;0000-01-02-03&#39;</span><span class="p">,</span> <span class="s1">&#39;0000-02-01-23&#39;</span><span class="p">,</span> <span class="s1">&#39;0000-02-01-13&#39;</span><span class="p">]</span> 
 <span class="n">to</span> <span class="o">=</span> <span class="n">get_test_data</span><span class="p">(</span><span class="n">index_missing_year</span><span class="p">)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="n">CreateTimeStampIndex</span><span class="p">(</span><span class="n">col_name</span><span class="o">=</span><span class="s2">&quot;TimeStamps&quot;</span><span class="p">)(</span><span class="n">to</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">utc</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">CreateTimeStampIndex</span><span class="p">(</span><span class="n">index_col_name</span><span class="o">=</span><span class="s2">&quot;TimeStamps&quot;</span><span class="p">)(</span><span class="n">to</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">utc</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
 
 <span class="c1"># check if warning is triggered, due to wrong column name</span>
 <span class="n">to</span> <span class="o">=</span> <span class="n">get_test_data</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-<span class="n">test_call</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">CreateTimeStampIndex</span><span class="p">(</span><span class="n">col_name</span><span class="o">=</span><span class="s2">&quot;FalseColumnName&quot;</span><span class="p">)(</span><span class="n">to</span><span class="p">)</span>
+<span class="n">test_call</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">CreateTimeStampIndex</span><span class="p">(</span><span class="n">index_col_name</span><span class="o">=</span><span class="s2">&quot;FalseColumnName&quot;</span><span class="p">)(</span><span class="n">to</span><span class="p">)</span>
 <span class="n">test_warns</span><span class="p">(</span><span class="n">test_call</span><span class="p">)</span>
 </pre></div>
 
     </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">type</span><span class="p">(</span><span class="n">to</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>pandas._libs.tslibs.timestamps.Timestamp</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -288,7 +321,7 @@ nb_path: "nbs/01_tabular.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_samples_per_day" class="doc_header"><code>get_samples_per_day</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L131" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_samples_per_day</code>(<strong><code>df</code></strong>, <strong><code>n_samples_to_check</code></strong>=<em><code>100</code></em>, <strong><code>expected_samples</code></strong>=<em><code>[8, 24, 96]</code></em>)</p>
+<h4 id="get_samples_per_day" class="doc_header"><code>get_samples_per_day</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L146" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_samples_per_day</code>(<strong><code>df</code></strong>, <strong><code>n_samples_to_check</code></strong>=<em><code>100</code></em>, <strong><code>expected_samples</code></strong>=<em><code>[8, 24, 96]</code></em>)</p>
 </blockquote>
 <p>Extract the amount of entries per day from the DataFrame in the first n_samples_to_check.
 Aborts, ones the first meaningful <em>number of samples per day</em> is found.</p>
@@ -346,13 +379,6 @@ Aborts, ones the first meaningful <em>number of samples per day</em> is found.</
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
 <div class="inner_cell">
@@ -362,6 +388,9 @@ Aborts, ones the first meaningful <em>number of samples per day</em> is found.</
     <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">index</span><span class="p">),</span>
                       <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">),</span><span class="mi">3</span><span class="p">)),</span>
                   <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">]</span> <span class="p">)</span>
+    
+    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Hour&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">hour</span>
+    
     <span class="k">return</span> <span class="n">df</span>
 </pre></div>
 
@@ -379,15 +408,8 @@ Aborts, ones the first meaningful <em>number of samples per day</em> is found.</
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">test_data_interpolate</span><span class="p">()</span>
-<span class="n">inp_df</span> <span class="o">=</span> <span class="n">_interpolate_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">drop_na</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="c1"># instead of three values per hours we now have four plus the last timesamp</span>
-<span class="c1"># duplicated values are droppped</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="n">inp_df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">inp_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
-<span class="c1"># one for every timestamp plus one for the first two timestamps, assure that duplicates are dropped</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">test_data_interpolate</span><span class="p">(</span><span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">([</span><span class="s1">&#39;2018-01-01-01:00&#39;</span><span class="p">,</span> <span class="s1">&#39;2018-01-01-01:00&#39;</span><span class="p">,</span> <span class="s1">&#39;2018-01-01-03:00&#39;</span><span class="p">,</span> <span class="s1">&#39;2018-01-01-04:00&#39;</span><span class="p">]),)</span>
-<span class="n">test_eq</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">_interpolate_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">drop_na</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">test_data_interpolate</span><span class="p">(</span><span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">([</span><span class="s1">&#39;2018-01-01-01:00&#39;</span><span class="p">,</span> <span class="s1">&#39;2018-01-01-01:00&#39;</span><span class="p">,</span> <span class="s1">&#39;2018-01-01-03:00&#39;</span><span class="p">,</span> <span class="s1">&#39;2018-01-01-04:00&#39;</span><span class="p">]),)</span>
+<span class="n">df_interpolated</span> <span class="o">=</span> <span class="n">_interpolate_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">drop_na</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -400,6 +422,180 @@ Aborts, ones the first meaningful <em>number of samples per day</em> is found.</
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>Hour</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2018-01-01 01:00:00</th>
+      <td>8</td>
+      <td>8</td>
+      <td>6</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2018-01-01 01:00:00</th>
+      <td>2</td>
+      <td>8</td>
+      <td>7</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2018-01-01 03:00:00</th>
+      <td>2</td>
+      <td>1</td>
+      <td>5</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>2018-01-01 04:00:00</th>
+      <td>4</td>
+      <td>4</td>
+      <td>5</td>
+      <td>4</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_interpolated</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>Hour</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2018-01-01 01:00:00</th>
+      <td>8.00</td>
+      <td>8.000</td>
+      <td>6.000</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2018-01-01 01:15:00</th>
+      <td>7.25</td>
+      <td>7.125</td>
+      <td>5.875</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2018-01-01 03:00:00</th>
+      <td>2.00</td>
+      <td>1.000</td>
+      <td>5.000</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>2018-01-01 03:15:00</th>
+      <td>2.50</td>
+      <td>1.750</td>
+      <td>5.000</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>2018-01-01 04:00:00</th>
+      <td>4.00</td>
+      <td>4.000</td>
+      <td>5.000</td>
+      <td>4</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
 
 </div>
     {% endraw %}
@@ -415,7 +611,7 @@ Aborts, ones the first meaningful <em>number of samples per day</em> is found.</
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Interpolate" class="doc_header"><code>class</code> <code>Interpolate</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L197" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Interpolate</code>(<strong><code>sample_time</code></strong>=<em><code>'15Min'</code></em>, <strong><code>limit</code></strong>=<em><code>5</code></em>, <strong><code>drop_na</code></strong>=<em><code>True</code></em>, <strong><code>group_by_col</code></strong>=<em><code>'TaskID'</code></em>) :: <a href="/fastrenewables/tabular.core.html#RenewablesTabularProc"><code>RenewablesTabularProc</code></a></p>
+<h2 id="Interpolate" class="doc_header"><code>class</code> <code>Interpolate</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L275" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Interpolate</code>(<strong><code>sample_time</code></strong>=<em><code>'15Min'</code></em>, <strong><code>limit</code></strong>=<em><code>5</code></em>, <strong><code>drop_na</code></strong>=<em><code>True</code></em>, <strong><code>group_by_col</code></strong>=<em><code>'TaskID'</code></em>) :: <a href="/fastrenewables/tabular.core.html#RenewablesTabularProc"><code>RenewablesTabularProc</code></a></p>
 </blockquote>
 <p>Base class to write a non-lazy tabular processor for dataframes</p>
 
@@ -475,7 +671,7 @@ Aborts, ones the first meaningful <em>number of samples per day</em> is found.</
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>&lt;ipython-input-22-b7b0b9481605&gt;:14: UserWarning: Could not determine samples per day. Skip processing.
+<pre>&lt;ipython-input-31-45a8d0e1a1a5&gt;:15: UserWarning: Could not determine samples per day. Skip processing.
   warnings.warn(&#34;Could not determine samples per day. Skip processing.&#34;)
 </pre>
 </div>
@@ -538,6 +734,7 @@ Aborts, ones the first meaningful <em>number of samples per day</em> is found.</
       <th>A</th>
       <th>B</th>
       <th>C</th>
+      <th>Hour</th>
     </tr>
   </thead>
   <tbody>
@@ -546,71 +743,39 @@ Aborts, ones the first meaningful <em>number of samples per day</em> is found.</
       <td>4</td>
       <td>3</td>
       <td>7</td>
+      <td>15</td>
     </tr>
     <tr>
       <th>2018-01-01 18:00:00</th>
       <td>6</td>
       <td>1</td>
       <td>3</td>
+      <td>18</td>
     </tr>
     <tr>
       <th>2018-01-01 21:00:00</th>
       <td>5</td>
       <td>8</td>
       <td>4</td>
+      <td>21</td>
     </tr>
     <tr>
       <th>2018-01-02 00:00:00</th>
       <td>6</td>
       <td>3</td>
       <td>9</td>
+      <td>0</td>
     </tr>
     <tr>
       <th>2018-01-02 03:00:00</th>
       <td>2</td>
       <td>0</td>
       <td>4</td>
+      <td>3</td>
     </tr>
   </tbody>
 </table>
 </div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>Int64Index([1514764800000000000, 1514775600000000000, 1514786400000000000,
-            1514797200000000000, 1514808000000000000, 1514818800000000000,
-            1514829600000000000, 1514840400000000000, 1514851200000000000,
-            1514862000000000000],
-           dtype=&#39;int64&#39;)</pre>
 </div>
 
 </div>
@@ -651,7 +816,7 @@ Aborts, ones the first meaningful <em>number of samples per day</em> is found.</
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FilterInconsistentSamplesPerDay" class="doc_header"><code>class</code> <code>FilterInconsistentSamplesPerDay</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L278" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FilterInconsistentSamplesPerDay</code>(<strong><code>group_by_col</code></strong>=<em><code>'TaskID'</code></em>) :: <a href="/fastrenewables/tabular.core.html#RenewablesTabularProc"><code>RenewablesTabularProc</code></a></p>
+<h2 id="FilterInconsistentSamplesPerDay" class="doc_header"><code>class</code> <code>FilterInconsistentSamplesPerDay</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L339" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FilterInconsistentSamplesPerDay</code>(<strong><code>group_by_col</code></strong>=<em><code>'TaskID'</code></em>) :: <a href="/fastrenewables/tabular.core.html#RenewablesTabularProc"><code>RenewablesTabularProc</code></a></p>
 </blockquote>
 <p>Base class to write a non-lazy tabular processor for dataframes</p>
 
@@ -776,7 +941,7 @@ Aborts, ones the first meaningful <em>number of samples per day</em> is found.</
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="AddSeasonalFeatures" class="doc_header"><code>class</code> <code>AddSeasonalFeatures</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L295" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AddSeasonalFeatures</code>(<strong><code>as_cont</code></strong>=<em><code>True</code></em>) :: <a href="/fastrenewables/tabular.core.html#RenewablesTabularProc"><code>RenewablesTabularProc</code></a></p>
+<h2 id="AddSeasonalFeatures" class="doc_header"><code>class</code> <code>AddSeasonalFeatures</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L357" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AddSeasonalFeatures</code>(<strong><code>as_cont</code></strong>=<em><code>True</code></em>) :: <a href="/fastrenewables/tabular.core.html#RenewablesTabularProc"><code>RenewablesTabularProc</code></a></p>
 </blockquote>
 <p>Base class to write a non-lazy tabular processor for dataframes</p>
 
@@ -831,7 +996,7 @@ Aborts, ones the first meaningful <em>number of samples per day</em> is found.</
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FilterInfinity" class="doc_header"><code>class</code> <code>FilterInfinity</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L319" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FilterInfinity</code>(<strong><code>cols_to_replace</code></strong>=<em><code>''</code></em>, <strong><code>value_to_replace_with</code></strong>=<em><code>-1</code></em>, <strong><code>replace_not_matching_cols</code></strong>=<em><code>True</code></em>) :: <code>TabularProc</code></p>
+<h2 id="FilterInfinity" class="doc_header"><code>class</code> <code>FilterInfinity</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L382" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FilterInfinity</code>(<strong><code>cols_to_replace</code></strong>=<em><code>''</code></em>, <strong><code>value_to_replace_with</code></strong>=<em><code>-1</code></em>, <strong><code>replace_not_matching_cols</code></strong>=<em><code>True</code></em>) :: <code>TabularProc</code></p>
 </blockquote>
 <p>Base class to write a non-lazy tabular processor for dataframes</p>
 
@@ -901,9 +1066,9 @@ Aborts, ones the first meaningful <em>number of samples per day</em> is found.</
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>&lt;ipython-input-33-e34f10dd66a8&gt;:26: UserWarning: Unexpected infinity values in following columns [&#39;B&#39;] that were replaced.
+<pre>&lt;ipython-input-41-e34f10dd66a8&gt;:26: UserWarning: Unexpected infinity values in following columns [&#39;B&#39;] that were replaced.
   warnings.warn(warning_message)
-&lt;ipython-input-33-e34f10dd66a8&gt;:29: UserWarning: Unexpected infinity values in following columns [&#39;B&#39;] that were not replaced.
+&lt;ipython-input-41-e34f10dd66a8&gt;:29: UserWarning: Unexpected infinity values in following columns [&#39;B&#39;] that were not replaced.
   warnings.warn(warning_message)
 </pre>
 </div>
@@ -932,9 +1097,9 @@ Aborts, ones the first meaningful <em>number of samples per day</em> is found.</
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FilterByCol" class="doc_header"><code>class</code> <code>FilterByCol</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L349" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FilterByCol</code>(<strong><code>col_name</code></strong>, <strong><code>drop</code></strong>=<em><code>True</code></em>, <strong><code>drop_col_after_filter</code></strong>=<em><code>True</code></em>) :: <a href="/fastrenewables/tabular.core.html#RenewablesTabularProc"><code>RenewablesTabularProc</code></a></p>
+<h2 id="FilterByCol" class="doc_header"><code>class</code> <code>FilterByCol</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L413" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FilterByCol</code>(<strong><code>col_name</code></strong>, <strong><code>drop</code></strong>=<em><code>True</code></em>, <strong><code>drop_col_after_filter</code></strong>=<em><code>True</code></em>) :: <a href="/fastrenewables/tabular.core.html#RenewablesTabularProc"><code>RenewablesTabularProc</code></a></p>
 </blockquote>
-<p>Drops rows by column.</p>
+<p>Base class to write a non-lazy tabular processor for dataframes</p>
 
 </div>
 
@@ -991,9 +1156,9 @@ Aborts, ones the first meaningful <em>number of samples per day</em> is found.</
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FilterYear" class="doc_header"><code>class</code> <code>FilterYear</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L364" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FilterYear</code>(<strong><code>year</code></strong>, <strong><code>drop</code></strong>=<em><code>True</code></em>) :: <a href="/fastrenewables/tabular.core.html#RenewablesTabularProc"><code>RenewablesTabularProc</code></a></p>
+<h2 id="FilterYear" class="doc_header"><code>class</code> <code>FilterYear</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L430" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FilterYear</code>(<strong><code>year</code></strong>, <strong><code>drop</code></strong>=<em><code>True</code></em>) :: <a href="/fastrenewables/tabular.core.html#RenewablesTabularProc"><code>RenewablesTabularProc</code></a></p>
 </blockquote>
-<p>Filter a list of years. By default the years are dropped.</p>
+<p>Base class to write a non-lazy tabular processor for dataframes</p>
 
 </div>
 
@@ -1056,7 +1221,7 @@ Aborts, ones the first meaningful <em>number of samples per day</em> is found.</
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FilterHalf" class="doc_header"><code>class</code> <code>FilterHalf</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L384" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FilterHalf</code>(<strong><code>drop</code></strong>=<em><code>False</code></em>, <strong><code>bydate</code></strong>=<em><code>True</code></em>) :: <a href="/fastrenewables/tabular.core.html#RenewablesTabularProc"><code>RenewablesTabularProc</code></a></p>
+<h2 id="FilterHalf" class="doc_header"><code>class</code> <code>FilterHalf</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L451" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FilterHalf</code>(<strong><code>drop</code></strong>=<em><code>False</code></em>, <strong><code>bydate</code></strong>=<em><code>True</code></em>) :: <a href="/fastrenewables/tabular.core.html#RenewablesTabularProc"><code>RenewablesTabularProc</code></a></p>
 </blockquote>
 <p>First half of the data is used for training and the other half of validation/testing.</p>
 
@@ -1119,9 +1284,9 @@ Aborts, ones the first meaningful <em>number of samples per day</em> is found.</
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FilterMonths" class="doc_header"><code>class</code> <code>FilterMonths</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L414" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FilterMonths</code>(<strong><code>months</code></strong>=<em><code>range(1, 13)</code></em>, <strong><code>drop</code></strong>=<em><code>False</code></em>) :: <a href="/fastrenewables/tabular.core.html#RenewablesTabularProc"><code>RenewablesTabularProc</code></a></p>
+<h2 id="FilterMonths" class="doc_header"><code>class</code> <code>FilterMonths</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L481" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FilterMonths</code>(<strong><code>months</code></strong>=<em><code>range(1, 13)</code></em>, <strong><code>drop</code></strong>=<em><code>False</code></em>) :: <a href="/fastrenewables/tabular.core.html#RenewablesTabularProc"><code>RenewablesTabularProc</code></a></p>
 </blockquote>
-<p>Filter dataframe for specific months.</p>
+<p>Base class to write a non-lazy tabular processor for dataframes</p>
 
 </div>
 
@@ -1181,9 +1346,9 @@ Aborts, ones the first meaningful <em>number of samples per day</em> is found.</
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FilterDays" class="doc_header"><code>class</code> <code>FilterDays</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L427" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FilterDays</code>(<strong><code>num_days</code></strong>) :: <a href="/fastrenewables/tabular.core.html#RenewablesTabularProc"><code>RenewablesTabularProc</code></a></p>
+<h2 id="FilterDays" class="doc_header"><code>class</code> <code>FilterDays</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L495" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FilterDays</code>(<strong><code>num_days</code></strong>) :: <a href="/fastrenewables/tabular.core.html#RenewablesTabularProc"><code>RenewablesTabularProc</code></a></p>
 </blockquote>
-<p>Filter dataframe for specific months.</p>
+<p>Base class to write a non-lazy tabular processor for dataframes</p>
 
 </div>
 
@@ -1198,23 +1363,6 @@ Aborts, ones the first meaningful <em>number of samples per day</em> is found.</
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
 
 </div>
     {% endraw %}
@@ -1230,9 +1378,9 @@ Aborts, ones the first meaningful <em>number of samples per day</em> is found.</
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="DropCols" class="doc_header"><code>class</code> <code>DropCols</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L441" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DropCols</code>(<strong><code>cols</code></strong>) :: <a href="/fastrenewables/tabular.core.html#RenewablesTabularProc"><code>RenewablesTabularProc</code></a></p>
+<h2 id="DropCols" class="doc_header"><code>class</code> <code>DropCols</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L510" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DropCols</code>(<strong><code>cols</code></strong>) :: <a href="/fastrenewables/tabular.core.html#RenewablesTabularProc"><code>RenewablesTabularProc</code></a></p>
 </blockquote>
-<p>Drops rows by column name.</p>
+<p>Base class to write a non-lazy tabular processor for dataframes</p>
 
 </div>
 
@@ -1297,9 +1445,9 @@ Aborts, ones the first meaningful <em>number of samples per day</em> is found.</
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Normalize" class="doc_header"><code>class</code> <code>Normalize</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L452" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Normalize</code>(<strong><code>cols_to_ignore</code></strong>=<em><code>[]</code></em>) :: <a href="/fastrenewables/tabular.core.html#RenewablesTabularProc"><code>RenewablesTabularProc</code></a></p>
+<h2 id="Normalize" class="doc_header"><code>class</code> <code>Normalize</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L522" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Normalize</code>(<strong><code>cols_to_ignore</code></strong>=<em><code>[]</code></em>) :: <a href="/fastrenewables/tabular.core.html#RenewablesTabularProc"><code>RenewablesTabularProc</code></a></p>
 </blockquote>
-<p>Normalize per TaskId</p>
+<p>Base class to write a non-lazy tabular processor for dataframes</p>
 
 </div>
 
@@ -1356,9 +1504,9 @@ Therefore, we should normalize before filtering the data.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="BinFeatures" class="doc_header"><code>class</code> <code>BinFeatures</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L471" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BinFeatures</code>(<strong><code>column_names</code></strong>, <strong><code>bin_sizes</code></strong>=<em><code>5</code></em>) :: <code>TabularProc</code></p>
+<h2 id="BinFeatures" class="doc_header"><code>class</code> <code>BinFeatures</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L542" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BinFeatures</code>(<strong><code>column_names</code></strong>, <strong><code>bin_sizes</code></strong>=<em><code>5</code></em>) :: <code>TabularProc</code></p>
 </blockquote>
-<p>Creates bin from categorical features.</p>
+<p>Base class to write a non-lazy tabular processor for dataframes</p>
 
 </div>
 
@@ -1473,7 +1621,7 @@ Therefore, we should normalize before filtering the data.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RenewableSplits" class="doc_header"><code>class</code> <code>RenewableSplits</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L498" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RenewableSplits</code>()</p>
+<h2 id="RenewableSplits" class="doc_header"><code>class</code> <code>RenewableSplits</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L570" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RenewableSplits</code>()</p>
 </blockquote>
 
 </div>
@@ -1497,7 +1645,7 @@ Therefore, we should normalize before filtering the data.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ByWeeksSplitter" class="doc_header"><code>class</code> <code>ByWeeksSplitter</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L502" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ByWeeksSplitter</code>(<strong><code>every_n_weeks</code></strong>:<code>int</code>=<em><code>4</code></em>) :: <a href="/fastrenewables/tabular.core.html#RenewableSplits"><code>RenewableSplits</code></a></p>
+<h2 id="ByWeeksSplitter" class="doc_header"><code>class</code> <code>ByWeeksSplitter</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L574" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ByWeeksSplitter</code>(<strong><code>every_n_weeks</code></strong>:<code>int</code>=<em><code>4</code></em>) :: <a href="/fastrenewables/tabular.core.html#RenewableSplits"><code>RenewableSplits</code></a></p>
 </blockquote>
 
 </div>
@@ -1521,7 +1669,7 @@ Therefore, we should normalize before filtering the data.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TrainTestSplitByDays" class="doc_header"><code>class</code> <code>TrainTestSplitByDays</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L518" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TrainTestSplitByDays</code>(<strong><code>test_size</code></strong>:<code>float</code>=<em><code>0.25</code></em>) :: <a href="/fastrenewables/tabular.core.html#RenewableSplits"><code>RenewableSplits</code></a></p>
+<h2 id="TrainTestSplitByDays" class="doc_header"><code>class</code> <code>TrainTestSplitByDays</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L590" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TrainTestSplitByDays</code>(<strong><code>test_size</code></strong>:<code>float</code>=<em><code>0.25</code></em>) :: <a href="/fastrenewables/tabular.core.html#RenewableSplits"><code>RenewableSplits</code></a></p>
 </blockquote>
 
 </div>
@@ -1552,7 +1700,7 @@ Therefore, we should normalize before filtering the data.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabularRenewables" class="doc_header"><code>class</code> <code>TabularRenewables</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L538" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabularRenewables</code>(<strong><code>dfs</code></strong>, <strong><code>procs</code></strong>=<em><code>None</code></em>, <strong><code>cat_names</code></strong>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>reduce_memory</code></strong>=<em><code>False</code></em>, <strong><code>y_names</code></strong>=<em><code>None</code></em>, <strong><code>add_y_to_x</code></strong>=<em><code>False</code></em>, <strong><code>add_x_to_y</code></strong>=<em><code>False</code></em>, <strong><code>pre_process</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>y_block</code></strong>=<em><code>&lt;fastai.data.block.TransformBlock object at 0x7f0c5e265580&gt;</code></em>, <strong><code>group_id</code></strong>=<em><code>'TaskID'</code></em>, <strong><code>inplace</code></strong>=<em><code>False</code></em>) :: <code>TabularPandas</code></p>
+<h2 id="TabularRenewables" class="doc_header"><code>class</code> <code>TabularRenewables</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L610" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabularRenewables</code>(<strong><code>dfs</code></strong>, <strong><code>procs</code></strong>=<em><code>None</code></em>, <strong><code>cat_names</code></strong>=<em><code>None</code></em>, <strong><code>cont_names</code></strong>=<em><code>None</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>reduce_memory</code></strong>=<em><code>False</code></em>, <strong><code>y_names</code></strong>=<em><code>None</code></em>, <strong><code>add_y_to_x</code></strong>=<em><code>False</code></em>, <strong><code>add_x_to_y</code></strong>=<em><code>False</code></em>, <strong><code>pre_process</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>y_block</code></strong>=<em><code>&lt;fastai.data.block.TransformBlock object at 0x7f7d0c0e5040&gt;</code></em>, <strong><code>group_id</code></strong>=<em><code>'TaskID'</code></em>, <strong><code>inplace</code></strong>=<em><code>False</code></em>) :: <code>TabularPandas</code></p>
 </blockquote>
 <p>A <code>Tabular</code> object with transforms</p>
 
@@ -1590,7 +1738,7 @@ Therefore, we should normalize before filtering the data.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ReadTabBatchRenewables" class="doc_header"><code>class</code> <code>ReadTabBatchRenewables</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L638" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ReadTabBatchRenewables</code>(<strong><code>to</code></strong>) :: <code>ItemTransform</code></p>
+<h2 id="ReadTabBatchRenewables" class="doc_header"><code>class</code> <code>ReadTabBatchRenewables</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L714" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ReadTabBatchRenewables</code>(<strong><code>to</code></strong>) :: <code>ItemTransform</code></p>
 </blockquote>
 <p>Transform <code>TabularPandas</code> values into a <code>Tensor</code> with the ability to decode</p>
 
@@ -1622,7 +1770,7 @@ Therefore, we should normalize before filtering the data.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabDataLoaderRenewables" class="doc_header"><code>class</code> <code>TabDataLoaderRenewables</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L674" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabDataLoaderRenewables</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>16</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>persistent_workers</code></strong>=<em><code>False</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>) :: <code>TfmdDL</code></p>
+<h2 id="TabDataLoaderRenewables" class="doc_header"><code>class</code> <code>TabDataLoaderRenewables</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L762" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabDataLoaderRenewables</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>16</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>after_batch</code></strong>=<em><code>None</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>verbose</code></strong>=<em><code>False</code></em>, <strong><code>do_setup</code></strong>=<em><code>True</code></em>, <strong><code>pin_memory</code></strong>=<em><code>False</code></em>, <strong><code>timeout</code></strong>=<em><code>0</code></em>, <strong><code>batch_size</code></strong>=<em><code>None</code></em>, <strong><code>drop_last</code></strong>=<em><code>False</code></em>, <strong><code>indexed</code></strong>=<em><code>None</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>device</code></strong>=<em><code>None</code></em>, <strong><code>persistent_workers</code></strong>=<em><code>False</code></em>, <strong><code>wif</code></strong>=<em><code>None</code></em>, <strong><code>before_iter</code></strong>=<em><code>None</code></em>, <strong><code>after_item</code></strong>=<em><code>None</code></em>, <strong><code>before_batch</code></strong>=<em><code>None</code></em>, <strong><code>after_iter</code></strong>=<em><code>None</code></em>, <strong><code>create_batches</code></strong>=<em><code>None</code></em>, <strong><code>create_item</code></strong>=<em><code>None</code></em>, <strong><code>create_batch</code></strong>=<em><code>None</code></em>, <strong><code>retain</code></strong>=<em><code>None</code></em>, <strong><code>get_idxs</code></strong>=<em><code>None</code></em>, <strong><code>sample</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_fn</code></strong>=<em><code>None</code></em>, <strong><code>do_batch</code></strong>=<em><code>None</code></em>) :: <code>TfmdDL</code></p>
 </blockquote>
 <p>A transformed <code>DataLoader</code> for Tabular data</p>
 
@@ -1654,7 +1802,7 @@ Therefore, we should normalize before filtering the data.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="unique_cols" class="doc_header"><code>unique_cols</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L687" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>unique_cols</code>(<strong><code>df</code></strong>)</p>
+<h4 id="unique_cols" class="doc_header"><code>unique_cols</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L775" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>unique_cols</code>(<strong><code>df</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -1678,7 +1826,7 @@ Therefore, we should normalize before filtering the data.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="NormalizePerTask" class="doc_header"><code>class</code> <code>NormalizePerTask</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L691" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NormalizePerTask</code>(<strong><code>task_id_col</code></strong>=<em><code>'TaskID'</code></em>, <strong><code>ignore_cont_cols</code></strong>=<em><code>[]</code></em>, <strong><code>norm_type</code></strong>=<em><code>'znorm'</code></em>) :: <code>TabularProc</code></p>
+<h2 id="NormalizePerTask" class="doc_header"><code>class</code> <code>NormalizePerTask</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L779" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>NormalizePerTask</code>(<strong><code>task_id_col</code></strong>=<em><code>'TaskID'</code></em>, <strong><code>ignore_cont_cols</code></strong>=<em><code>[]</code></em>, <strong><code>norm_type</code></strong>=<em><code>'znorm'</code></em>) :: <code>TabularProc</code></p>
 </blockquote>
 <p>Normalize per TaskId. Either via z-normalization (znorm) or min-max normalization (minmaxnorm)</p>
 
@@ -1723,7 +1871,7 @@ Therefore, we should normalize before filtering the data.</p>
     <span class="n">df</span><span class="p">[</span><span class="s2">&quot;TimeStamps&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">index</span>
     
     <span class="n">to</span> <span class="o">=</span> <span class="n">TabularRenewables</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> 
-                           <span class="n">pre_process</span><span class="o">=</span><span class="n">CreateTimeStampIndex</span><span class="p">(</span><span class="n">col_name</span><span class="o">=</span><span class="s2">&quot;TimeStamps&quot;</span><span class="p">),</span> 
+                           <span class="n">pre_process</span><span class="o">=</span><span class="n">CreateTimeStampIndex</span><span class="p">(</span><span class="n">index_col_name</span><span class="o">=</span><span class="s2">&quot;TimeStamps&quot;</span><span class="p">),</span> 
                            <span class="n">procs</span><span class="o">=</span><span class="p">[</span><span class="n">NormalizePerTask</span><span class="p">(</span><span class="n">ignore_cont_cols</span><span class="o">=</span><span class="n">ignore_cols</span><span class="p">,</span> <span class="n">norm_type</span><span class="o">=</span><span class="n">norm_type</span><span class="p">)],</span> 
                            <span class="n">cont_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">]</span> <span class="p">,</span> 
                            <span class="n">y_names</span><span class="o">=</span><span class="n">y_names</span><span class="p">,</span> 
@@ -1800,7 +1948,7 @@ Therefore, we should normalize before filtering the data.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="VerifyAndNormalizeTarget" class="doc_header"><code>class</code> <code>VerifyAndNormalizeTarget</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L775" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>VerifyAndNormalizeTarget</code>(<strong><code>reset_min_value</code></strong>=<em><code>0.0</code></em>, <strong><code>reset_max_value</code></strong>=<em><code>1.05</code></em>, <strong><code>max_value_for_normalization</code></strong>=<em><code>1.5</code></em>, <strong><code>task_id_col</code></strong>=<em><code>'TaskID'</code></em>) :: <code>TabularProc</code></p>
+<h2 id="VerifyAndNormalizeTarget" class="doc_header"><code>class</code> <code>VerifyAndNormalizeTarget</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L859" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>VerifyAndNormalizeTarget</code>(<strong><code>reset_min_value</code></strong>=<em><code>0.0</code></em>, <strong><code>reset_max_value</code></strong>=<em><code>1.05</code></em>, <strong><code>max_value_for_normalization</code></strong>=<em><code>1.5</code></em>, <strong><code>task_id_col</code></strong>=<em><code>'TaskID'</code></em>) :: <code>TabularProc</code></p>
 </blockquote>
 <p>Normalize per TaskId</p>
 
@@ -1837,7 +1985,7 @@ Therefore, we should normalize before filtering the data.</p>
     <span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;2015-01-01-01&#39;</span><span class="p">,</span> <span class="s1">&#39;2015-01-01-02&#39;</span><span class="p">,</span> <span class="s1">&#39;2015-01-02-03&#39;</span><span class="p">,</span> <span class="s1">&#39;2015-02-01-23&#39;</span><span class="p">,</span> <span class="s1">&#39;2015-02-01-13&#39;</span><span class="p">,</span>
         <span class="s1">&#39;2016-01-01-01&#39;</span><span class="p">,</span> <span class="s1">&#39;2016-01-01-02&#39;</span><span class="p">,</span> <span class="s1">&#39;2016-06-02-03&#39;</span><span class="p">,</span> <span class="s1">&#39;2016-02-01-23&#39;</span><span class="p">,</span> <span class="s1">&#39;2016-02-01-13&#39;</span><span class="p">]</span> 
     <span class="n">df</span><span class="p">[</span><span class="s2">&quot;TimeStamps&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">index</span>
-    <span class="n">to</span> <span class="o">=</span> <span class="n">TabularRenewables</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">pre_process</span><span class="o">=</span><span class="n">CreateTimeStampIndex</span><span class="p">(</span><span class="n">col_name</span><span class="o">=</span><span class="s2">&quot;TimeStamps&quot;</span><span class="p">),</span> 
+    <span class="n">to</span> <span class="o">=</span> <span class="n">TabularRenewables</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">pre_process</span><span class="o">=</span><span class="n">CreateTimeStampIndex</span><span class="p">(</span><span class="n">index_col_name</span><span class="o">=</span><span class="s2">&quot;TimeStamps&quot;</span><span class="p">),</span> 
                            <span class="n">procs</span><span class="o">=</span><span class="p">[</span><span class="n">VerifyAndNormalizeTarget</span><span class="p">(</span><span class="n">reset_min_value</span><span class="p">,</span><span class="n">reset_max_value</span><span class="p">,</span>
                                                            <span class="n">max_value_for_normalization</span><span class="p">)],</span> 
                            <span class="n">cont_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;A&quot;</span><span class="p">]</span> <span class="p">,</span> <span class="n">y_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">],</span> 
@@ -1901,7 +2049,7 @@ Therefore, we should normalize before filtering the data.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabDataset" class="doc_header"><code>class</code> <code>TabDataset</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L819" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabDataset</code>(<strong><code>x</code></strong>=<em><code>None</code></em>, <strong>*<code>rest</code></strong>) :: <code>fastuple</code></p>
+<h2 id="TabDataset" class="doc_header"><code>class</code> <code>TabDataset</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L904" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabDataset</code>(<strong><code>x</code></strong>=<em><code>None</code></em>, <strong>*<code>rest</code></strong>) :: <code>fastuple</code></p>
 </blockquote>
 <p>A dataset from a <code>TabularRenewable</code> object</p>
 
@@ -1933,7 +2081,7 @@ Therefore, we should normalize before filtering the data.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabDataLoader" class="doc_header"><code>class</code> <code>TabDataLoader</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L853" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>32</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>device</code></strong>=<em><code>'cuda'</code></em>, <strong><code>to_device</code></strong>=<em><code>True</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>drop_last</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>DataLoader</code></p>
+<h2 id="TabDataLoader" class="doc_header"><code>class</code> <code>TabDataLoader</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L938" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>32</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>device</code></strong>=<em><code>'cuda'</code></em>, <strong><code>to_device</code></strong>=<em><code>True</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>drop_last</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>DataLoader</code></p>
 </blockquote>
 <p>API compatible with PyTorch DataLoader, with a lot more callbacks and flexibility</p>
 
@@ -1965,7 +2113,7 @@ Therefore, we should normalize before filtering the data.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabDataLoaders" class="doc_header"><code>class</code> <code>TabDataLoaders</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L892" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabDataLoaders</code>(<strong><code>to</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>'cpu'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>DataLoaders</code></p>
+<h2 id="TabDataLoaders" class="doc_header"><code>class</code> <code>TabDataLoaders</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/tabular/core.py#L977" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TabDataLoaders</code>(<strong><code>to</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>'cpu'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>DataLoaders</code></p>
 </blockquote>
 <p>Basic wrapper around several <code>DataLoader</code>s.</p>
 
@@ -2528,18 +2676,18 @@ TimeUTC
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(tensor([[1],
+<pre>(tensor([[2],
          [1],
          [2],
-         [2]]),
- tensor([[ 1.4142,  1.4142],
+         [1]]),
+ tensor([[-1.4142, -1.4142],
+         [-1.4142, -1.4142],
          [-0.7071, -0.7071],
-         [-0.7071, -0.7071],
-         [ 0.0000,  0.0000]]),
- tensor([[4.],
-         [1.],
+         [ 0.7071,  0.7071]]),
+ tensor([[5.],
+         [0.],
          [6.],
-         [7.]]))</pre>
+         [3.]]))</pre>
 </div>
 
 </div>
@@ -3092,30 +3240,30 @@ TimeUTC
     <tr>
       <th>0</th>
       <td>3</td>
+      <td>8.0</td>
+      <td>18.0</td>
+      <td>7.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>3</td>
+      <td>7.0</td>
+      <td>17.0</td>
+      <td>6.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
       <td>10.0</td>
       <td>20.0</td>
       <td>9.0</td>
     </tr>
     <tr>
-      <th>1</th>
-      <td>3</td>
-      <td>6.0</td>
-      <td>16.0</td>
-      <td>5.0</td>
-    </tr>
-    <tr>
-      <th>2</th>
+      <th>3</th>
       <td>3</td>
       <td>9.0</td>
       <td>19.0</td>
       <td>8.0</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>3</td>
-      <td>8.0</td>
-      <td>18.0</td>
-      <td>7.0</td>
     </tr>
   </tbody>
 </table>
