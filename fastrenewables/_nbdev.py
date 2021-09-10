@@ -3,6 +3,7 @@
 __all__ = ["index", "modules", "custom_doc_links", "git_url"]
 
 index = {"contains_instance": "00a_utils.ipynb",
+         "filter_preds": "00a_utils.ipynb",
          "VILoss": "00b_losses.ipynb",
          "convert_layer_to_bayesian": "00c_utils_blitz.ipynb",
          "convert_to_bayesian_model": "00c_utils_blitz.ipynb",

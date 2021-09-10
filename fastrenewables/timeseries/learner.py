@@ -15,6 +15,7 @@ from .core import *
 from .data import *
 from .model import *
 from ..losses import VILoss
+from ..utils import *
 import pandas as pd
 
 # Cell
@@ -37,8 +38,7 @@ class RenewableTimeseriesLearner(Learner):
 
             preds, targets = to_np(preds).reshape(-1), to_np(to.ys).reshape(-1)
             if filter:
-                preds[preds < 0] = 0
-                preds[preds > 1.1] = 1.1
+                preds = filter_preds(preds)
         else:
             raise NotImplementedError("Unknown type")
 

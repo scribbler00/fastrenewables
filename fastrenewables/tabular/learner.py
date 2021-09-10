@@ -13,6 +13,7 @@ from .core import *
 from .data import *
 from .model import *
 from ..losses import VILoss
+from ..utils import *
 
 # Cell
 class RenewableLearner(Learner):
@@ -43,8 +44,7 @@ class RenewableLearner(Learner):
 
             preds, targets = to_np(preds).reshape(-1), to_np(targets).reshape(-1)
             if filter:
-                preds[preds < 0] = 0
-                preds[preds > 1.1] = 1.1
+                preds = filter_preds(preds)
         else:
             raise NotImplementedError("Unknown type")
 
