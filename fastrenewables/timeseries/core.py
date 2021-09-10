@@ -326,7 +326,7 @@ class Timeseries(Transform, FilteredBase):
         self.batch_first, self.sequence_last = batch_first, sequence_last
 
         if getattr(to, "splits", None) is not None:
-            warnings.warn("Splitting in TabularRenewables is currentl supported. \
+            warnings.warn("Splitting in TabularRenewables is not supported. \
                           Otherwise a correct splitting for timeseries is not assured. \
                           Fallback to complete data.")
 
@@ -418,7 +418,12 @@ class Timeseries(Transform, FilteredBase):
         return self.subset(1)
 
     def _data_by_split(self, split):
-        return (self.indexes[split], self.cats[split], self.conts[split], self.ys[split])
+        if len(self.cats) == 0:
+            cats = []
+        else:
+            cats = self.cats[split]
+
+        return (self.indexes[split], cats, self.conts[split], self.ys[split])
 
     def _data_by_id(self, i:int):
         return (self.indexes[i], self.cats[i], self.conts[i], self.ys[i])
@@ -498,8 +503,12 @@ class TimeseriesDataset(fastuple):
             raise NotImplementedError
 
     def __getitem__(self, idx):
-        idx = idx[0]
-        return self.cats[idx:idx+self.bs], self.conts[idx:idx+self.bs], self.ys[idx:idx+self.bs]
+        if len(self.cats) == 0:
+            cats = []
+        else:
+            cats = self.cats[idx]
+
+        return cats, self.conts[idx], self.ys[idx]
 
     def __len__(self): return len(self.conts)
 

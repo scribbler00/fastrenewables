@@ -695,7 +695,7 @@ y_timeseries_offset: The (initial) offset of the output compared to the input.</
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TimeseriesDataset" class="doc_header"><code>class</code> <code>TimeseriesDataset</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L487" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeseriesDataset</code>(<strong><code>x</code></strong>=<em><code>None</code></em>, <strong>*<code>rest</code></strong>) :: <code>fastuple</code></p>
+<h2 id="TimeseriesDataset" class="doc_header"><code>class</code> <code>TimeseriesDataset</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L492" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeseriesDataset</code>(<strong><code>x</code></strong>=<em><code>None</code></em>, <strong>*<code>rest</code></strong>) :: <code>fastuple</code></p>
 </blockquote>
 <p>A dataset from a <a href="/fastrenewables/timeseries.core.html#Timeseries"><code>Timeseries</code></a> object</p>
 
@@ -874,7 +874,7 @@ y_timeseries_offset: The (initial) offset of the output compared to the input.</
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TimeSeriesDataLoader" class="doc_header"><code>class</code> <code>TimeSeriesDataLoader</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L537" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeSeriesDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>32</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>device</code></strong>=<em><code>'cuda'</code></em>, <strong><code>to_device</code></strong>=<em><code>True</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>drop_last</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>DataLoader</code></p>
+<h2 id="TimeSeriesDataLoader" class="doc_header"><code>class</code> <code>TimeSeriesDataLoader</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L546" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeSeriesDataLoader</code>(<strong><code>dataset</code></strong>, <strong><code>bs</code></strong>=<em><code>32</code></em>, <strong><code>num_workers</code></strong>=<em><code>0</code></em>, <strong><code>device</code></strong>=<em><code>'cuda'</code></em>, <strong><code>to_device</code></strong>=<em><code>True</code></em>, <strong><code>shuffle</code></strong>=<em><code>False</code></em>, <strong><code>drop_last</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>DataLoader</code></p>
 </blockquote>
 <p>A dataloader for timersiers datasets.</p>
 
@@ -906,7 +906,7 @@ y_timeseries_offset: The (initial) offset of the output compared to the input.</
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TimeSeriesDataLoaders" class="doc_header"><code>class</code> <code>TimeSeriesDataLoaders</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L585" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeSeriesDataLoaders</code>(<strong><code>to</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>'cpu'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>DataLoaders</code></p>
+<h2 id="TimeSeriesDataLoaders" class="doc_header"><code>class</code> <code>TimeSeriesDataLoaders</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L594" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeSeriesDataLoaders</code>(<strong><code>to</code></strong>, <strong><code>bs</code></strong>=<em><code>64</code></em>, <strong><code>val_bs</code></strong>=<em><code>None</code></em>, <strong><code>shuffle_train</code></strong>=<em><code>True</code></em>, <strong><code>device</code></strong>=<em><code>'cpu'</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>DataLoaders</code></p>
 </blockquote>
 <p>Dataloader container to store the training as well as the validation dataloader.</p>
 
@@ -1026,41 +1026,41 @@ y_timeseries_offset: The (initial) offset of the output compared to the input.</
 <div class="output_text output_subarea output_execute_result">
 <pre>(tensor([[[2, 4, 2, 1, 3, 2, 3, 1]],
  
-         [[0, 0, 3, 1, 3, 3, 3, 1]],
- 
          [[4, 1, 3, 2, 1, 4, 0, 3]],
  
-         [[3, 3, 4, 4, 3, 2, 0, 4]]], device=&#39;cuda:0&#39;),
+         [[3, 1, 4, 3, 1, 2, 3, 4]],
+ 
+         [[2, 0, 3, 2, 2, 2, 2, 4]]], device=&#39;cuda:0&#39;),
  tensor([[[ 0.0000,  0.5000,  1.0000,  1.5000,  2.0000,  2.5000,  3.0000,
             3.5000],
           [47.5000, 47.0000, 46.5000, 46.0000, 45.5000, 45.0000, 44.5000,
            44.0000]],
- 
-         [[36.0000, 36.5000, 37.0000, 37.5000, 38.0000, 38.5000, 39.0000,
-           39.5000],
-          [11.5000, 11.0000, 10.5000, 10.0000,  9.5000,  9.0000,  8.5000,
-            8.0000]],
  
          [[16.0000, 16.5000, 17.0000, 17.5000, 18.0000, 18.5000, 19.0000,
            19.5000],
           [31.5000, 31.0000, 30.5000, 30.0000, 29.5000, 29.0000, 28.5000,
            28.0000]],
  
-         [[24.0000, 24.5000, 25.0000, 25.5000, 26.0000, 26.5000, 27.0000,
-           27.5000],
-          [23.5000, 23.0000, 22.5000, 22.0000, 21.5000, 21.0000, 20.5000,
-           20.0000]]], device=&#39;cuda:0&#39;),
+         [[44.0000, 44.5000, 45.0000, 45.5000, 46.0000, 46.5000, 47.0000,
+           47.5000],
+          [ 3.5000,  3.0000,  2.5000,  2.0000,  1.5000,  1.0000,  0.5000,
+            0.0000]],
+ 
+         [[20.0000, 20.5000, 21.0000, 21.5000, 22.0000, 22.5000, 23.0000,
+           23.5000],
+          [27.5000, 27.0000, 26.5000, 26.0000, 25.5000, 25.0000, 24.5000,
+           24.0000]]], device=&#39;cuda:0&#39;),
  tensor([[[ 1.2675,  2.1078, -0.2361, -0.2321, -1.0781,  1.1632,  0.5225,
             1.8444]],
- 
-         [[ 0.3214, -0.7575,  0.3379,  0.6675, -1.9093, -1.8440,  0.3738,
-            1.5097]],
  
          [[-1.5496, -0.9740, -1.0491, -0.4648, -0.4906,  1.0007,  2.1485,
             1.4324]],
  
-         [[ 1.4966, -0.6842,  0.3353, -1.1286, -0.1337, -0.7850, -0.2359,
-           -1.4120]]], device=&#39;cuda:0&#39;))</pre>
+         [[-0.2872, -1.0319,  1.6213, -1.9725, -0.2407, -0.3045, -0.1397,
+            1.3603]],
+ 
+         [[-0.1334,  0.0058, -0.6676, -0.9406,  0.9308,  0.0463,  1.3367,
+            0.2803]]], device=&#39;cuda:0&#39;))</pre>
 </div>
 
 </div>
@@ -1529,7 +1529,7 @@ y_timeseries_offset: The (initial) offset of the output compared to the input.</
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="reduce_target_timeseries_to_element" class="doc_header"><code>reduce_target_timeseries_to_element</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L611" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>reduce_target_timeseries_to_element</code>(<strong><code>indexes</code></strong>, <strong><code>cats</code></strong>, <strong><code>conts</code></strong>, <strong><code>ys</code></strong>, <strong><code>element_pos</code></strong>=<em><code>0</code></em>)</p>
+<h4 id="reduce_target_timeseries_to_element" class="doc_header"><code>reduce_target_timeseries_to_element</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L620" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>reduce_target_timeseries_to_element</code>(<strong><code>indexes</code></strong>, <strong><code>cats</code></strong>, <strong><code>conts</code></strong>, <strong><code>ys</code></strong>, <strong><code>element_pos</code></strong>=<em><code>0</code></em>)</p>
 </blockquote>
 <p>Simple transform to shorten the target timeseries.</p>
 
