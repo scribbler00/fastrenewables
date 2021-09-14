@@ -44,7 +44,7 @@ class RenewableLearner(Learner):
 
             preds, targets = to_np(preds).reshape(-1), to_np(targets).reshape(-1)
             if filter:
-                preds = filter_preds(preds)
+                targets, preds = filter_preds(targets, preds)
         else:
             raise NotImplementedError("Unknown type")
 

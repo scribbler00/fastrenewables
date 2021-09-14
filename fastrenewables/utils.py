@@ -3,6 +3,11 @@
 __all__ = ['contains_instance', 'filter_preds']
 
 # Cell
+#export
+from fastcore.test import *
+import numpy as np
+
+# Cell
 def contains_instance(elements:list, instance):
     contains=False
     elements = list(elements)
@@ -13,8 +18,12 @@ def contains_instance(elements:list, instance):
     return contains
 
 # Cell
-def filter_preds(preds, min_value=0, max_value=1.1):
+def filter_preds(targets, preds, min_value=0, max_value=1.1, filter_nas=True):
     preds[preds < min_value] = min_value
     preds[preds > max_value] = max_value
 
-    return preds
+    if filter_nas:
+        mask_nans = ~np.isnan(preds)
+        preds, targets = preds[mask_nans], targets[mask_nans]
+
+    return targets, preds
