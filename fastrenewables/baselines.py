@@ -22,49 +22,88 @@ def _append_one_col(X):
 class BayesLinReg(BaseEstimator):
     """Batch wise linear regression"""
 
-    def __init__(self, alpha=0.3, beta=1):
+    def __init__(self,  alpha:float=1., beta:float=1., empircal_bayes:bool=True, n_iter:int=100):
         self.alpha = alpha
         self.beta = beta
         self.n_features = None
+        self.n_iter = n_iter
 
-    # inspired by https://maxhalford.github.io/blog/bayesian-linear-regression/
-    def fit(self, X, y):
 
-        # If x and y are singletons, then we coerce them to a batch of length 1
-        x = np.atleast_2d(X)
-        y = np.atleast_1d(y)
-
-        X = _append_one_col(X)
-
+    def _create_matrices(self, X):
         if self.n_features is None:
             self.n_features = X.shape[1]
 
-            self.mean = np.zeros(self.n_features)
-            self.cov_inv = np.identity(self.n_features) / self.alpha
+            self.w_mean = np.zeros(self.n_features)
+            self.w_precision = np.identity(self.n_features) / self.alpha
 
-        # Update the inverse covariance matrix (Bishop eq. 3.51)
-        cov_inv = self.cov_inv + self.beta * X.T @ X
+    def fit(self, X, y):
+        X,y = self._check_and_prep(X, y)
 
-        # Update the mean vector (Bishop eq. 3.50)
-        cov = np.linalg.inv(cov_inv)
-        mean = cov @ (self.cov_inv @ self.mean + self.beta * y @ X)
+        M = X.T @ X
+        eigenvalues = np.linalg.eigvalsh(M)
+        identity_matrix = np.eye(np.size(X,1))#np.identity(self.n_features)
+        N = len(X)
 
-        self.cov_inv = cov_inv
-        self.mean = mean
+
+        for idx in range(self.n_iter):
+            params = [self.alpha, self.beta]
+
+            w_precision = self.alpha * identity_matrix + self.beta * X.T @ X
+            w_mean = self.beta * np.linalg.solve(w_precision, X.T @ y)
+
+            gamma = np.sum(eigenvalues / (self.alpha + eigenvalues))
+            self.alpha = float(gamma / np.sum(w_mean ** 2).clip(min=1e-10))
+            self.beta = float((N-gamma) / np.sum(np.square(y - X @ w_mean)))
+
+            if np.allclose(params, [self.alpha, self.beta]):
+                break
+
+        if idx+1==self.n_iter:
+            print(f"Optimization of alpha {self.alpha:0.2f} and beta {self.beta:0.2f} not terminated. ")
+
+        self.w_mean = w_mean
+        self.w_precision = w_precision
+        self.w_covariance = np.linalg.inv(w_precision)
+
+
+        return self
+
+    def _check_and_prep(self, X, y = None):
+        X = np.atleast_2d(X)
+        X = _append_one_col(X)
+
+        self._create_matrices(X)
+        if y is None:
+            return X
+        else:
+            y = np.atleast_1d(y)
+            return X,y
+
+    def update(self, X, y):
+
+        X, y = self._check_and_prep(X, y)
+
+        # update the inverse covariance matrix (Bishop eq. 3.51)
+        w_precision = self.w_precision + self.beta * X.T @ X
+
+        # update the mean vector (Bishop eq. 3.50)
+        w_covariance = np.linalg.inv(w_precision)
+        w_mean = w_covariance @ (self.w_precision @ self.w_mean + self.beta * y @ X)
+
+        self.w_precision = w_precision
+        self.w_covariance = np.linalg.inv(w_precision)
+        self.w_mean = w_mean
 
         return self
 
     def _predict(self,X):
-        X = np.atleast_2d(X)
+        X = self._check_and_prep(X)
 
-        X = _append_one_col(X)
+        # calcualte the predictive mean (Bishop eq. 3.58)
+        y_pred_mean = X @ self.w_mean
 
-        # Obtain the predictive mean (Bishop eq. 3.58)
-        y_pred_mean = X @ self.mean
-
-        # Obtain the predictive variance (Bishop eq. 3.59)
-        w_cov = np.linalg.inv(self.cov_inv)
-        y_pred_var = 1 / self.beta + (X @ w_cov * X).sum(axis=1)
+        # calculate the predictive variance (Bishop eq. 3.59)
+        y_pred_var = 1 / self.beta + (X @ self.w_covariance * X).sum(axis=1)
 
         # Drop a dimension from the mean and variance in case x and y were singletons
         # There might be a more elegant way to proceed but this works!
@@ -82,11 +121,30 @@ class BayesLinReg(BaseEstimator):
 
     def predict_proba(self, X):
 
-        y_pred_mean, y_pred_std =self._predict(X)
+        y_pred_mean, y_pred_std = self._predict(X)
 
-        # return stats.norm(loc=y_pred_mean, scale=y_pred_var ** .5)
         return y_pred_mean, y_pred_std
 
+
+    def _log_prior(self, w):
+        return -0.5 * self.alpha * np.sum(w ** 2)
+
+    def _log_likelihood(self, X, y, w):
+        return -0.5 * self.beta * np.square(y - X @ w).sum()
+
+
+    def _log_posterior(self, X, y, w):
+        return self._log_likelihood(X, y, w) + self._log_prior(w)
+
+    def log_evidence(self, X:np.ndarray, y:np.ndarray):
+        X, y = self._check_and_prep(X, y)
+
+        N = len(y)
+        D = np.size(X, 1)
+
+        return 0.5 * (D * np.log(self.alpha) + N * np.log(self.beta)
+            - np.linalg.slogdet(self.w_precision)[1] - D * np.log(2 * np.pi)
+        ) + self._log_posterior(X, y, self.w_mean)
 
 # Cell
 class RidgeRegression(BaseEstimator):
@@ -157,15 +215,14 @@ class ELM(BaseEstimator):
             Hs.append(act(G))
         return np.concatenate(Hs, axis=1)
 
-    def fit(self, X, y):
-
+    def _check_and_prep(self, X, y):
         X, y = self._validate_data(X, y, y_numeric=True, multi_output=True)
         activations = self._as_list(self.activations)
 
         self._n_features = X.shape[1]
         if self._hidden_weights is None:
-            self._hidden_weights = np.random.normal(size=[self._n_features, self.n_hidden*len(activations)])
-            self._biases = np.random.normal(size=[self.n_hidden*len(activations)])
+            self._hidden_weights = 0.1*np.random.normal(size=[self._n_features, self.n_hidden*len(activations)])
+            self._biases = 0.1*np.random.normal(size=[self.n_hidden*len(activations)])
 
 
         X_transformed = self.transform_X(
@@ -175,7 +232,21 @@ class ELM(BaseEstimator):
         if self.include_original_features:
             X_transformed = np.concatenate([X_transformed, X], axis=1)
 
+        return X_transformed, y
+
+    def fit(self, X, y):
+
+        X_transformed, y = self._check_and_prep(X, y)
+
         self._prediction_model.fit(X_transformed, y)
+
+        return self
+
+    def update(self, X, y):
+
+        X_transformed, y = self._check_and_prep(X, y)
+
+        self._prediction_model.update(X_transformed, y)
 
         return self
 
@@ -220,6 +291,10 @@ class ELM(BaseEstimator):
 
     def get_params(self, deep=False):
         return super().get_params()
+
+    def log_evidence(self, X:np.ndarray, y:np.ndarray):
+        X_transformed = self._prep_pred_X(X)
+        return self._prediction_model.log_evidence(X_transformed, y)
 
 # Cell
 class EchoStateRegression(BaseEstimator):
