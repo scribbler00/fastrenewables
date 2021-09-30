@@ -40,6 +40,10 @@ class BayesLinReg(BaseEstimator):
 
     def fit_empirical_bayes(self, X, y):
         X,y = self._check_and_prep(X, y)
+        """
+           Fitting empirical bayes based on training data to determine alpha and beta.
+           This can be used when N>>M (more training samples than parameters).
+        """
 
         M = X.T @ X
         eigenvalues = np.linalg.eigvalsh(M)
@@ -50,11 +54,18 @@ class BayesLinReg(BaseEstimator):
         for idx in range(self.n_iter):
             params = [self.alpha, self.beta]
 
+            # update the inverse covariance matrix (Bishop eq. 3.51)
             w_precision = self.alpha * identity_matrix + self.beta * X.T @ X
+            # update the mean vector (Bishop eq. 3.50)
             w_mean = self.beta * np.linalg.solve(w_precision, X.T @ y)
 
+
+            # TODO (Bishop eq. 3.91)
             gamma = np.sum(eigenvalues / (self.alpha + eigenvalues))
+            # TODO (Bishop eq. 3.98)
             self.alpha = float(gamma / np.sum(w_mean ** 2).clip(min=1e-10))
+
+            # TODO (Bishop eq. 3.99)
             self.beta = float((N-gamma) / np.sum(np.square(y - X @ w_mean)))
 
             if np.allclose(params, [self.alpha, self.beta]):
@@ -65,6 +76,7 @@ class BayesLinReg(BaseEstimator):
 
         self.w_mean = w_mean
         self.w_precision = w_precision
+        # calculate the covariance in advance for faster inference
         self.w_covariance = np.linalg.inv(w_precision)
 
 
@@ -239,8 +251,8 @@ class ELM(BaseEstimator):
 
         self._n_features = X.shape[1]
         if self._hidden_weights is None:
-            self._hidden_weights = 0.1*np.random.normal(size=[self._n_features, self.n_hidden*len(self.activations)])
-            self._biases = 0.1*np.random.normal(size=[self.n_hidden*len(self.activations)])
+            self._hidden_weights = 0.1*np.random.normal(size=[self._n_features, self.n_hidden])
+            self._biases = 0.1*np.random.normal(size=[self.n_hidden])
 
 
         X_transformed = self.transform_X(
