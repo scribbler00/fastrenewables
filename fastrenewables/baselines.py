@@ -187,7 +187,6 @@ class RidgeRegression(BaseEstimator):
 
         return y_hat
 
-
 # Cell
 def relu(x):
     return np.maximum(x, 0)
