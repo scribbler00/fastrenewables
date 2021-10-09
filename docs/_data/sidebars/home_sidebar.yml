@@ -22,6 +22,9 @@ entries:
       title: baselines
       url: baselines.html
     - output: web,pdf
+      title: metrics
+      url: metrics.html
+    - output: web,pdf
       title: tabular.core
       url: tabular.core.html
     - output: web,pdf

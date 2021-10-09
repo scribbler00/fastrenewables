@@ -5,6 +5,7 @@
     "losses": "losses.html",
     "uitls_blitz": "utils_blitz.html",
     "baselines": "baselines.html",
+    "metrics": "metrics.html",
     "tabular.core": "tabular.core.html",
     "tabular.data": "tabular.data.html",
     "tabular.model": "tabular.model.html",
