@@ -14,6 +14,7 @@
     "timeseries.data": "timeseries.data.html",
     "timeseries.model": "timeseries.model.html",
     "timeseries.learner": "timeseries.learner.html",
-    "gan.core": "gan.core.html"
+    "gan.core": "gan.core.html",
+    "models.autoencoders": "autoencoder_models.html"
   }
 }

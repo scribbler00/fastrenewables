@@ -163,6 +163,153 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 </div>
     {% endraw %}
 
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">CnnMSELoss</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate the MSELoss and take the mean over all features</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CnnMSELoss</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;mean&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        input : pytorch.Tensor</span>
+<span class="sd">            any given tensor. Shape: [n, ]</span>
+<span class="sd">        target : pytorch.Tensor</span>
+<span class="sd">            a tensor with the same shape as &#39;input&#39;</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pytorch.Tensor</span>
+<span class="sd">            the resulting loss</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">pow</span><span class="p">((</span><span class="n">target</span> <span class="o">-</span> <span class="nb">input</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">0</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">VAEReconstructionLoss</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate the sum of the Kullback–Leibler divergence loss and the loss of any given function</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        model : dies.autoencoder</span>
+<span class="sd">            model of the autoencoder for which the loss is to be calculated</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">VAEReconstructionLoss</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reconstruction_function</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">x_hat</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : pytorch.Tensor</span>
+<span class="sd">            any given tensor. Shape: [n, ]</span>
+<span class="sd">        x_hat : pytorch.Tensor</span>
+<span class="sd">            a tensor with the same shape as &#39;x&#39;</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pytorch.Tensor</span>
+<span class="sd">            the resulting accumulated loss</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">recon_x</span> <span class="o">=</span> <span class="n">x_hat</span>
+
+        <span class="c1"># how well do input x and output recon_x agree?</span>
+
+        <span class="n">generation_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reconstruction_function</span><span class="p">(</span><span class="n">recon_x</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="c1"># KLD is Kullback–Leibler divergence -- how much does one learned</span>
+        <span class="c1"># distribution deviate from another, in this specific case the</span>
+        <span class="c1"># learned distribution from the unit Gaussian</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">embedding_module</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">mu</span><span class="p">,</span> <span class="n">logvar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_posteriors</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="c1"># see Appendix B from VAE paper:</span>
+            <span class="c1"># Kingma and Welling. Auto-Encoding Variational Bayes. ICLR, 2014</span>
+            <span class="c1"># https://arxiv.org/abs/1312.6114</span>
+            <span class="c1"># - D_{KL} = 0.5 * sum(1 + log(sigma^2) - mu^2 - sigma^2)</span>
+            <span class="c1"># note the negative D_{KL} in appendix B of the paper</span>
+            <span class="n">KLD</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">logvar</span> <span class="o">-</span> <span class="n">mu</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="n">logvar</span><span class="o">.</span><span class="n">exp</span><span class="p">())</span>
+            <span class="c1"># Normalise by same number of elements as in reconstruction</span>
+            <span class="n">KLD</span> <span class="o">/=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="c1"># BCE tries to make our reconstruction as accurate as possible</span>
+            <span class="c1"># KLD tries to push the distributions as close as possible to unit Gaussian</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">KLD</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="n">generation_loss</span> <span class="o">+</span> <span class="n">KLD</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">RSSLoss</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate the Residual sum of squares loss</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">RSSLoss</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">y_hat</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        y : pytorch.Tensor</span>
+<span class="sd">            any given tensor. Shape: [n, ]</span>
+<span class="sd">        y_hat : pytorch.Tensor</span>
+<span class="sd">            a tensor with the same shape as &#39;y&#39;</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pytorch.Tensor</span>
+<span class="sd">            the resulting loss</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">((</span><span class="n">y</span> <span class="o">-</span> <span class="n">y_hat</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
 </div>
  
 

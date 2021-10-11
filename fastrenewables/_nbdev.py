@@ -73,7 +73,8 @@ index = {"contains_instance": "00a_utils.ipynb",
          "TemporalConvNet": "07_timeseries.model.ipynb",
          "TemporalCNN": "07_timeseries.model.ipynb",
          "RenewableTimeseriesLearner": "08_timeseries.learner.ipynb",
-         "renewable_timeseries_learner": "08_timeseries.learner.ipynb"}
+         "renewable_timeseries_learner": "08_timeseries.learner.ipynb",
+         "Autoencoder": "10_autoencoder_models.ipynb"}
 
 modules = ["utils.py",
            "losses.py",
@@ -87,7 +88,8 @@ modules = ["utils.py",
            "timeseries/core.py",
            "timeseries/data.py",
            "timeseries/model.py",
-           "timeseries/learner.py"]
+           "timeseries/learner.py",
+           "models/autoencoders.py"]
 
 doc_url = "https://scribbler00.github.io/fastrenewables/"
 
