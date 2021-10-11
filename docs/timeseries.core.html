@@ -2,7 +2,6 @@
 
 title: timeseries.core
 
-
 keywords: fastai
 sidebar: home_sidebar
 
@@ -345,7 +344,7 @@ nb_path: "nbs/05_timeseries.core.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The following function provides some conventions functions that allows to reshape a complete <a href="/fastrenewables/tabular.core.html#TabularRenewables"><code>TabularRenewables</code></a> into a timeseries representation.</p>
+<p>The following function provides some conventions functions that allows to reshape a complete <a href="/fastrenewables/tabular.core#TabularRenewables"><code>TabularRenewables</code></a> into a timeseries representation.</p>
 
 </div>
 </div>
@@ -368,10 +367,10 @@ nb_path: "nbs/05_timeseries.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="convert_to_timeseries_representation" class="doc_header"><code>convert_to_timeseries_representation</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L50" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>convert_to_timeseries_representation</code>(<strong><code>to</code></strong>:<a href="/fastrenewables/tabular.core.html#TabularRenewables"><code>TabularRenewables</code></a>, <strong><code>timeseries_length</code></strong>:<code>int</code>)</p>
+<h4 id="convert_to_timeseries_representation" class="doc_header"><code>convert_to_timeseries_representation</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L50" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>convert_to_timeseries_representation</code>(<strong><code>to</code></strong>:<a href="/fastrenewables/tabular.core#TabularRenewables"><code>TabularRenewables</code></a>, <strong><code>timeseries_length</code></strong>:<code>int</code>)</p>
 </blockquote>
 <p>Converts a tabular renewables to a timeseries representation of [n_samples, timeseries length, number features].
-Return the index, categoricals, continous and targets of a <a href="/fastrenewables/tabular.core.html#TabularRenewables"><code>TabularRenewables</code></a> as reshaped timeseries representation as tensor.</p>
+Return the index, categoricals, continous and targets of a <a href="/fastrenewables/tabular.core#TabularRenewables"><code>TabularRenewables</code></a> as reshaped timeseries representation as tensor.</p>
 
 </div>
 
@@ -447,7 +446,7 @@ Return the index, categoricals, continous and targets of a <a href="/fastrenewab
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The following function does the same as <a href="/fastrenewables/timeseries.core.html#convert_to_timeseries_representation"><code>convert_to_timeseries_representation</code></a>, however, it allows for more flexible reshaping. At the same time this function is slower for larger datasets.</p>
+<p>The following function does the same as <a href="/fastrenewables/timeseries.core#convert_to_timeseries_representation"><code>convert_to_timeseries_representation</code></a>, however, it allows for more flexible reshaping. At the same time this function is slower for larger datasets.</p>
 
 </div>
 </div>
@@ -470,7 +469,7 @@ Return the index, categoricals, continous and targets of a <a href="/fastrenewab
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="convert_to_timeseries_representation_different_lengths" class="doc_header"><code>convert_to_timeseries_representation_different_lengths</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L126" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>convert_to_timeseries_representation_different_lengths</code>(<strong><code>to</code></strong>:<a href="/fastrenewables/tabular.core.html#TabularRenewables"><code>TabularRenewables</code></a>, <strong><code>ts_x_length</code></strong>:<code>int</code>, <strong><code>ts_y_length</code></strong>:<code>int</code>, <strong><code>step_size</code></strong>:<code>int</code>, <strong><code>y_timeseries_offset</code></strong>:<code>int</code>)</p>
+<h4 id="convert_to_timeseries_representation_different_lengths" class="doc_header"><code>convert_to_timeseries_representation_different_lengths</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L126" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>convert_to_timeseries_representation_different_lengths</code>(<strong><code>to</code></strong>:<a href="/fastrenewables/tabular.core#TabularRenewables"><code>TabularRenewables</code></a>, <strong><code>ts_x_length</code></strong>:<code>int</code>, <strong><code>ts_y_length</code></strong>:<code>int</code>, <strong><code>step_size</code></strong>:<code>int</code>, <strong><code>y_timeseries_offset</code></strong>:<code>int</code>)</p>
 </blockquote>
 <p>Converts a tabular renewables to a timeseries representation of [n_samples, timeseries length, number features].
 ts_x_length: The length of the input timeseries.
@@ -551,7 +550,7 @@ y_timeseries_offset: The (initial) offset of the output compared to the input.</
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The <a href="/fastrenewables/timeseries.core.html#Timeseries"><code>Timeseries</code></a> transform wraps a number of functions allowing to transform a <a href="/fastrenewables/tabular.core.html#TabularRenewables"><code>TabularRenewables</code></a> into a timeseries reporesentation. At the same time it allows to access all the required information of the tabular data.</p>
+<p>The <a href="/fastrenewables/timeseries.core#Timeseries"><code>Timeseries</code></a> transform wraps a number of functions allowing to transform a <a href="/fastrenewables/tabular.core#TabularRenewables"><code>TabularRenewables</code></a> into a timeseries reporesentation. At the same time it allows to access all the required information of the tabular data.</p>
 
 </div>
 </div>
@@ -670,7 +669,7 @@ y_timeseries_offset: The (initial) offset of the output compared to the input.</
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Timeseries" class="doc_header"><code>class</code> <code>Timeseries</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L291" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Timeseries</code>(<strong><code>to</code></strong>:<a href="/fastrenewables/tabular.core.html#TabularRenewables"><code>TabularRenewables</code></a>, <strong><code>ts_x_length</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>ts_y_length</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>step_size</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>y_timeseries_offset</code></strong>=<em><code>0</code></em>, <strong><code>batch_first</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>sequence_last</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>drop_inconsistent_cats</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>post_hooks</code></strong>=<em><code>[]</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
+<h2 id="Timeseries" class="doc_header"><code>class</code> <code>Timeseries</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L291" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Timeseries</code>(<strong><code>to</code></strong>:<a href="/fastrenewables/tabular.core#TabularRenewables"><code>TabularRenewables</code></a>, <strong><code>ts_x_length</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>ts_y_length</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>step_size</code></strong>:<code>int</code>=<em><code>None</code></em>, <strong><code>y_timeseries_offset</code></strong>=<em><code>0</code></em>, <strong><code>batch_first</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>sequence_last</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>drop_inconsistent_cats</code></strong>:<code>bool</code>=<em><code>True</code></em>, <strong><code>splits</code></strong>=<em><code>None</code></em>, <strong><code>post_hooks</code></strong>=<em><code>[]</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>Transform</code></p>
 </blockquote>
 <p>A transform to convert a TabularRenewables object into a timerseries representation.</p>
 
@@ -688,6 +687,13 @@ y_timeseries_offset: The (initial) offset of the output compared to the input.</
     
 <div class="cell border-box-sizing code_cell rendered">
 
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
 <div class="output_wrapper">
 <div class="output">
 
@@ -697,7 +703,7 @@ y_timeseries_offset: The (initial) offset of the output compared to the input.</
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="TimeseriesDataset" class="doc_header"><code>class</code> <code>TimeseriesDataset</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/core.py#L492" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeseriesDataset</code>(<strong><code>x</code></strong>=<em><code>None</code></em>, <strong>*<code>rest</code></strong>) :: <code>fastuple</code></p>
 </blockquote>
-<p>A dataset from a <a href="/fastrenewables/timeseries.core.html#Timeseries"><code>Timeseries</code></a> object</p>
+<p>A dataset from a <a href="/fastrenewables/timeseries.core#Timeseries"><code>Timeseries</code></a> object</p>
 
 </div>
 
@@ -705,20 +711,13 @@ y_timeseries_offset: The (initial) offset of the output compared to the input.</
 
 </div>
 </div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>A <a href="/fastrenewables/timeseries.core.html#TimeseriesDataset"><code>TimeseriesDataset</code></a> holds transformed information from a <a href="/fastrenewables/timeseries.core.html#Timeseries"><code>Timeseries</code></a> transform as tensor. It also gives the possibility to convert the data to a dataframe.</p>
+<p>A <a href="/fastrenewables/timeseries.core#TimeseriesDataset"><code>TimeseriesDataset</code></a> holds transformed information from a <a href="/fastrenewables/timeseries.core#Timeseries"><code>Timeseries</code></a> transform as tensor. It also gives the possibility to convert the data to a dataframe.</p>
 
 </div>
 </div>
@@ -867,6 +866,13 @@ y_timeseries_offset: The (initial) offset of the output compared to the input.</
     
 <div class="cell border-box-sizing code_cell rendered">
 
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
 <div class="output_wrapper">
 <div class="output">
 
@@ -923,13 +929,6 @@ y_timeseries_offset: The (initial) offset of the output compared to the input.</
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
 <div class="inner_cell">
@@ -963,7 +962,7 @@ y_timeseries_offset: The (initial) offset of the output compared to the input.</
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>With the <a href="/fastrenewables/timeseries.core.html#TimeSeriesDataLoaders"><code>TimeSeriesDataLoaders</code></a> and <a href="/fastrenewables/timeseries.core.html#TimeSeriesDataLoader"><code>TimeSeriesDataLoader</code></a> the <a href="/fastrenewables/timeseries.core.html#Timeseries"><code>Timeseries</code></a> transform can directly converted to dataloaders based on the training and validation split.</p>
+<p>With the <a href="/fastrenewables/timeseries.core#TimeSeriesDataLoaders"><code>TimeSeriesDataLoaders</code></a> and <a href="/fastrenewables/timeseries.core#TimeSeriesDataLoader"><code>TimeSeriesDataLoader</code></a> the <a href="/fastrenewables/timeseries.core#Timeseries"><code>Timeseries</code></a> transform can directly converted to dataloaders based on the training and validation split.</p>
 
 </div>
 </div>
@@ -1226,7 +1225,7 @@ y_timeseries_offset: The (initial) offset of the output compared to the input.</
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In case the <a href="/fastrenewables/timeseries.core.html#Timeseries"><code>Timeseries</code></a> transform is insufficient for you needs, we provide the possibility utilize hooks, that can be applied after the initial tranformation. For example consider the case, when we want to forecast a category, that is the same with a time.</p>
+<p>In case the <a href="/fastrenewables/timeseries.core#Timeseries"><code>Timeseries</code></a> transform is insufficient for you needs, we provide the possibility utilize hooks, that can be applied after the initial tranformation. For example consider the case, when we want to forecast a category, that is the same with a time.</p>
 <p>Note: For classification we require a <code>CategoryBlock</code> instead of <code>RegressionBlock</code>, similar to a <code>TabularPandas</code>.</p>
 
 </div>
@@ -1522,6 +1521,13 @@ y_timeseries_offset: The (initial) offset of the output compared to the input.</
     
 <div class="cell border-box-sizing code_cell rendered">
 
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
 <div class="output_wrapper">
 <div class="output">
 
@@ -1539,13 +1545,6 @@ y_timeseries_offset: The (initial) offset of the output compared to the input.</
 
 </div>
 </div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}

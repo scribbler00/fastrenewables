@@ -2,7 +2,6 @@
 
 title: baselines
 
-
 keywords: fastai
 sidebar: home_sidebar
 
@@ -98,6 +97,13 @@ nb_path: "nbs/00d_baselines.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
 <div class="output_wrapper">
 <div class="output">
 
@@ -115,13 +121,6 @@ nb_path: "nbs/00d_baselines.ipynb"
 
 </div>
 </div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -283,6 +282,13 @@ nb_path: "nbs/00d_baselines.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
 <div class="output_wrapper">
 <div class="output">
 
@@ -389,13 +395,6 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
 <div class="inner_cell">
@@ -430,6 +429,13 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
     
 <div class="cell border-box-sizing code_cell rendered">
 
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
 <div class="output_wrapper">
 <div class="output">
 
@@ -437,7 +443,7 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ELM" class="doc_header"><code>class</code> <code>ELM</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/baselines.py#L208" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ELM</code>(<strong><code>n_hidden</code></strong>=<em><code>20</code></em>, <strong><code>activations</code></strong>=<em><code>relu</code></em>, <strong><code>prediction_model</code></strong>=<em><code>BayesLinReg()</code></em>, <strong><code>include_original_features</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>BaseEstimator</code></p>
+<h2 id="ELM" class="doc_header"><code>class</code> <code>ELM</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/baselines.py#L208" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ELM</code>(<strong><code>n_hidden</code></strong>=<em><code>20</code></em>, <strong><code>activations</code></strong>=<em><code>'relu'</code></em>, <strong><code>prediction_model</code></strong>=<em><code>BayesLinReg()</code></em>, <strong><code>include_original_features</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>BaseEstimator</code></p>
 </blockquote>
 <p>Base class for all estimators in scikit-learn.</p>
 <h2 id="Notes">Notes<a class="anchor-link" href="#Notes"> </a></h2><p>All estimators should specify all the parameters that can be set
@@ -450,13 +456,6 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
 
 </div>
 </div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -626,6 +625,13 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
     
 <div class="cell border-box-sizing code_cell rendered">
 
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
 <div class="output_wrapper">
 <div class="output">
 
@@ -633,7 +639,7 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="EchoStateRegression" class="doc_header"><code>class</code> <code>EchoStateRegression</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/baselines.py#L339" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>EchoStateRegression</code>(<strong><code>num_hidden</code></strong>=<em><code>100</code></em>, <strong><code>activations</code></strong>=<em><code>[&lt;function relu at 0x7f817fc9b3b0&gt;, &lt;ufunc 'tanh'&gt;, &lt;function identity at 0x7f8171769440&gt;]</code></em>, <strong><code>activation_momentum</code></strong>=<em><code>0.9</code></em>, <strong><code>prediction_model</code></strong>=<em><code>RidgeRegression()</code></em>) :: <code>BaseEstimator</code></p>
+<h2 id="EchoStateRegression" class="doc_header"><code>class</code> <code>EchoStateRegression</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/baselines.py#L339" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>EchoStateRegression</code>(<strong><code>num_hidden</code></strong>=<em><code>100</code></em>, <strong><code>activations</code></strong>=<em><code>[&lt;function relu at 0x7f99b713bf80&gt;, &lt;ufunc 'tanh'&gt;, &lt;function identity at 0x7f99a8232290&gt;]</code></em>, <strong><code>activation_momentum</code></strong>=<em><code>0.9</code></em>, <strong><code>prediction_model</code></strong>=<em><code>RidgeRegression()</code></em>) :: <code>BaseEstimator</code></p>
 </blockquote>
 <p>Base class for all estimators in scikit-learn.</p>
 <h2 id="Notes">Notes<a class="anchor-link" href="#Notes"> </a></h2><p>All estimators should specify all the parameters that can be set
@@ -681,13 +687,6 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
 
 </div>
 </div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
