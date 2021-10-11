@@ -54,6 +54,9 @@ entries:
     - output: web,pdf
       title: models.autoencoders
       url: autoencoder_models.html
+    - output: web,pdf
+      title: models.prob
+      url: probabilistic_models.html
     output: web
     title: fastrenewables
   output: web

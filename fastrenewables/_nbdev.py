@@ -6,6 +6,10 @@ index = {"contains_instance": "00a_utils.ipynb",
          "filter_preds": "00a_utils.ipynb",
          "VILoss": "00b_losses.ipynb",
          "Quantile_Score": "00b_losses.ipynb",
+         "CnnMSELoss": "00b_losses.ipynb",
+         "VAEReconstructionLoss": "00b_losses.ipynb",
+         "GaussianNegativeLogLikelihoodLoss": "00b_losses.ipynb",
+         "RSSLoss": "00b_losses.ipynb",
          "convert_layer_to_bayesian": "00c_utils_blitz.ipynb",
          "convert_to_bayesian_model": "00c_utils_blitz.ipynb",
          "set_train_mode": "00c_utils_blitz.ipynb",
@@ -74,7 +78,8 @@ index = {"contains_instance": "00a_utils.ipynb",
          "TemporalCNN": "07_timeseries.model.ipynb",
          "RenewableTimeseriesLearner": "08_timeseries.learner.ipynb",
          "renewable_timeseries_learner": "08_timeseries.learner.ipynb",
-         "Autoencoder": "10_autoencoder_models.ipynb"}
+         "Autoencoder": "10_autoencoder_models.ipynb",
+         "MeanStdWrapper": "11_probabilistic_models.ipynb"}
 
 modules = ["utils.py",
            "losses.py",
@@ -89,7 +94,8 @@ modules = ["utils.py",
            "timeseries/data.py",
            "timeseries/model.py",
            "timeseries/learner.py",
-           "models/autoencoders.py"]
+           "models/autoencoders.py",
+           "models/prob.py"]
 
 doc_url = "https://scribbler00.github.io/fastrenewables/"
 

@@ -2,6 +2,7 @@
 
 title: losses
 
+
 keywords: fastai
 sidebar: home_sidebar
 
@@ -39,13 +40,6 @@ nb_path: "nbs/00b_losses.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
 <div class="output_wrapper">
 <div class="output">
 
@@ -53,7 +47,7 @@ nb_path: "nbs/00b_losses.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="VILoss" class="doc_header"><code>class</code> <code>VILoss</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/losses.py#L10" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>VILoss</code>(<strong><code>model</code></strong>, <strong><code>base_loss</code></strong>=<em><code>MSELoss()</code></em>, <strong><code>kl_weight</code></strong>=<em><code>0.1</code></em>, <strong><code>scale_log_likelihood</code></strong>=<em><code>True</code></em>) :: <code>Module</code></p>
+<h2 id="VILoss" class="doc_header"><code>class</code> <code>VILoss</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/losses.py#L11" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>VILoss</code>(<strong><code>model</code></strong>, <strong><code>base_loss</code></strong>=<em><code>MSELoss()</code></em>, <strong><code>kl_weight</code></strong>=<em><code>0.1</code></em>, <strong><code>scale_log_likelihood</code></strong>=<em><code>True</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Calculate the Kullback-Leibler divergence loss.</p>
 <h2 id="Parameters">Parameters<a class="anchor-link" href="#Parameters"> </a></h2><p>model : dies.embedding
@@ -89,7 +83,7 @@ lambd : float
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Quantile_Score" class="doc_header"><code>class</code> <code>Quantile_Score</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/losses.py#L67" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Quantile_Score</code>(<strong><code>taus</code></strong>=<em><code>[0.25, 0.5, 0.75]</code></em>) :: <code>Module</code></p>
+<h2 id="Quantile_Score" class="doc_header"><code>class</code> <code>Quantile_Score</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/losses.py#L68" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Quantile_Score</code>(<strong><code>taus</code></strong>=<em><code>[0.25, 0.5, 0.75]</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -122,6 +116,13 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -165,105 +166,69 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
 
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">CnnMSELoss</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Calculate the MSELoss and take the mean over all features</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">CnnMSELoss</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;mean&quot;</span><span class="p">)</span>
+<div class="output_wrapper">
+<div class="output">
 
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<div class="output_area">
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        input : pytorch.Tensor</span>
-<span class="sd">            any given tensor. Shape: [n, ]</span>
-<span class="sd">        target : pytorch.Tensor</span>
-<span class="sd">            a tensor with the same shape as &#39;input&#39;</span>
 
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        pytorch.Tensor</span>
-<span class="sd">            the resulting loss</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">pow</span><span class="p">((</span><span class="n">target</span> <span class="o">-</span> <span class="nb">input</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">0</span><span class="p">))</span>
-</pre></div>
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="CnnMSELoss" class="doc_header"><code>class</code> <code>CnnMSELoss</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/losses.py#L108" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CnnMSELoss</code>() :: <code>MSELoss</code></p>
+</blockquote>
+<p>Creates a criterion that measures the mean squared error (squared L2 norm) between
+each element in the input :math:<code>x</code> and target :math:<code>y</code>.</p>
+<p>The unreduced (i.e. with :attr:<code>reduction</code> set to <code>'none'</code>) loss can be described as:</p>
+<p>.. math::
+    \ell(x, y) = L = {l_1,\dots,l_N}^\top, \quad
+    l_n = \left( x_n - y_n \right)^2,</p>
+<p>where :math:<code>N</code> is the batch size. If :attr:<code>reduction</code> is not <code>'none'</code>
+(default <code>'mean'</code>), then:</p>
+<p>.. math::
+    \ell(x, y) =
+    \begin{cases}
+        \operatorname{mean}(L), &amp;  \text{if reduction} = \text{`mean';}\\
+        \operatorname{sum}(L),  &amp;  \text{if reduction} = \text{`sum'.}
+    \end{cases}</p>
+<p>:math:<code>x</code> and :math:<code>y</code> are tensors of arbitrary shapes with a total
+of :math:<code>n</code> elements each.</p>
+<p>The mean operation still operates over all the elements, and divides by :math:<code>n</code>.</p>
+<p>The division by :math:<code>n</code> can be avoided if one sets <code>reduction = 'sum'</code>.</p>
+<p>Args:
+    size_average (bool, optional): Deprecated (see :attr:<code>reduction</code>). By default,
+        the losses are averaged over each loss element in the batch. Note that for
+        some losses, there are multiple elements per sample. If the field :attr:<code>size_average</code>
+        is set to <code>False</code>, the losses are instead summed for each minibatch. Ignored
+        when :attr:<code>reduce</code> is <code>False</code>. Default: <code>True</code>
+    reduce (bool, optional): Deprecated (see :attr:<code>reduction</code>). By default, the
+        losses are averaged or summed over observations for each minibatch depending
+        on :attr:<code>size_average</code>. When :attr:<code>reduce</code> is <code>False</code>, returns a loss per
+        batch element instead and ignores :attr:<code>size_average</code>. Default: <code>True</code>
+    reduction (string, optional): Specifies the reduction to apply to the output:
+        <code>'none'</code> | <code>'mean'</code> | <code>'sum'</code>. <code>'none'</code>: no reduction will be applied,
+        <code>'mean'</code>: the sum of the output will be divided by the number of
+        elements in the output, <code>'sum'</code>: the output will be summed. Note: :attr:<code>size_average</code>
+        and :attr:<code>reduce</code> are in the process of being deprecated, and in the meantime,
+        specifying either of those two args will override :attr:<code>reduction</code>. Default: <code>'mean'</code></p>
+<p>Shape:</p>
 
-    </div>
+<pre><code>- Input: :math:`(N, *)` where :math:`*` means, any number of additional
+  dimensions
+- Target: :math:`(N, *)`, same shape as the input
+
+</code></pre>
+<p>Examples::</p>
+
+<pre><code>&gt;&gt;&gt; loss = nn.MSELoss()
+&gt;&gt;&gt; input = torch.randn(3, 5, requires_grad=True)
+&gt;&gt;&gt; target = torch.randn(3, 5)
+&gt;&gt;&gt; output = loss(input, target)
+&gt;&gt;&gt; output.backward()</code></pre>
+
 </div>
-</div>
 
 </div>
-    {% endraw %}
 
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">VAEReconstructionLoss</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Calculate the sum of the Kullback–Leibler divergence loss and the loss of any given function</span>
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        model : dies.autoencoder</span>
-<span class="sd">            model of the autoencoder for which the loss is to be calculated</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">VAEReconstructionLoss</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">reconstruction_function</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
-
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">x_hat</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        x : pytorch.Tensor</span>
-<span class="sd">            any given tensor. Shape: [n, ]</span>
-<span class="sd">        x_hat : pytorch.Tensor</span>
-<span class="sd">            a tensor with the same shape as &#39;x&#39;</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        pytorch.Tensor</span>
-<span class="sd">            the resulting accumulated loss</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">recon_x</span> <span class="o">=</span> <span class="n">x_hat</span>
-
-        <span class="c1"># how well do input x and output recon_x agree?</span>
-
-        <span class="n">generation_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reconstruction_function</span><span class="p">(</span><span class="n">recon_x</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-        <span class="c1"># KLD is Kullback–Leibler divergence -- how much does one learned</span>
-        <span class="c1"># distribution deviate from another, in this specific case the</span>
-        <span class="c1"># learned distribution from the unit Gaussian</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">embedding_module</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">mu</span><span class="p">,</span> <span class="n">logvar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_posteriors</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-            <span class="c1"># see Appendix B from VAE paper:</span>
-            <span class="c1"># Kingma and Welling. Auto-Encoding Variational Bayes. ICLR, 2014</span>
-            <span class="c1"># https://arxiv.org/abs/1312.6114</span>
-            <span class="c1"># - D_{KL} = 0.5 * sum(1 + log(sigma^2) - mu^2 - sigma^2)</span>
-            <span class="c1"># note the negative D_{KL} in appendix B of the paper</span>
-            <span class="n">KLD</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">logvar</span> <span class="o">-</span> <span class="n">mu</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="n">logvar</span><span class="o">.</span><span class="n">exp</span><span class="p">())</span>
-            <span class="c1"># Normalise by same number of elements as in reconstruction</span>
-            <span class="n">KLD</span> <span class="o">/=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-
-            <span class="c1"># BCE tries to make our reconstruction as accurate as possible</span>
-            <span class="c1"># KLD tries to push the distributions as close as possible to unit Gaussian</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">KLD</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">return</span> <span class="n">generation_loss</span> <span class="o">+</span> <span class="n">KLD</span>
-</pre></div>
-
-    </div>
 </div>
 </div>
 
@@ -273,38 +238,171 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
 
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">RSSLoss</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Calculate the Residual sum of squares loss</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">RSSLoss</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</div>
+    {% endraw %}
 
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">y_hat</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        y : pytorch.Tensor</span>
-<span class="sd">            any given tensor. Shape: [n, ]</span>
-<span class="sd">        y_hat : pytorch.Tensor</span>
-<span class="sd">            a tensor with the same shape as &#39;y&#39;</span>
+<div class="output_wrapper">
+<div class="output">
 
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        pytorch.Tensor</span>
-<span class="sd">            the resulting loss</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">((</span><span class="n">y</span> <span class="o">-</span> <span class="n">y_hat</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-</pre></div>
+<div class="output_area">
 
-    </div>
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="VAEReconstructionLoss" class="doc_header"><code>class</code> <code>VAEReconstructionLoss</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/losses.py#L133" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>VAEReconstructionLoss</code>(<strong><code>model</code></strong>) :: <code>Module</code></p>
+</blockquote>
+<p>Base class for all neural network modules.</p>
+<p>Your models should also subclass this class.</p>
+<p>Modules can also contain other Modules, allowing to nest them in
+a tree structure. You can assign the submodules as regular attributes::</p>
+
+<pre><code>import torch.nn as nn
+import torch.nn.functional as F
+
+class Model(nn.Module):
+    def __init__(self):
+        super(Model, self).__init__()
+        self.conv1 = nn.Conv2d(1, 20, 5)
+        self.conv2 = nn.Conv2d(20, 20, 5)
+
+    def forward(self, x):
+        x = F.relu(self.conv1(x))
+        return F.relu(self.conv2(x))
+
+</code></pre>
+<p>Submodules assigned in this way will be registered, and will have their
+parameters converted too when you call :meth:<code>to</code>, etc.</p>
+<p>:ivar training: Boolean represents whether this module is in training or
+                evaluation mode.
+:vartype training: bool</p>
+
+</div>
+
+</div>
+
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="GaussianNegativeLogLikelihoodLoss" class="doc_header"><code>class</code> <code>GaussianNegativeLogLikelihoodLoss</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/losses.py#L219" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GaussianNegativeLogLikelihoodLoss</code>(<strong><code>num_mini_batches_mse</code></strong>=<em><code>5</code></em>) :: <code>Module</code></p>
+</blockquote>
+<p>Base class for all neural network modules.</p>
+<p>Your models should also subclass this class.</p>
+<p>Modules can also contain other Modules, allowing to nest them in
+a tree structure. You can assign the submodules as regular attributes::</p>
+
+<pre><code>import torch.nn as nn
+import torch.nn.functional as F
+
+class Model(nn.Module):
+    def __init__(self):
+        super(Model, self).__init__()
+        self.conv1 = nn.Conv2d(1, 20, 5)
+        self.conv2 = nn.Conv2d(20, 20, 5)
+
+    def forward(self, x):
+        x = F.relu(self.conv1(x))
+        return F.relu(self.conv2(x))
+
+</code></pre>
+<p>Submodules assigned in this way will be registered, and will have their
+parameters converted too when you call :meth:<code>to</code>, etc.</p>
+<p>:ivar training: Boolean represents whether this module is in training or
+                evaluation mode.
+:vartype training: bool</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="RSSLoss" class="doc_header"><code>class</code> <code>RSSLoss</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/losses.py#L265" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RSSLoss</code>() :: <code>Module</code></p>
+</blockquote>
+<p>Base class for all neural network modules.</p>
+<p>Your models should also subclass this class.</p>
+<p>Modules can also contain other Modules, allowing to nest them in
+a tree structure. You can assign the submodules as regular attributes::</p>
+
+<pre><code>import torch.nn as nn
+import torch.nn.functional as F
+
+class Model(nn.Module):
+    def __init__(self):
+        super(Model, self).__init__()
+        self.conv1 = nn.Conv2d(1, 20, 5)
+        self.conv2 = nn.Conv2d(20, 20, 5)
+
+    def forward(self, x):
+        x = F.relu(self.conv1(x))
+        return F.relu(self.conv2(x))
+
+</code></pre>
+<p>Submodules assigned in this way will be registered, and will have their
+parameters converted too when you call :meth:<code>to</code>, etc.</p>
+<p>:ivar training: Boolean represents whether this module is in training or
+                evaluation mode.
+:vartype training: bool</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
