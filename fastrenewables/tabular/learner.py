@@ -37,7 +37,7 @@ class RenewableLearner(Learner):
 
             cats = tensor(to.cats.values.astype(np.long))
             xs = tensor(to.conts.values.astype(np.float32))
-            targets = tensor(to.y.values.astype(ys_type))
+            targets = tensor(to.ys.values.astype(ys_type))
 
             with torch.no_grad():
                 preds = self.model(cats.to(device), xs.to(device))

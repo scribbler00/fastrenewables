@@ -83,6 +83,9 @@ index = {"contains_instance": "00a_utils.ipynb",
          "RenewableTimeseriesLearner": "08_timeseries.learner.ipynb",
          "renewable_timeseries_learner": "08_timeseries.learner.ipynb",
          "Autoencoder": "10_autoencoder_models.ipynb",
+         "AutoencoderForecast": "10_autoencoder_models.ipynb",
+         "UnFlatten": "10_autoencoder_models.ipynb",
+         "VariationalAutoencoder": "10_autoencoder_models.ipynb",
          "MeanStdWrapper": "11_probabilistic_models.ipynb"}
 
 modules = ["utils.py",

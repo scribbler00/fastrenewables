@@ -373,28 +373,54 @@ Name: y, dtype: float64</pre>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
 
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">AutoencoderForecast</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">autoencoder</span><span class="p">,</span> <span class="n">forecast_model</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">autoencoder</span> <span class="o">=</span> <span class="n">autoencoder</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">forecast_model</span> <span class="o">=</span> <span class="n">forecast_model</span>
-        
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">categorical_data</span><span class="p">,</span> <span class="n">continuous_data</span><span class="p">):</span>
-        
-        <span class="n">latent_space</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">autoencoder</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">categorical_data</span><span class="p">,</span> <span class="n">continuous_data</span><span class="p">)</span>
-        <span class="n">yhat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast_model</span><span class="p">(</span><span class="n">categorical_data</span><span class="p">,</span> <span class="n">latent_space</span><span class="p">)</span>
-        
-        <span class="k">return</span> <span class="n">yhat</span>
-        
-</pre></div>
+<div class="output_wrapper">
+<div class="output">
 
-    </div>
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="AutoencoderForecast" class="doc_header"><code>class</code> <code>AutoencoderForecast</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/models/autoencoders.py#L47" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AutoencoderForecast</code>(<strong><code>autoencoder</code></strong>, <strong><code>forecast_model</code></strong>) :: <code>Module</code></p>
+</blockquote>
+<p>Base class for all neural network modules.</p>
+<p>Your models should also subclass this class.</p>
+<p>Modules can also contain other Modules, allowing to nest them in
+a tree structure. You can assign the submodules as regular attributes::</p>
+
+<pre><code>import torch.nn as nn
+import torch.nn.functional as F
+
+class Model(nn.Module):
+    def __init__(self):
+        super(Model, self).__init__()
+        self.conv1 = nn.Conv2d(1, 20, 5)
+        self.conv2 = nn.Conv2d(20, 20, 5)
+
+    def forward(self, x):
+        x = F.relu(self.conv1(x))
+        return F.relu(self.conv2(x))
+
+</code></pre>
+<p>Submodules assigned in this way will be registered, and will have their
+parameters converted too when you call :meth:<code>to</code>, etc.</p>
+<p>:ivar training: Boolean represents whether this module is in training or
+                evaluation mode.
+:vartype training: bool</p>
+
+</div>
+
+</div>
+
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -690,17 +716,45 @@ Callbacks:
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
 
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">UnFlatten</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-        
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="n">dims</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">input</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">*</span><span class="n">dims</span><span class="p">)</span>
-</pre></div>
+<div class="output_wrapper">
+<div class="output">
 
-    </div>
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="UnFlatten" class="doc_header"><code>class</code> <code>UnFlatten</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/models/autoencoders.py#L62" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>UnFlatten</code>() :: <code>Module</code></p>
+</blockquote>
+<p>Base class for all neural network modules.</p>
+<p>Your models should also subclass this class.</p>
+<p>Modules can also contain other Modules, allowing to nest them in
+a tree structure. You can assign the submodules as regular attributes::</p>
+
+<pre><code>import torch.nn as nn
+import torch.nn.functional as F
+
+class Model(nn.Module):
+    def __init__(self):
+        super(Model, self).__init__()
+        self.conv1 = nn.Conv2d(1, 20, 5)
+        self.conv2 = nn.Conv2d(20, 20, 5)
+
+    def forward(self, x):
+        x = F.relu(self.conv1(x))
+        return F.relu(self.conv2(x))
+
+</code></pre>
+<p>Submodules assigned in this way will be registered, and will have their
+parameters converted too when you call :meth:<code>to</code>, etc.</p>
+<p>:ivar training: Boolean represents whether this module is in training or
+                evaluation mode.
+:vartype training: bool</p>
+
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -710,85 +764,61 @@ Callbacks:
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
 
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">VariationalAutoencoder</span><span class="p">(</span><span class="n">Autoencoder</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">encoder</span><span class="p">,</span> <span class="n">decoder</span><span class="p">,</span> <span class="n">h_dim</span><span class="p">,</span> <span class="n">z_dim</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">encoder</span><span class="p">,</span> <span class="n">decoder</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">h_dim</span> <span class="o">=</span> <span class="n">h_dim</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">z_dim</span> <span class="o">=</span> <span class="n">z_dim</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">flatten</span> <span class="o">=</span> <span class="n">Flatten</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">unflatten</span> <span class="o">=</span> <span class="n">UnFlatten</span><span class="p">()</span>
-        
-        <span class="bp">self</span><span class="o">.</span><span class="n">hidden2mu</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">h_dim</span><span class="p">,</span> <span class="n">z_dim</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hidden2logvar</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">h_dim</span><span class="p">,</span> <span class="n">z_dim</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">latent_dimensions</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_mu</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logvar</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
-        
-    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">categorical_data</span><span class="p">,</span> <span class="n">continuous_data</span><span class="p">,</span> <span class="n">as_np</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        
-        <span class="n">x_hidden</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="p">(</span><span class="n">categorical_data</span><span class="p">,</span> <span class="n">continuous_data</span><span class="p">)</span>
-        
-        <span class="bp">self</span><span class="o">.</span><span class="n">latent_dimensions</span> <span class="o">=</span> <span class="n">x_hidden</span><span class="o">.</span><span class="n">shape</span>
-        
-        <span class="n">x_hidden</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">x_hidden</span><span class="p">)</span>
-        
-        <span class="n">mu</span><span class="p">,</span> <span class="n">logvar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden2mu</span><span class="p">(</span><span class="n">x_hidden</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden2logvar</span><span class="p">(</span><span class="n">x_hidden</span><span class="p">)</span>
-        
-        <span class="c1"># required for vae loss</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_mu</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logvar</span> <span class="o">=</span> <span class="n">mu</span><span class="p">,</span> <span class="n">logvar</span>
-        
-        <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reparam</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">logvar</span><span class="p">)</span>
-        
-        <span class="k">if</span> <span class="n">as_np</span><span class="p">:</span> <span class="k">return</span> <span class="n">to_np</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span> <span class="k">return</span> <span class="n">z</span>
+</div>
+    {% endraw %}
 
-    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">categorical_data</span><span class="p">,</span> <span class="n">continuous_data</span><span class="p">,</span> <span class="n">as_np</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">latent_dimensions</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">latent_dimensions</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">latent_dimensions</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;latent_dimensions are not set to unflatten data.&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">latent_dimensions</span><span class="p">:</span>
-            <span class="n">latent_dimensions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">latent_dimensions</span>
-            
-        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unflatten</span><span class="p">(</span><span class="n">continuous_data</span><span class="p">,</span> <span class="n">latent_dimensions</span><span class="p">)</span>
-        
-        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span><span class="p">(</span><span class="n">categorical_data</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-        
-        <span class="k">if</span> <span class="n">as_np</span><span class="p">:</span> <span class="k">return</span> <span class="n">to_np</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span> <span class="k">return</span> <span class="n">x</span>
-        
-    <span class="k">def</span> <span class="nf">get_posteriors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">categorical_data</span><span class="p">,</span> <span class="n">continuous_data</span><span class="p">):</span>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">continuous_data</span><span class="p">,</span> <span class="n">categorical_data</span><span class="p">)</span>
+<div class="output_wrapper">
+<div class="output">
 
-    <span class="k">def</span> <span class="nf">get_z</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">categorical_data</span><span class="p">,</span> <span class="n">continuous_data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Encode a batch of data points, x, into their z representations.&quot;&quot;&quot;</span>
+<div class="output_area">
 
-        <span class="n">mu</span><span class="p">,</span> <span class="n">logvar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">categorical_data</span><span class="p">,</span> <span class="n">continuous_data</span><span class="p">)</span>
-        
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reparam</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">logvar</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">reparam</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">logvar</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Reparameterisation trick to sample z values.</span>
-<span class="sd">        This is stochastic during training, and returns the mode during evaluation.&quot;&quot;&quot;</span>
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="VariationalAutoencoder" class="doc_header"><code>class</code> <code>VariationalAutoencoder</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/models/autoencoders.py#L68" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>VariationalAutoencoder</code>(<strong><code>encoder</code></strong>, <strong><code>decoder</code></strong>, <strong><code>h_dim</code></strong>, <strong><code>z_dim</code></strong>) :: <a href="/fastrenewables/autoencoder_models.html#Autoencoder"><code>Autoencoder</code></a></p>
+</blockquote>
+<p>Base class for all neural network modules.</p>
+<p>Your models should also subclass this class.</p>
+<p>Modules can also contain other Modules, allowing to nest them in
+a tree structure. You can assign the submodules as regular attributes::</p>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
-            <span class="c1"># convert logarithmic variance to standard deviation representation</span>
-            <span class="n">std</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">logvar</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
-            
-            <span class="c1"># create normal distribution as large as the data</span>
-            <span class="n">eps</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn_like</span><span class="p">(</span><span class="n">std</span><span class="p">)</span>
-            <span class="c1"># scale by learned mean and standard deviation</span>
-            <span class="k">return</span> <span class="n">mu</span> <span class="o">+</span> <span class="n">eps</span><span class="o">*</span><span class="n">std</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">mu</span>
-</pre></div>
+<pre><code>import torch.nn as nn
+import torch.nn.functional as F
 
-    </div>
+class Model(nn.Module):
+    def __init__(self):
+        super(Model, self).__init__()
+        self.conv1 = nn.Conv2d(1, 20, 5)
+        self.conv2 = nn.Conv2d(20, 20, 5)
+
+    def forward(self, x):
+        x = F.relu(self.conv1(x))
+        return F.relu(self.conv2(x))
+
+</code></pre>
+<p>Submodules assigned in this way will be registered, and will have their
+parameters converted too when you call :meth:<code>to</code>, etc.</p>
+<p>:ivar training: Boolean represents whether this module is in training or
+                evaluation mode.
+:vartype training: bool</p>
+
+</div>
+
+</div>
+
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
