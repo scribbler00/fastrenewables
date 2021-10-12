@@ -6,6 +6,7 @@ __all__ = ['VILoss', 'Quantile_Score', 'CnnMSELoss', 'VAEReconstructionLoss', 'G
 # Cell
 from torch import nn
 import torch
+from fastai.losses import MSELossFlat
 
 # Cell
 class VILoss(nn.Module):
@@ -131,7 +132,7 @@ class CnnMSELoss(torch.nn.MSELoss):
 
 # Cell
 class VAEReconstructionLoss(nn.Module):
-    def __init__(self, model):
+    def __init__(self, model, reconstruction_cost_function=MSELossFlat()):
         """
         Calculate the sum of the Kullback–Leibler divergence loss and the loss of any given function
         Parameters
@@ -140,7 +141,7 @@ class VAEReconstructionLoss(nn.Module):
             model of the autoencoder for which the loss is to be calculated
         """
         super(VAEReconstructionLoss, self).__init__()
-        self.reconstruction_function = torch.nn.MSELoss()
+        self.reconstruction_cost_function = reconstruction_cost_function
         self.model = model
 
     def forward(self, x_hat, x):
@@ -158,68 +159,36 @@ class VAEReconstructionLoss(nn.Module):
         pytorch.Tensor
             the resulting accumulated loss
         """
-        recon_x = x_hat
+        mu, logvar = self.model._mu, self.model._logvar
 
-        # how well do input x and output recon_x agree?
-
-        generation_loss = self.reconstruction_function(recon_x, x)
+        # how well do input x and output x_hat agree?
+        generation_loss = self.reconstruction_cost_function(x_hat, x)
         # KLD is Kullback–Leibler divergence -- how much does one learned
         # distribution deviate from another, in this specific case the
         # learned distribution from the unit Gaussian
 
-        if self.model.embedding_module is None:
-            mu, logvar = self.model.get_posteriors(x)
-            # see Appendix B from VAE paper:
-            # Kingma and Welling. Auto-Encoding Variational Bayes. ICLR, 2014
-            # https://arxiv.org/abs/1312.6114
-            # - D_{KL} = 0.5 * sum(1 + log(sigma^2) - mu^2 - sigma^2)
-            # note the negative D_{KL} in appendix B of the paper
-            KLD = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
-            # Normalise by same number of elements as in reconstruction
-            KLD /= x.shape[0] * x.shape[1]
+        # see Appendix B from VAE paper:
+        # Kingma and Welling. Auto-Encoding Variational Bayes. ICLR, 2014
+        # https://arxiv.org/abs/1312.6114
+        # - D_{KL} = 0.5 * sum(1 + log(sigma^2) - mu^2 - sigma^2)
+        # note the negative D_{KL} in appendix B of the paper
+        KLD = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
+        # Normalise by same number of elements as in reconstruction
+        KLD /= x.shape[0] * x.shape[1]
 
-            # BCE tries to make our reconstruction as accurate as possible
-            # KLD tries to push the distributions as close as possible to unit Gaussian
-        else:
-            KLD = 0
+        # BCE tries to make our reconstruction as accurate as possible
+        # KLD tries to push the distributions as close as possible to unit Gaussian
+
+
         return generation_loss + KLD
 
 
 # Cell
-# class GaussianNegativeLogLikelihoodLoss(nn.Module):
-#     def __init__(self):
-#         """
-#         Calculate the Residual sum of squares loss
-#         """
-#         super(GaussianNegativeLogLikelihoodLoss, self).__init__()
-
-#     def forward(self, y, mu_sigma):
-#         """
-
-#         Parameters
-#         ----------
-#         y : pytorch.Tensor
-#             any given tensor. Shape: [n, ]
-#         mu : pytorch.Tensor
-#             a tensor with the same shape as 'y'
-#         sigma : pytorch.Tensor
-#             a tensor with the same shape as 'y'
-
-#         Returns
-#         -------
-#         pytorch.Tensor
-#             the resulting loss
-#         """
-#         mu, sigma = mu_sigma[:,0], mu_sigma[:,1]
-#         nll =  torch.log(sigma)+(1/(2*sigma**2 ))*(y-mu)**2
-#         nll =  nll.mean()
-#         return nll
-
-#export
 class GaussianNegativeLogLikelihoodLoss(nn.Module):
-    def __init__(self, num_mini_batches_mse=5):
+    def __init__(self, num_mini_batches_mse=1):
         """
         Calculate the Residual sum of squares loss
+        num_mini_batches_mse: Whenn num_mini_batches_mse>1 Either the prcecision or the mse is trained for n mini batches.
         """
         super(GaussianNegativeLogLikelihoodLoss, self).__init__()
         self.loss = nn.GaussianNLLLoss(reduction="mean")

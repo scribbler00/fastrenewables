@@ -10,13 +10,18 @@ from ..tabular.model import *
 from ..timeseries.model import *
 from fastai.tabular.all import *
 from torch.autograd import Variable
-
+from sklearn.datasets import make_regression
+from fastai.learner import *
+from ..utils_pytorch import *
+from ..losses import VAEReconstructionLoss
 
 # Cell
 class Autoencoder(nn.Module):
-    def __init__(self,encoder, decoder):
+    def __init__(self, encoder, decoder):
         super().__init__()
+
         self.encoder = encoder
+
         self.decoder = decoder
 
     def encode(self, categorical_data, continuous_data, as_np=False):

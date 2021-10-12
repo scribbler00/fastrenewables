@@ -36,23 +36,12 @@ nb_path: "nbs/10_autoencoder_models.ipynb"
 </div>
     {% endraw %}
 
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ann_structure</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
-</pre></div>
-
-    </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Autoencoder">Autoencoder<a class="anchor-link" href="#Autoencoder"> </a></h2>
 </div>
 </div>
-
 </div>
-    {% endraw %}
-
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -64,7 +53,7 @@ nb_path: "nbs/10_autoencoder_models.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Autoencoder" class="doc_header"><code>class</code> <code>Autoencoder</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/models/autoencoders.py#L16" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Autoencoder</code>(<strong><code>encoder</code></strong>, <strong><code>decoder</code></strong>) :: <code>Module</code></p>
+<h2 id="Autoencoder" class="doc_header"><code>class</code> <code>Autoencoder</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/models/autoencoders.py#L19" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Autoencoder</code>(<strong><code>encoder</code></strong>, <strong><code>decoder</code></strong>) :: <code>Module</code></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -108,6 +97,19 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="AE-Training">AE Training<a class="anchor-link" href="#AE-Training"> </a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Lets create some data that we wann to compress through an autoencoder.</p>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -115,7 +117,13 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ae</span> <span class="o">=</span> <span class="n">Autoencoder</span><span class="p">(</span><span class="n">MultiLayerPerceptron</span><span class="p">(</span><span class="n">ann_structure</span><span class="p">),</span> <span class="n">MultiLayerPerceptron</span><span class="p">(</span><span class="n">ann_structure</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">N</span> <span class="o">=</span> <span class="mi">2000</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">make_regression</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="n">N</span><span class="p">,</span> <span class="n">n_features</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">n_informative</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="n">x_names</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+<span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">x_names</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">y</span><span class="o">.</span><span class="n">min</span><span class="p">())</span><span class="o">/</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">-</span><span class="n">y</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
+<span class="n">dls</span> <span class="o">=</span> <span class="n">TabularDataLoaders</span><span class="o">.</span><span class="n">from_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">cont_names</span><span class="o">=</span><span class="n">x_names</span><span class="p">,</span> <span class="n">y_names</span><span class="o">=</span><span class="n">x_names</span><span class="p">,</span> <span class="n">deivce</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">procs</span><span class="o">=</span><span class="n">Normalize</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="n">N</span><span class="o">//</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -132,7 +140,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ae</span><span class="o">.</span><span class="n">encoder</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -147,183 +155,437 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>MultiLayerPerceptron(
-  (final_activation): Identity()
-  (embeds): ModuleList()
-  (emb_drop): Dropout(p=0.0, inplace=False)
-  (bn_cont): BatchNorm1d(10, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-  (layers): Sequential(
-    (0): LinBnDrop(
-      (0): Linear(in_features=10, out_features=2, bias=True)
+<pre>count    2000.000000
+mean        0.499812
+std         0.147855
+min         0.000000
+25%         0.404350
+50%         0.495808
+75%         0.596586
+max         1.000000
+Name: y, dtype: float64</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dls</span><span class="o">.</span><span class="n">one_batch</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dls</span><span class="o">.</span><span class="n">one_batch</span><span class="p">()[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(torch.Size([200, 20]), torch.Size([200, 20]))</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">num_features</span> <span class="o">=</span> <span class="n">get_c</span><span class="p">(</span><span class="n">dls</span><span class="p">)</span>
+<span class="n">ann_structure</span> <span class="o">=</span> <span class="p">[</span><span class="n">num_features</span><span class="p">,</span> <span class="n">num_features</span><span class="o">*</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+<span class="n">ae</span> <span class="o">=</span> <span class="n">Autoencoder</span><span class="p">(</span><span class="n">MultiLayerPerceptron</span><span class="p">(</span><span class="n">ann_structure</span><span class="p">),</span> <span class="n">MultiLayerPerceptron</span><span class="p">(</span><span class="n">ann_structure</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="n">ae</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">rmse</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">5e-2</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>_rmse</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>1.427150</td>
+      <td>1.032834</td>
+      <td>1.016284</td>
+      <td>00:00</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>1.134506</td>
+      <td>0.933729</td>
+      <td>0.966296</td>
+      <td>00:00</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>1.004961</td>
+      <td>0.899874</td>
+      <td>0.948617</td>
+      <td>00:00</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>0.932003</td>
+      <td>0.816444</td>
+      <td>0.903573</td>
+      <td>00:00</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>0.883839</td>
+      <td>0.788303</td>
+      <td>0.887864</td>
+      <td>00:00</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>0.850470</td>
+      <td>0.775394</td>
+      <td>0.880565</td>
+      <td>00:00</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>0.826003</td>
+      <td>0.762367</td>
+      <td>0.873136</td>
+      <td>00:00</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>0.806960</td>
+      <td>0.770993</td>
+      <td>0.878062</td>
+      <td>00:00</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>0.791906</td>
+      <td>0.756780</td>
+      <td>0.869931</td>
+      <td>00:00</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>0.778862</td>
+      <td>0.757165</td>
+      <td>0.870152</td>
+      <td>00:00</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Forecast-based-on-latent-space">Forecast based on latent space<a class="anchor-link" href="#Forecast-based-on-latent-space"> </a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we create a model that is a wrapper for an autoencoder to forecast a regression or classification based on the latent space from an autoencoder.</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">AutoencoderForecast</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">autoencoder</span><span class="p">,</span> <span class="n">forecast_model</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">autoencoder</span> <span class="o">=</span> <span class="n">autoencoder</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">forecast_model</span> <span class="o">=</span> <span class="n">forecast_model</span>
+        
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">categorical_data</span><span class="p">,</span> <span class="n">continuous_data</span><span class="p">):</span>
+        
+        <span class="n">latent_space</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">autoencoder</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">categorical_data</span><span class="p">,</span> <span class="n">continuous_data</span><span class="p">)</span>
+        <span class="n">yhat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast_model</span><span class="p">(</span><span class="n">categorical_data</span><span class="p">,</span> <span class="n">latent_space</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">yhat</span>
+        
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we create the data loader that has the target feature as output in the dataloader.</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">freeze</span><span class="p">(</span><span class="n">learn</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">print_requires_grad</span><span class="p">(</span><span class="n">learn</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> (encoder): (
+  (Identity())
+  (ModuleList())
+  (Dropout(p=0.0, inplace=False))
+  (BatchNorm1d(20, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)) Requires grad: False
+   (layers): (
+    Sequential (0): (
+      (Linear(in_features=20, out_features=100, bias=False)) Requires grad: False
+      (ReLU(inplace=True))
+      (BatchNorm1d(100, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)) Requires grad: False
+    )
+    Sequential (1): (
+      (Linear(in_features=100, out_features=5, bias=True)) Requires grad: False
     )
   )
-)</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">10</span><span class="p">),</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">yhat</span> <span class="o">=</span> <span class="n">ae</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-<span class="n">yhat</span><span class="o">.</span><span class="n">requires_grad</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>True</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">yhat</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>tensor([[-0.2488,  0.7525, -0.8032,  0.1610, -0.7692, -1.1662, -0.3459, -0.8292,
-         -0.9420,  0.3740],
-        [ 0.2194, -0.1126, -0.9293,  0.4079, -0.3220,  1.0201,  0.1839,  0.1158,
-          0.0490, -0.7282],
-        [ 0.7240,  0.1649, -0.1558,  1.1118, -0.8921, -0.0425, -0.0862, -0.7931,
-         -0.4248,  0.2214]], grad_fn=&lt;AddmmBackward&gt;)</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ae_tcn</span> <span class="o">=</span> <span class="n">Autoencoder</span><span class="p">(</span><span class="n">TemporalCNN</span><span class="p">(</span><span class="n">ann_structure</span><span class="p">),</span> <span class="n">TemporalCNN</span><span class="p">(</span><span class="n">ann_structure</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
-<span class="n">ae_tcn</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>Autoencoder(
-  (encoder): TemporalCNN(
-    (bn_cont): BatchNorm1d(10, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-    (layers): TemporalConvNet(
-      (temporal_blocks): Sequential(
-        (0): ResidualBlock(
-          (conv1): Conv1d(10, 2, kernel_size=(3,), stride=(1,), padding=(2,))
-          (chomp1): Chomp1d()
-          (act_func1): Identity()
-          (dropout1): Dropout2d(p=0.0, inplace=False)
-          (conv2): Conv1d(2, 2, kernel_size=(3,), stride=(1,), padding=(2,))
-          (chomp2): Chomp1d()
-          (act_func2): Identity()
-          (dropout2): Dropout2d(p=0.0, inplace=False)
-          (net): Sequential(
-            (0): Conv1d(10, 2, kernel_size=(3,), stride=(1,), padding=(2,))
-            (1): Chomp1d()
-            (2): Identity()
-            (3): Dropout2d(p=0.0, inplace=False)
-            (4): Conv1d(2, 2, kernel_size=(3,), stride=(1,), padding=(2,))
-            (5): Chomp1d()
-            (6): Identity()
-            (7): Dropout2d(p=0.0, inplace=False)
-          )
-          (downsample): Conv1d(10, 2, kernel_size=(1,), stride=(1,))
-          (act_func3): Identity()
-        )
-      )
+)
+ (decoder): (
+  (Identity())
+  (ModuleList())
+  (Dropout(p=0.0, inplace=False))
+  (BatchNorm1d(5, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)) Requires grad: False
+   (layers): (
+    Sequential (0): (
+      (Linear(in_features=5, out_features=100, bias=False)) Requires grad: False
+      (ReLU(inplace=True))
+      (BatchNorm1d(100, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)) Requires grad: False
+    )
+    Sequential (1): (
+      (Linear(in_features=100, out_features=20, bias=True)) Requires grad: False
     )
   )
-  (decoder): TemporalCNN(
-    (bn_cont): BatchNorm1d(2, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-    (layers): TemporalConvNet(
-      (temporal_blocks): Sequential(
-        (0): ResidualBlock(
-          (conv1): Conv1d(2, 10, kernel_size=(3,), stride=(1,), padding=(2,))
-          (chomp1): Chomp1d()
-          (act_func1): Identity()
-          (dropout1): Dropout2d(p=0.0, inplace=False)
-          (conv2): Conv1d(10, 10, kernel_size=(3,), stride=(1,), padding=(2,))
-          (chomp2): Chomp1d()
-          (act_func2): Identity()
-          (dropout2): Dropout2d(p=0.0, inplace=False)
-          (net): Sequential(
-            (0): Conv1d(2, 10, kernel_size=(3,), stride=(1,), padding=(2,))
-            (1): Chomp1d()
-            (2): Identity()
-            (3): Dropout2d(p=0.0, inplace=False)
-            (4): Conv1d(10, 10, kernel_size=(3,), stride=(1,), padding=(2,))
-            (5): Chomp1d()
-            (6): Identity()
-            (7): Dropout2d(p=0.0, inplace=False)
-          )
-          (downsample): Conv1d(2, 10, kernel_size=(1,), stride=(1,))
-          (act_func3): Identity()
-        )
-      )
-    )
-  )
-)</pre>
+)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dls</span> <span class="o">=</span> <span class="n">TabularDataLoaders</span><span class="o">.</span><span class="n">from_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">cont_names</span><span class="o">=</span><span class="n">x_names</span><span class="p">,</span> <span class="n">y_names</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">deivce</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span><span class="n">procs</span><span class="o">=</span><span class="n">Normalize</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="n">N</span><span class="o">//</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">mlp_regression</span> <span class="o">=</span> <span class="n">MultiLayerPerceptron</span><span class="p">([</span><span class="n">ann_structure</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">get_c</span><span class="p">(</span><span class="n">dls</span><span class="p">)])</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">AutoencoderForecast</span><span class="p">(</span><span class="n">learn</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">mlp_regression</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">rmse</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>AutoencoderForecast (Input shape: 200 x torch.Size([200, 20]))
+============================================================================
+Layer (type)         Output Shape         Param #    Trainable 
+============================================================================
+                     []                  
+Identity                                                       
+BatchNorm1d                               40         False     
+____________________________________________________________________________
+                     200 x 100           
+Linear                                    2000       False     
+ReLU                                                           
+BatchNorm1d                               200        False     
+____________________________________________________________________________
+                     200 x 5             
+Linear                                    505        False     
+ReLU                                                           
+Identity                                                       
+BatchNorm1d                               10         True      
+____________________________________________________________________________
+                     200 x 1             
+Linear                                    6          True      
+____________________________________________________________________________
+
+Total params: 2,761
+Total trainable params: 16
+Total non-trainable params: 2,745
+
+Optimizer used: &lt;function Adam at 0x7f6fbf1cc820&gt;
+Loss function: FlattenedLoss of MSELoss()
+
+Callbacks:
+  - TrainEvalCallback
+  - Recorder
+  - ProgressCallback</pre>
 </div>
 
 </div>
@@ -341,9 +603,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">yhat</span> <span class="o">=</span> <span class="n">ae_tcn</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-<span class="n">yhat</span><span class="o">.</span><span class="n">requires_grad</span><span class="p">,</span> <span class="n">yhat</span><span class="o">.</span><span class="n">shape</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -356,9 +616,55 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 <div class="output_area">
 
 
-
-<div class="output_text output_subarea output_execute_result">
-<pre>(True, torch.Size([3, 10, 2]))</pre>
+<div class="output_html rendered_html output_subarea ">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>_rmse</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>0.423511</td>
+      <td>0.434933</td>
+      <td>0.659495</td>
+      <td>00:00</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0.313353</td>
+      <td>0.185031</td>
+      <td>0.430153</td>
+      <td>00:00</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>0.238005</td>
+      <td>0.097329</td>
+      <td>0.311976</td>
+      <td>00:00</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>0.185854</td>
+      <td>0.059279</td>
+      <td>0.243473</td>
+      <td>00:00</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>0.148523</td>
+      <td>0.040370</td>
+      <td>0.200923</td>
+      <td>00:00</td>
+    </tr>
+  </tbody>
+</table>
 </div>
 
 </div>
@@ -369,48 +675,18 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 </div>
     {% endraw %}
 
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">yhat</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</pre></div>
-
-    </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Variational-Autoencoder">Variational Autoencoder<a class="anchor-link" href="#Variational-Autoencoder"> </a></h2>
 </div>
 </div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>tensor([[-0.0477,  0.0091],
-        [ 0.1478,  0.0880],
-        [-0.2532, -0.1563],
-        [-0.2404, -0.1595],
-        [ 0.4216,  0.1389],
-        [ 0.4037,  0.1737],
-        [-0.3920, -0.1086],
-        [ 0.1082, -0.0079],
-        [-0.3735, -0.1348],
-        [-0.0016, -0.0938]], grad_fn=&lt;SelectBackward&gt;)</pre>
 </div>
-
-</div>
-
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="VAE-Training">VAE Training<a class="anchor-link" href="#VAE-Training"> </a></h3>
 </div>
 </div>
-
 </div>
-    {% endraw %}
-
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -419,8 +695,6 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">UnFlatten</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-<span class="c1">#     def __init__(self, size):</span>
-<span class="c1">#         self.size = size</span>
         
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="n">dims</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">input</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">*</span><span class="n">dims</span><span class="p">)</span>
@@ -451,6 +725,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">hidden2mu</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">h_dim</span><span class="p">,</span> <span class="n">z_dim</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hidden2logvar</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">h_dim</span><span class="p">,</span> <span class="n">z_dim</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">latent_dimensions</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mu</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logvar</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
         
     <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">categorical_data</span><span class="p">,</span> <span class="n">continuous_data</span><span class="p">,</span> <span class="n">as_np</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         
@@ -461,11 +736,15 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
         <span class="n">x_hidden</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">x_hidden</span><span class="p">)</span>
         
         <span class="n">mu</span><span class="p">,</span> <span class="n">logvar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden2mu</span><span class="p">(</span><span class="n">x_hidden</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden2logvar</span><span class="p">(</span><span class="n">x_hidden</span><span class="p">)</span>
+        
+        <span class="c1"># required for vae loss</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mu</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logvar</span> <span class="o">=</span> <span class="n">mu</span><span class="p">,</span> <span class="n">logvar</span>
+        
         <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reparam</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">logvar</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="n">as_np</span><span class="p">:</span> <span class="k">return</span> <span class="n">to_np</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span> <span class="k">return</span> <span class="n">z</span>
-        
+
     <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">categorical_data</span><span class="p">,</span> <span class="n">continuous_data</span><span class="p">,</span> <span class="n">as_np</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">latent_dimensions</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         
         <span class="k">if</span> <span class="ow">not</span> <span class="n">latent_dimensions</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">latent_dimensions</span><span class="p">:</span>
@@ -488,6 +767,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
         <span class="sd">&quot;&quot;&quot;Encode a batch of data points, x, into their z representations.&quot;&quot;&quot;</span>
 
         <span class="n">mu</span><span class="p">,</span> <span class="n">logvar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">categorical_data</span><span class="p">,</span> <span class="n">continuous_data</span><span class="p">)</span>
+        
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reparam</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">logvar</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">reparam</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">logvar</span><span class="p">):</span>
@@ -496,9 +776,9 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
             <span class="c1"># convert logarithmic variance to standard deviation representation</span>
-            <span class="n">std</span> <span class="o">=</span> <span class="n">logvar</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">exp_</span><span class="p">()</span>
+            <span class="n">std</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">logvar</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+            
             <span class="c1"># create normal distribution as large as the data</span>
-<span class="c1">#             eps = Variable(std.data.new(std.size()).normal_())</span>
             <span class="n">eps</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn_like</span><span class="p">(</span><span class="n">std</span><span class="p">)</span>
             <span class="c1"># scale by learned mean and standard deviation</span>
             <span class="k">return</span> <span class="n">mu</span> <span class="o">+</span> <span class="n">eps</span><span class="o">*</span><span class="n">std</span>
@@ -520,8 +800,62 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">10</span><span class="p">),</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dls</span> <span class="o">=</span> <span class="n">TabularDataLoaders</span><span class="o">.</span><span class="n">from_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">cont_names</span><span class="o">=</span><span class="n">x_names</span><span class="p">,</span> <span class="n">y_names</span><span class="o">=</span><span class="n">x_names</span><span class="p">,</span> <span class="n">deivce</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">procs</span><span class="o">=</span><span class="n">Normalize</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="n">N</span><span class="o">//</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">num_features</span> <span class="o">=</span> <span class="n">get_c</span><span class="p">(</span><span class="n">dls</span><span class="p">)</span>
+<span class="n">ann_structure</span> <span class="o">=</span> <span class="p">[</span><span class="n">num_features</span><span class="p">,</span> <span class="n">num_features</span><span class="o">*</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+<span class="n">ae</span> <span class="o">=</span> <span class="n">VariationalAutoencoder</span><span class="p">(</span><span class="n">MultiLayerPerceptron</span><span class="p">(</span><span class="n">ann_structure</span><span class="p">),</span> 
+                            <span class="n">MultiLayerPerceptron</span><span class="p">(</span><span class="n">ann_structure</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> 
+                            <span class="n">ann_structure</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">ann_structure</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="n">ae</span><span class="p">,</span> <span class="n">loss_func</span><span class="o">=</span><span class="n">VAEReconstructionLoss</span><span class="p">(</span><span class="n">ae</span><span class="p">),</span> <span class="n">metrics</span><span class="o">=</span><span class="n">rmse</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">5e-2</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -534,204 +868,90 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 <div class="output_area">
 
 
-
-<div class="output_text output_subarea output_execute_result">
-<pre>torch.Size([3, 10])</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">enc</span> <span class="o">=</span> <span class="n">MultiLayerPerceptron</span><span class="p">(</span><span class="n">ann_structure</span><span class="p">)</span>
-<span class="n">dec</span> <span class="o">=</span> <span class="n">MultiLayerPerceptron</span><span class="p">(</span><span class="n">ann_structure</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-
-<span class="n">vae</span> <span class="o">=</span> <span class="n">VariationalAutoencoder</span><span class="p">(</span><span class="n">enc</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">ann_structure</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">ann_structure</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">vae</span><span class="o">.</span><span class="n">training</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="n">vae</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>tensor([[ 0.6188,  0.3713,  1.0308, -2.3945,  1.4508,  0.5034,  0.6243, -0.4527,
-          0.3466,  1.2480],
-        [-0.5371, -0.0545, -0.1983,  0.4750, -0.2552, -0.8372,  0.4712, -0.5721,
-          0.2953, -1.6316],
-        [-0.7446,  0.3116,  0.0760,  0.2557, -0.3510, -0.3959,  0.5713, -0.6517,
-          0.4867, -1.4144]], grad_fn=&lt;AddmmBackward&gt;)</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ts_length</span> <span class="o">=</span> <span class="mi">2</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ae_tcn</span> <span class="o">=</span> <span class="n">VariationalAutoencoder</span><span class="p">(</span><span class="n">TemporalCNN</span><span class="p">(</span><span class="n">ann_structure</span><span class="p">),</span> 
-                                <span class="n">TemporalCNN</span><span class="p">(</span><span class="n">ann_structure</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span>
-                               <span class="n">ann_structure</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">ts_length</span><span class="p">,</span> <span class="n">ann_structure</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">ts_length</span><span class="p">)</span>
-<span class="c1"># ae_tcn</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="n">ts_length</span><span class="p">),</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">yhat</span> <span class="o">=</span> <span class="n">ae_tcn</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-<span class="n">yhat</span><span class="o">.</span><span class="n">requires_grad</span><span class="p">,</span> <span class="n">yhat</span><span class="o">.</span><span class="n">shape</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>(True, torch.Size([3, 10, 2]))</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">yhat</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>tensor([[[-0.6324,  0.4716],
-         [-0.1380,  0.1203],
-         [-0.0890,  0.6074],
-         [ 0.3778, -0.5755],
-         [-0.1370,  0.2466],
-         [ 0.0231,  0.0706],
-         [ 0.4997, -0.6765],
-         [-0.3776,  0.7519],
-         [-0.3856,  0.3849],
-         [ 0.5312, -0.6880]],
-
-        [[-0.6352, -0.9405],
-         [ 0.9391, -0.8131],
-         [ 1.7122, -0.7292],
-         [-0.6994,  0.7353],
-         [-0.8056,  0.0767],
-         [ 0.1449,  0.0605],
-         [-0.8067,  0.9382],
-         [ 1.1164, -0.6610],
-         [-0.5468, -0.5982],
-         [-0.4496,  1.0455]],
-
-        [[ 0.4085,  1.0145],
-         [ 0.0333, -0.5072],
-         [-0.0504, -1.4090],
-         [-0.2253,  0.2217],
-         [ 0.2016,  0.7672],
-         [-0.0300, -0.1834],
-         [-0.2160,  0.3513],
-         [ 0.1610, -0.7039],
-         [ 0.1965,  0.5474],
-         [-0.3160, -0.0773]]], grad_fn=&lt;AddBackward0&gt;)</pre>
+<div class="output_html rendered_html output_subarea ">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>_rmse</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>1.747122</td>
+      <td>1.084269</td>
+      <td>1.005835</td>
+      <td>00:00</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>1.420194</td>
+      <td>1.055210</td>
+      <td>0.992912</td>
+      <td>00:00</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>1.275235</td>
+      <td>1.017693</td>
+      <td>0.989334</td>
+      <td>00:00</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>1.194142</td>
+      <td>1.027946</td>
+      <td>0.993675</td>
+      <td>00:00</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>1.143146</td>
+      <td>1.004821</td>
+      <td>0.986281</td>
+      <td>00:00</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>1.107661</td>
+      <td>0.994705</td>
+      <td>0.976625</td>
+      <td>00:00</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>1.081197</td>
+      <td>0.978898</td>
+      <td>0.961286</td>
+      <td>00:00</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>1.060917</td>
+      <td>0.971202</td>
+      <td>0.954702</td>
+      <td>00:00</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>1.044978</td>
+      <td>0.965950</td>
+      <td>0.947006</td>
+      <td>00:00</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>1.031984</td>
+      <td>0.959871</td>
+      <td>0.940245</td>
+      <td>00:00</td>
+    </tr>
+  </tbody>
+</table>
 </div>
 
 </div>
@@ -744,23 +964,311 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>TODO:</p>
-<p><strong>should work for tcn and mlp</strong></p>
-<ul>
-<li><p>aletoric uncertainty layer/wrapper 
-  wrapper.forward(x)</p>
+<h3 id="Forecast-based-on-latent-space">Forecast based on latent space<a class="anchor-link" href="#Forecast-based-on-latent-space"> </a></h3>
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
 
-<pre><code>  mu = model(x)
-  std = softmax(x)
-  return mu, std</code></pre>
-</li>
-<li><p>aletoric uncertainty loss</p>
-</li>
-</ul>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">freeze</span><span class="p">(</span><span class="n">learn</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dls</span> <span class="o">=</span> <span class="n">TabularDataLoaders</span><span class="o">.</span><span class="n">from_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">cont_names</span><span class="o">=</span><span class="n">x_names</span><span class="p">,</span> <span class="n">y_names</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">deivce</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span><span class="n">procs</span><span class="o">=</span><span class="n">Normalize</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="n">N</span><span class="o">//</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">mlp_regression</span> <span class="o">=</span> <span class="n">MultiLayerPerceptron</span><span class="p">([</span><span class="n">ann_structure</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">get_c</span><span class="p">(</span><span class="n">dls</span><span class="p">)])</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">AutoencoderForecast</span><span class="p">(</span><span class="n">learn</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">mlp_regression</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">rmse</span><span class="p">)</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>AutoencoderForecast (Input shape: 200 x torch.Size([200, 20]))
+============================================================================
+Layer (type)         Output Shape         Param #    Trainable 
+============================================================================
+                     []                  
+Identity                                                       
+BatchNorm1d                               40         False     
+____________________________________________________________________________
+                     200 x 100           
+Linear                                    2000       False     
+ReLU                                                           
+BatchNorm1d                               200        False     
+____________________________________________________________________________
+                     200 x 5             
+Linear                                    505        False     
+ReLU                                                           
+Flatten                                                        
+Linear                                    30         False     
+Linear                                    30         False     
+Identity                                                       
+BatchNorm1d                               10         True      
+____________________________________________________________________________
+                     200 x 1             
+Linear                                    6          True      
+____________________________________________________________________________
+
+Total params: 2,821
+Total trainable params: 16
+Total non-trainable params: 2,805
+
+Optimizer used: &lt;function Adam at 0x7f6fbf1cc820&gt;
+Loss function: FlattenedLoss of MSELoss()
+
+Callbacks:
+  - TrainEvalCallback
+  - Recorder
+  - ProgressCallback</pre>
+</div>
+
+</div>
 
 </div>
 </div>
+
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>_rmse</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>0.072831</td>
+      <td>0.037123</td>
+      <td>0.192673</td>
+      <td>00:00</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0.049920</td>
+      <td>0.019967</td>
+      <td>0.141306</td>
+      <td>00:00</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>0.038817</td>
+      <td>0.018040</td>
+      <td>0.134314</td>
+      <td>00:00</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>0.033306</td>
+      <td>0.019090</td>
+      <td>0.138167</td>
+      <td>00:00</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>0.030229</td>
+      <td>0.019517</td>
+      <td>0.139702</td>
+      <td>00:00</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Checks-that-the-autoencoders-also-work-with-temporal-data">Checks that the autoencoders also work with temporal data<a class="anchor-link" href="#Checks-that-the-autoencoders-also-work-with-temporal-data"> </a></h2>
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ts_length</span> <span class="o">=</span> <span class="mi">24</span>
+<span class="n">n_features</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">n_samples</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">latent_dim</span>  <span class="o">=</span> <span class="mi">2</span> 
+<span class="n">ann_structure</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="n">latent_dim</span><span class="p">]</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">((</span> <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span><span class="p">,</span><span class="n">ts_length</span><span class="p">),</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ae_tcn</span> <span class="o">=</span> <span class="n">Autoencoder</span><span class="p">(</span><span class="n">TemporalCNN</span><span class="p">(</span><span class="n">ann_structure</span><span class="p">),</span> <span class="n">TemporalCNN</span><span class="p">(</span><span class="n">ann_structure</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">yhat</span> <span class="o">=</span> <span class="n">ae_tcn</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="n">test_eq</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">yhat</span><span class="o">.</span><span class="n">requires_grad</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">([</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span><span class="p">,</span> <span class="n">ts_length</span><span class="p">],</span> <span class="nb">list</span><span class="p">(</span><span class="n">yhat</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">vae_tcn</span> <span class="o">=</span> <span class="n">VariationalAutoencoder</span><span class="p">(</span><span class="n">TemporalCNN</span><span class="p">(</span><span class="n">ann_structure</span><span class="p">),</span> 
+                                <span class="n">TemporalCNN</span><span class="p">(</span><span class="n">ann_structure</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span>
+                               <span class="n">ann_structure</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">ts_length</span><span class="p">,</span> <span class="n">ann_structure</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">ts_length</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">yhat</span> <span class="o">=</span> <span class="n">vae_tcn</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="n">test_eq</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">yhat</span><span class="o">.</span><span class="n">requires_grad</span><span class="p">)</span>
+<span class="n">test_eq</span><span class="p">([</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span><span class="p">,</span> <span class="n">ts_length</span><span class="p">],</span> <span class="nb">list</span><span class="p">(</span><span class="n">yhat</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+<span class="n">test_eq</span><span class="p">([</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">latent_dim</span><span class="o">*</span><span class="n">ts_length</span><span class="p">],</span> <span class="nb">list</span><span class="p">(</span><span class="n">vae_tcn</span><span class="o">.</span><span class="n">_mu</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+<span class="n">test_eq</span><span class="p">([</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">latent_dim</span><span class="o">*</span><span class="n">ts_length</span><span class="p">],</span> <span class="nb">list</span><span class="p">(</span><span class="n">vae_tcn</span><span class="o">.</span><span class="n">_logvar</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
 </div>
  
 

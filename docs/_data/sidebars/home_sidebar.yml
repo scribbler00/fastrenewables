@@ -25,6 +25,9 @@ entries:
       title: metrics
       url: metrics.html
     - output: web,pdf
+      title: utils_pytorch
+      url: utils_pytorch.html
+    - output: web,pdf
       title: tabular.core
       url: tabular.core.html
     - output: web,pdf

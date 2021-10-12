@@ -2,6 +2,7 @@
 
 title: baselines
 
+
 keywords: fastai
 sidebar: home_sidebar
 
@@ -24,6 +25,21 @@ nb_path: "nbs/00d_baselines.ipynb"
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/home/scribbler/anaconda/envs/dies/lib/python3.8/site-packages/numba/np/ufunc/parallel.py:363: NumbaWarning: <span class="ansi-bold">The TBB threading layer requires TBB version 2019.5 or later i.e., TBB_INTERFACE_VERSION &gt;= 11005. Found TBB_INTERFACE_VERSION = 9107. The TBB threading layer is disabled.</span>
+  warnings.warn(problem)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
 
 </div>
     {% endraw %}
@@ -97,13 +113,6 @@ nb_path: "nbs/00d_baselines.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
 <div class="output_wrapper">
 <div class="output">
 
@@ -121,6 +130,13 @@ nb_path: "nbs/00d_baselines.ipynb"
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -180,7 +196,7 @@ nb_path: "nbs/00d_baselines.ipynb"
 
 <span class="n">x_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">+</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">yhat</span><span class="p">,</span> <span class="n">ystd</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">x_range</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">x_range</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="n">yhat</span><span class="o">-</span><span class="n">ystd</span><span class="p">),</span> <span class="p">(</span><span class="n">yhat</span><span class="o">+</span><span class="n">ystd</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.1</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">x_range</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="n">yhat</span><span class="o">-</span><span class="n">ystd</span><span class="p">),</span> <span class="p">(</span><span class="n">yhat</span><span class="o">+</span><span class="n">ystd</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=.</span><span class="mi">1</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -274,13 +290,6 @@ nb_path: "nbs/00d_baselines.ipynb"
 
 </div>
 </div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -395,6 +404,13 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
 <div class="inner_cell">
@@ -429,13 +445,6 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
     
 <div class="cell border-box-sizing code_cell rendered">
 
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
 <div class="output_wrapper">
 <div class="output">
 
@@ -443,7 +452,7 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ELM" class="doc_header"><code>class</code> <code>ELM</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/baselines.py#L208" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ELM</code>(<strong><code>n_hidden</code></strong>=<em><code>20</code></em>, <strong><code>activations</code></strong>=<em><code>'relu'</code></em>, <strong><code>prediction_model</code></strong>=<em><code>BayesLinReg()</code></em>, <strong><code>include_original_features</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>BaseEstimator</code></p>
+<h2 id="ELM" class="doc_header"><code>class</code> <code>ELM</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/baselines.py#L208" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ELM</code>(<strong><code>n_hidden</code></strong>=<em><code>20</code></em>, <strong><code>activations</code></strong>=<em><code>relu</code></em>, <strong><code>prediction_model</code></strong>=<em><code>BayesLinReg()</code></em>, <strong><code>include_original_features</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>BaseEstimator</code></p>
 </blockquote>
 <p>Base class for all estimators in scikit-learn.</p>
 <h2 id="Notes">Notes<a class="anchor-link" href="#Notes"> </a></h2><p>All estimators should specify all the parameters that can be set
@@ -456,6 +465,13 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -488,7 +504,7 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
 
 <span class="n">x_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">yhat</span><span class="p">,</span> <span class="n">ystd</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">x_range</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">x_range</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="n">yhat</span><span class="o">-</span><span class="mf">1.96</span><span class="o">*</span><span class="n">ystd</span><span class="p">),</span> <span class="p">(</span><span class="n">yhat</span><span class="o">+</span><span class="mf">1.96</span><span class="o">*</span><span class="n">ystd</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;CI&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">x_range</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="n">yhat</span><span class="o">-</span><span class="mf">1.96</span><span class="o">*</span><span class="n">ystd</span><span class="p">),</span> <span class="p">(</span><span class="n">yhat</span><span class="o">+</span><span class="mf">1.96</span><span class="o">*</span><span class="n">ystd</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=.</span><span class="mi">5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;CI&quot;</span><span class="p">)</span>
 
 <span class="n">log_evidence</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">log_evidence</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Evidence </span><span class="si">{</span><span class="n">log_evidence</span><span class="si">:</span><span class="s2">0.02f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -538,7 +554,7 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
 
 <span class="n">x_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">yhat</span><span class="p">,</span> <span class="n">ystd</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">x_range</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">x_range</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="n">yhat</span><span class="o">-</span><span class="mf">1.96</span><span class="o">*</span><span class="n">ystd</span><span class="p">),</span> <span class="p">(</span><span class="n">yhat</span><span class="o">+</span><span class="mf">1.96</span><span class="o">*</span><span class="n">ystd</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;CI&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">x_range</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="n">yhat</span><span class="o">-</span><span class="mf">1.96</span><span class="o">*</span><span class="n">ystd</span><span class="p">),</span> <span class="p">(</span><span class="n">yhat</span><span class="o">+</span><span class="mf">1.96</span><span class="o">*</span><span class="n">ystd</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=.</span><span class="mi">5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;CI&quot;</span><span class="p">)</span>
 
 <span class="n">log_evidence</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">log_evidence</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Evidence </span><span class="si">{</span><span class="n">log_evidence</span><span class="si">:</span><span class="s2">0.02f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -588,7 +604,7 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
 
 <span class="n">x_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">yhat</span><span class="p">,</span> <span class="n">ystd</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">x_range</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">x_range</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="n">yhat</span><span class="o">-</span><span class="mf">1.96</span><span class="o">*</span><span class="n">ystd</span><span class="p">),</span> <span class="p">(</span><span class="n">yhat</span><span class="o">+</span><span class="mf">1.96</span><span class="o">*</span><span class="n">ystd</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;CI&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">x_range</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="n">yhat</span><span class="o">-</span><span class="mf">1.96</span><span class="o">*</span><span class="n">ystd</span><span class="p">),</span> <span class="p">(</span><span class="n">yhat</span><span class="o">+</span><span class="mf">1.96</span><span class="o">*</span><span class="n">ystd</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=.</span><span class="mi">5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;CI&quot;</span><span class="p">)</span>
 
 <span class="n">log_evidence</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">log_evidence</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Evidence </span><span class="si">{</span><span class="n">log_evidence</span><span class="si">:</span><span class="s2">0.02f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -625,13 +641,6 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
     
 <div class="cell border-box-sizing code_cell rendered">
 
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
 <div class="output_wrapper">
 <div class="output">
 
@@ -639,7 +648,7 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="EchoStateRegression" class="doc_header"><code>class</code> <code>EchoStateRegression</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/baselines.py#L339" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>EchoStateRegression</code>(<strong><code>num_hidden</code></strong>=<em><code>100</code></em>, <strong><code>activations</code></strong>=<em><code>[&lt;function relu at 0x7f99b713bf80&gt;, &lt;ufunc 'tanh'&gt;, &lt;function identity at 0x7f99a8232290&gt;]</code></em>, <strong><code>activation_momentum</code></strong>=<em><code>0.9</code></em>, <strong><code>prediction_model</code></strong>=<em><code>RidgeRegression()</code></em>) :: <code>BaseEstimator</code></p>
+<h2 id="EchoStateRegression" class="doc_header"><code>class</code> <code>EchoStateRegression</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/baselines.py#L339" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>EchoStateRegression</code>(<strong><code>num_hidden</code></strong>=<em><code>100</code></em>, <strong><code>activations</code></strong>=<em><code>[&lt;function relu at 0x7faac4358c10&gt;, &lt;ufunc 'tanh'&gt;, &lt;function identity at 0x7faab41f2280&gt;]</code></em>, <strong><code>activation_momentum</code></strong>=<em><code>0.9</code></em>, <strong><code>prediction_model</code></strong>=<em><code>RidgeRegression()</code></em>) :: <code>BaseEstimator</code></p>
 </blockquote>
 <p>Base class for all estimators in scikit-learn.</p>
 <h2 id="Notes">Notes<a class="anchor-link" href="#Notes"> </a></h2><p>All estimators should specify all the parameters that can be set
@@ -687,6 +696,13 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
