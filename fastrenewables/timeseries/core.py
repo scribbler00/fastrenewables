@@ -491,7 +491,8 @@ class Timeseries(Transform, FilteredBase):
 # Cell
 class TimeseriesDataset(fastuple):
     "A dataset from a `Timeseries` object"
-    def __init__(self, data:Timeseries, names:tuple, output_dim:int, loss_func, classes=None, index=None, batch_first=True, sequence_last=True):
+    def __init__(self, data:Timeseries, names:tuple, output_dim:int, loss_func,
+                 classes=None, index=None, batch_first=True, sequence_last=True):
 
         self.indexes, self.cats, self.conts, self.ys = data
         self.cat_names, self.cont_names, self.y_names = names
@@ -513,7 +514,7 @@ class TimeseriesDataset(fastuple):
     def __len__(self): return len(self.conts)
 
     def new_empty(self):
-        return TimeseriesDataset((np.empty(0), torch.empty(0), torch.empty(0), torch.empty(0)), [[], [], []])
+        return TimeseriesDataset((np.empty(0), torch.empty(0), torch.empty(0), torch.empty(0)), [[], [], []], None, None)
 
     @property
     def input_sequence_length(self):

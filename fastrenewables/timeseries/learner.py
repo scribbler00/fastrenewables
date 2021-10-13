@@ -19,6 +19,13 @@ from ..utils import *
 import pandas as pd
 
 # Cell
+#hide
+def _tensor_to_device(x, device):
+    if isinstance(x, torch.Tensor):
+        x = x.to(device)
+    return x
+
+# Cell
 class RenewableTimeseriesLearner(Learner):
     "`Learner` for renewable timerseries data."
     def predict(self, ds_idx=1, test_dl=None, filter=True, as_df=False):
@@ -34,7 +41,9 @@ class RenewableTimeseriesLearner(Learner):
         # to increase speed we direclty predict on all tensors
         if isinstance(to, (TimeseriesDataset)):
             with torch.no_grad():
-                preds = self.model(to.cats.to(device), to.conts.to(device))
+                cats, conts = _tensor_to_device(to.cats, device), _tensor_to_device(to.conts, device)
+
+                preds = self.model(cats, conts)
 
             preds, targets = to_np(preds).reshape(-1), to_np(to.ys).reshape(-1)
             if filter:
