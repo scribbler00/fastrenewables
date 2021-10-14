@@ -53,7 +53,7 @@ nb_path: "nbs/10_autoencoder_models.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Autoencoder" class="doc_header"><code>class</code> <code>Autoencoder</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/models/autoencoders.py#L19" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Autoencoder</code>(<strong><code>encoder</code></strong>, <strong><code>decoder</code></strong>) :: <code>Module</code></p>
+<h2 id="Autoencoder" class="doc_header"><code>class</code> <code>Autoencoder</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/models/autoencoders.py#L22" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Autoencoder</code>(<strong><code>encoder</code></strong>, <strong><code>decoder</code></strong>) :: <code>Module</code></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -156,12 +156,12 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 <div class="output_text output_subarea output_execute_result">
 <pre>count    2000.000000
-mean        0.518202
-std         0.160907
+mean        0.523222
+std         0.138718
 min         0.000000
-25%         0.408547
-50%         0.520172
-75%         0.626163
+25%         0.428973
+50%         0.526034
+75%         0.616048
 max         1.000000
 Name: y, dtype: float64</pre>
 </div>
@@ -277,72 +277,72 @@ Name: y, dtype: float64</pre>
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.417418</td>
-      <td>1.028195</td>
-      <td>1.013999</td>
+      <td>1.400510</td>
+      <td>1.059659</td>
+      <td>1.029397</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>1</td>
-      <td>1.142217</td>
-      <td>0.976013</td>
-      <td>0.987934</td>
+      <td>1.139224</td>
+      <td>0.915602</td>
+      <td>0.956871</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>2</td>
-      <td>1.022015</td>
-      <td>0.859396</td>
-      <td>0.927036</td>
+      <td>1.015282</td>
+      <td>0.814481</td>
+      <td>0.902486</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>3</td>
-      <td>0.950629</td>
-      <td>0.816512</td>
-      <td>0.903610</td>
+      <td>0.939656</td>
+      <td>0.782552</td>
+      <td>0.884620</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>4</td>
-      <td>0.901302</td>
-      <td>0.787643</td>
-      <td>0.887493</td>
+      <td>0.889630</td>
+      <td>0.762809</td>
+      <td>0.873389</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>5</td>
-      <td>0.865102</td>
-      <td>0.772275</td>
-      <td>0.878792</td>
+      <td>0.854850</td>
+      <td>0.752478</td>
+      <td>0.867455</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>6</td>
-      <td>0.838625</td>
-      <td>0.774557</td>
-      <td>0.880089</td>
+      <td>0.829248</td>
+      <td>0.744346</td>
+      <td>0.862755</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>7</td>
-      <td>0.817726</td>
-      <td>0.765040</td>
-      <td>0.874666</td>
+      <td>0.809016</td>
+      <td>0.740375</td>
+      <td>0.860450</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>8</td>
-      <td>0.800567</td>
-      <td>0.758330</td>
-      <td>0.870822</td>
+      <td>0.793158</td>
+      <td>0.737706</td>
+      <td>0.858898</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>9</td>
-      <td>0.786278</td>
-      <td>0.760223</td>
-      <td>0.871907</td>
+      <td>0.779633</td>
+      <td>0.736026</td>
+      <td>0.857920</td>
       <td>00:00</td>
     </tr>
   </tbody>
@@ -381,7 +381,7 @@ Name: y, dtype: float64</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="AutoencoderForecast" class="doc_header"><code>class</code> <code>AutoencoderForecast</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/models/autoencoders.py#L47" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AutoencoderForecast</code>(<strong><code>autoencoder</code></strong>, <strong><code>forecast_model</code></strong>) :: <code>Module</code></p>
+<h2 id="AutoencoderForecast" class="doc_header"><code>class</code> <code>AutoencoderForecast</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/models/autoencoders.py#L55" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AutoencoderForecast</code>(<strong><code>autoencoder</code></strong>, <strong><code>forecast_model</code></strong>) :: <code>Module</code></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -605,7 +605,7 @@ Total params: 2,761
 Total trainable params: 16
 Total non-trainable params: 2,745
 
-Optimizer used: &lt;function Adam at 0x7fb6c4cf3820&gt;
+Optimizer used: &lt;function Adam at 0x7f2c55772f70&gt;
 Loss function: FlattenedLoss of MSELoss()
 
 Callbacks:
@@ -656,37 +656,37 @@ Callbacks:
   <tbody>
     <tr>
       <td>0</td>
-      <td>0.326834</td>
-      <td>0.217491</td>
-      <td>0.466360</td>
+      <td>0.314161</td>
+      <td>0.260491</td>
+      <td>0.510383</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>1</td>
-      <td>0.235854</td>
-      <td>0.111830</td>
-      <td>0.334410</td>
+      <td>0.247836</td>
+      <td>0.158668</td>
+      <td>0.398332</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>2</td>
-      <td>0.181198</td>
-      <td>0.065184</td>
-      <td>0.255312</td>
+      <td>0.199370</td>
+      <td>0.097397</td>
+      <td>0.312085</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>3</td>
-      <td>0.142332</td>
-      <td>0.039793</td>
-      <td>0.199481</td>
+      <td>0.160442</td>
+      <td>0.061318</td>
+      <td>0.247625</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>4</td>
-      <td>0.114708</td>
-      <td>0.032569</td>
-      <td>0.180468</td>
+      <td>0.130171</td>
+      <td>0.042172</td>
+      <td>0.205357</td>
       <td>00:00</td>
     </tr>
   </tbody>
@@ -724,7 +724,7 @@ Callbacks:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="UnFlatten" class="doc_header"><code>class</code> <code>UnFlatten</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/models/autoencoders.py#L62" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>UnFlatten</code>() :: <code>Module</code></p>
+<h2 id="UnFlatten" class="doc_header"><code>class</code> <code>UnFlatten</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/models/autoencoders.py#L73" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>UnFlatten</code>() :: <code>Module</code></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -779,7 +779,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="VariationalAutoencoder" class="doc_header"><code>class</code> <code>VariationalAutoencoder</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/models/autoencoders.py#L68" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>VariationalAutoencoder</code>(<strong><code>encoder</code></strong>, <strong><code>decoder</code></strong>, <strong><code>h_dim</code></strong>, <strong><code>z_dim</code></strong>) :: <a href="/fastrenewables/autoencoder_models.html#Autoencoder"><code>Autoencoder</code></a></p>
+<h2 id="VariationalAutoencoder" class="doc_header"><code>class</code> <code>VariationalAutoencoder</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/models/autoencoders.py#L80" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>VariationalAutoencoder</code>(<strong><code>encoder</code></strong>, <strong><code>decoder</code></strong>, <strong><code>h_dim</code></strong>, <strong><code>z_dim</code></strong>) :: <a href="/fastrenewables/autoencoder_models.html#Autoencoder"><code>Autoencoder</code></a></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -912,72 +912,72 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
   <tbody>
     <tr>
       <td>0</td>
-      <td>1.603892</td>
-      <td>1.039223</td>
-      <td>0.997177</td>
+      <td>1.625394</td>
+      <td>1.027008</td>
+      <td>0.999831</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>1</td>
-      <td>1.352651</td>
-      <td>1.030828</td>
-      <td>0.993362</td>
+      <td>1.353855</td>
+      <td>1.009958</td>
+      <td>0.981047</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>2</td>
-      <td>1.233508</td>
-      <td>1.002076</td>
-      <td>0.987172</td>
+      <td>1.232008</td>
+      <td>0.987417</td>
+      <td>0.979559</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>3</td>
-      <td>1.165651</td>
-      <td>0.984741</td>
-      <td>0.977986</td>
+      <td>1.164160</td>
+      <td>0.975075</td>
+      <td>0.970965</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>4</td>
-      <td>1.121756</td>
-      <td>0.970083</td>
-      <td>0.971174</td>
+      <td>1.120605</td>
+      <td>0.967925</td>
+      <td>0.961196</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>5</td>
-      <td>1.090632</td>
-      <td>0.965951</td>
-      <td>0.966367</td>
+      <td>1.089931</td>
+      <td>0.962036</td>
+      <td>0.962075</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>6</td>
-      <td>1.068473</td>
-      <td>0.957949</td>
-      <td>0.961562</td>
+      <td>1.068224</td>
+      <td>0.961635</td>
+      <td>0.958414</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>7</td>
-      <td>1.051438</td>
-      <td>0.955730</td>
-      <td>0.956740</td>
+      <td>1.051640</td>
+      <td>0.960990</td>
+      <td>0.960682</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>8</td>
-      <td>1.037688</td>
-      <td>0.954759</td>
-      <td>0.954648</td>
+      <td>1.038519</td>
+      <td>0.955296</td>
+      <td>0.958315</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>9</td>
-      <td>1.027215</td>
-      <td>0.944164</td>
-      <td>0.947959</td>
+      <td>1.028276</td>
+      <td>0.957994</td>
+      <td>0.960198</td>
       <td>00:00</td>
     </tr>
   </tbody>
@@ -1096,7 +1096,7 @@ Total params: 2,821
 Total trainable params: 16
 Total non-trainable params: 2,805
 
-Optimizer used: &lt;function Adam at 0x7fb6c4cf3820&gt;
+Optimizer used: &lt;function Adam at 0x7f2c55772f70&gt;
 Loss function: FlattenedLoss of MSELoss()
 
 Callbacks:
@@ -1147,37 +1147,37 @@ Callbacks:
   <tbody>
     <tr>
       <td>0</td>
-      <td>0.243670</td>
-      <td>0.117833</td>
-      <td>0.343267</td>
+      <td>0.655513</td>
+      <td>0.409079</td>
+      <td>0.639593</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>1</td>
-      <td>0.176788</td>
-      <td>0.073938</td>
-      <td>0.271916</td>
+      <td>0.527697</td>
+      <td>0.295510</td>
+      <td>0.543608</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>2</td>
-      <td>0.134227</td>
-      <td>0.046644</td>
-      <td>0.215971</td>
+      <td>0.432311</td>
+      <td>0.213990</td>
+      <td>0.462591</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>3</td>
-      <td>0.106050</td>
-      <td>0.029965</td>
-      <td>0.173103</td>
+      <td>0.358125</td>
+      <td>0.138118</td>
+      <td>0.371642</td>
       <td>00:00</td>
     </tr>
     <tr>
       <td>4</td>
-      <td>0.085935</td>
-      <td>0.022111</td>
-      <td>0.148699</td>
+      <td>0.297741</td>
+      <td>0.079909</td>
+      <td>0.282682</td>
       <td>00:00</td>
     </tr>
   </tbody>

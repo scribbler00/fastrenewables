@@ -14,8 +14,11 @@ from torch.autograd import Variable
 import pandas as pd
 from ..losses import *
 from fastai.losses import MSELossFlat
+from blitz.utils import variational_estimator
+from ..utils_blitz import set_train_mode
 
 # Cell
+@variational_estimator
 class MeanStdWrapper(nn.Module):
     def __init__(self, model, last_layer_size):
         super().__init__()
@@ -34,3 +37,7 @@ class MeanStdWrapper(nn.Module):
             var = x[:,1].reshape(-1,1).exp()
 
         return (mean, var)
+
+    def train(self, mode: bool = True):
+        super().train(mode)
+        set_train_mode(self, mode)

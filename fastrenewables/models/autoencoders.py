@@ -14,8 +14,11 @@ from sklearn.datasets import make_regression
 from fastai.learner import *
 from ..utils_pytorch import *
 from ..losses import VAEReconstructionLoss
+from blitz.utils import variational_estimator
+from ..utils_blitz import set_train_mode
 
 # Cell
+@variational_estimator
 class Autoencoder(nn.Module):
     def __init__(self, encoder, decoder):
         super().__init__()
@@ -43,7 +46,12 @@ class Autoencoder(nn.Module):
 
         return x
 
+    def train(self, mode: bool = True):
+        super().train(mode)
+        set_train_mode(self, mode)
+
 # Cell
+@variational_estimator
 class AutoencoderForecast(nn.Module):
     def __init__(self, autoencoder, forecast_model):
         super().__init__()
@@ -57,6 +65,9 @@ class AutoencoderForecast(nn.Module):
 
         return yhat
 
+    def train(self, mode: bool = True):
+        super().train(mode)
+        set_train_mode(self, mode)
 
 # Cell
 class UnFlatten(nn.Module):
@@ -65,6 +76,7 @@ class UnFlatten(nn.Module):
         return input.view(*dims)
 
 # Cell
+@variational_estimator
 class VariationalAutoencoder(Autoencoder):
     def __init__(self, encoder, decoder, h_dim, z_dim):
         super().__init__(encoder, decoder)
@@ -136,3 +148,6 @@ class VariationalAutoencoder(Autoencoder):
         else:
             return mu
 
+    def train(self, mode: bool = True):
+        super().train(mode)
+        set_train_mode(self, mode)

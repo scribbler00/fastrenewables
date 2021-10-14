@@ -244,6 +244,10 @@ class EmbeddingModule(nn.Module):
 
             self.embeddings[emb_id] = emb_new
 
+    def train(self, mode: bool = True):
+        super().train(mode)
+        set_train_mode(self, mode)
+
 
 @patch
 def extra_repr(self:BayesianEmbedding): return f"Shape: {list(self.weight_sampler.mu.shape)}"
