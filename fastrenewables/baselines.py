@@ -159,12 +159,16 @@ class BayesLinReg(BaseEstimator):
     def log_evidence(self, X:np.ndarray, y:np.ndarray):
         X, y = self._check_and_prep(X, y)
 
-        N = len(y)
-        D = np.size(X, 1)
+        N, M = X.shape
 
-        return 0.5 * (D * np.log(self.alpha) + N * np.log(self.beta)
-            - np.linalg.slogdet(self.w_precision)[1] - D * np.log(2 * np.pi)
-        ) + self._log_posterior(X, y, self.w_mean)
+        # E(\mathbf{m}_n) = \beta/2 \cdot ||y- X \mathbf{m}_n|| + \alpha/2 \mathbf{m}_n^T \mathbf{m}_n,
+        # where \mathbf{m}_n is the mean weight. This is the same as the negative of the posterior
+        Emn = -self._log_posterior(X, y, self.w_mean)
+
+        # Bishop eq. 3.86
+        return 0.5 * (M * np.log(self.alpha) + N * np.log(self.beta)
+            - np.linalg.slogdet(self.w_precision)[1] - N * np.log(2 * np.pi)
+        ) - Emn
 
 # Cell
 class RidgeRegression(BaseEstimator):
