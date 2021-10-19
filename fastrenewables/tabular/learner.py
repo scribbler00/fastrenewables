@@ -18,7 +18,7 @@ from ..utils import *
 # Cell
 class RenewableLearner(Learner):
     "`Learner` for renewable data."
-    def predict(self, ds_idx=1, test_dl=None, filter=True):
+    def predict(self, ds_idx=1, test_dl=None, filter=True, flatten=True):
         device = next(self.model.parameters()).device
         preds, targets = None, None
         if test_dl is not None:
@@ -42,7 +42,10 @@ class RenewableLearner(Learner):
             with torch.no_grad():
                 preds = self.model(cats.to(device), xs.to(device))
 
-            preds, targets = to_np(preds).reshape(-1), to_np(targets).reshape(-1)
+            preds, targets = to_np(preds), to_np(targets)
+            if flatten:
+                preds, targets = preds.reshape(-1), targets.reshape(-1)
+
             if filter:
                 targets, preds = filter_preds(targets, preds)
         else:

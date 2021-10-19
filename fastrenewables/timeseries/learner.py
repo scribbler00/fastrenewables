@@ -28,7 +28,7 @@ def _tensor_to_device(x, device):
 # Cell
 class RenewableTimeseriesLearner(Learner):
     "`Learner` for renewable timerseries data."
-    def predict(self, ds_idx=1, test_dl=None, filter=True, as_df=False):
+    def predict(self, ds_idx=1, test_dl=None, filter=True, as_df=False, flatten=True):
         device = next(self.model.parameters()).device
         preds, targets = None, None
         if test_dl is not None:
@@ -45,7 +45,11 @@ class RenewableTimeseriesLearner(Learner):
 
                 preds = self.model(cats, conts)
 
-            preds, targets = to_np(preds).reshape(-1), to_np(to.ys).reshape(-1)
+            preds, targets = to_np(preds), to_np(to.ys)
+
+            if flatten:
+                preds, targets = preds.reshape(-1), targets.reshape(-1)
+
             if filter:
                 targets, preds = filter_preds(targets, preds)
         else:
