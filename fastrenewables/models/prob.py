@@ -25,18 +25,10 @@ class MeanStdWrapper(nn.Module):
         self.model = model
         self.decoder = nn.Linear(last_layer_size, 2)
 
-
     def forward(self, categorical_data, continuous_data):
         x = self.model(categorical_data, continuous_data)
         x = self.decoder(x)
-        mean = x[:,0].reshape(-1,1)
-
-        if self.training:
-            var = x[:,1].reshape(-1,1)
-        else:
-            var = x[:,1].reshape(-1,1).exp()
-
-        return (mean, var)
+        return x
 
     def train(self, mode: bool = True):
         super().train(mode)

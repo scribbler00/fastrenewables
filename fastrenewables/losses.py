@@ -184,50 +184,61 @@ class VAEReconstructionLoss(nn.Module):
 
 
 # Cell
-class GaussianNegativeLogLikelihoodLoss(nn.Module):
-    def __init__(self, num_mini_batches_mse=1):
-        """
-        Calculate the Residual sum of squares loss
-        num_mini_batches_mse: Whenn num_mini_batches_mse>1 Either the prcecision or the mse is trained for n mini batches.
-        """
-        super(GaussianNegativeLogLikelihoodLoss, self).__init__()
-        self.loss = nn.GaussianNLLLoss(reduction="mean")
-        self.num_mini_batches_mse = num_mini_batches_mse
-        self.counter=0
 
-    def forward(self, mu_sigma, y):
-        """
+# class GaussianNegativeLogLikelihoodLoss(nn.Module):
+# #     def __init__(self):
+# #         """
+# #         .. math::
+# #         Loss = \frac{1}{N} \sum_{i} \frac{1}{2} \exp(- s_i) || y_i - \hat{y}_i ||^2 + \frac{1}{2} s_i
+# #         """
+# #         super(GaussianNegativeLogLikelihoodLoss, self).__init__()
 
-        Parameters
-        ----------
-        y : pytorch.Tensor
-            any given tensor. Shape: [n, ]
-        mu : pytorch.Tensor
-            a tensor with the same shape as 'y'
-        sigma : pytorch.Tensor
-            a tensor with the same shape as 'y'
 
-        Returns
-        -------
-        pytorch.Tensor
-            the resulting loss
-        """
-        y_pred, var_pred = mu_sigma[0].reshape(-1,1), mu_sigma[1].reshape(-1,1)
+#     def forward(self, output, target):
+#         """
 
-        _mse = (y - y_pred)**2
+#         Parameters
+#         ----------
+#         y : pytorch.Tensor
+#             any given tensor. Shape: [n, ]
+#         output : pytorch.Tensor
+#             a tensor of mu [:,0] and sigma [:,1]. Shape: [n,2]
 
-        N = y.shape[0]
 
-        if self.counter % self.num_mini_batches_mse*2 < self.num_mini_batches_mse:
-            loss = 1 / (N * 2 * var_pred.exp()) + var_pred/2
-        else:
-            loss = _mse
+#         Returns
+#         -------
+#         pytorch.Tensor
+#             the resulting loss
+#         """
+#         if isinstance(output, tuple):
+#             mean, sigma = output[0], output[1]
+#         else:
+#             mean, sigma = output[:,0], output[:,1]
 
-        loss = loss.mean()
+#         squared_error = torch.pow((target - mean), 2)
 
-        self.counter += 1
+#         loss = torch.mean(0.5 * (torch.exp(-sigma) * squared_error + sigma))
+
+#         return loss
+
+class GaussianNegativeLogLikelihoodLoss(torch.nn.Module):
+    # Heteroscedastic Aleatoric Uncertainty Loss
+
+    r"""
+    .. math::
+        Loss = \frac{1}{N} \sum_{i} \frac{1}{2} \exp(- s_i) || y_i - \hat{y}_i ||^2 + \frac{1}{2} s_i
+    """
+
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, output, target):
+
+        squared_error = torch.pow((target[:, 0] - output[:, 0]), 2)
+        loss = torch.mean(0.5 * (torch.exp(-output[:, 1]) * squared_error + output[:, 1]))
 
         return loss
+
 
 
 # Cell
@@ -238,7 +249,7 @@ class RSSLoss(nn.Module):
         """
         super(RSSLoss, self).__init__()
 
-    def forward(self, y, y_hat):
+    def forward(self, y_hat, y):
         """
 
         Parameters
