@@ -234,8 +234,9 @@ class GaussianNegativeLogLikelihoodLoss(torch.nn.Module):
 
     def forward(self, output, target):
 
-        squared_error = torch.pow((target[:, 0] - output[:, 0]), 2)
-        loss = torch.mean(0.5 * (torch.exp(-output[:, 1]) * squared_error + output[:, 1]))
+        # flatten so that it also works for timeseries
+        squared_error = torch.pow((target[:, 0].flatten() - output[:, 0].flatten()), 2)
+        loss = torch.mean(0.5 * (torch.exp(-output[:, 1].flatten()) * squared_error + output[:, 1].flatten()))
 
         return loss
 

@@ -16,19 +16,27 @@ from ..losses import *
 from fastai.losses import MSELossFlat
 from blitz.utils import variational_estimator
 from ..utils_blitz import set_train_mode
+from ..metrics import *
 
 # Cell
 @variational_estimator
 class MeanStdWrapper(nn.Module):
-    def __init__(self, model, last_layer_size):
+    def __init__(self, model, last_layer_size=None, nll_output_layer=None):
         super().__init__()
         self.model = model
-        self.decoder = nn.Linear(last_layer_size, 2)
+        if nll_output_layer is None and last_layer_size is not None:
+            self.nll_output_layer = nn.Linear(last_layer_size, 2)
+        elif nll_output_layer is None and last_layer_size is None:
+            self.nll_output_layer = nll_output_layer
+        else:
+            raise ValueError("Either provide and output layer or the lasy layer size.")
 
     def forward(self, categorical_data, continuous_data):
         x = self.model(categorical_data, continuous_data)
-        x = self.decoder(x)
+        x = self.nll_output_layer(x)
+
         return x
+
 
     def train(self, mode: bool = True):
         super().train(mode)

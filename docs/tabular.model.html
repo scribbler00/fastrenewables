@@ -222,7 +222,7 @@ Each element denotes the amount of unique values for one categorical feature</p>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(tensor([ 0.0323, -0.0468]), tensor([0.0361, 0.0643]))</pre>
+<pre>(tensor([-0.0413, -0.0228]), tensor([0.1093, 0.0611]))</pre>
 </div>
 
 </div>
@@ -295,9 +295,9 @@ Each element denotes the amount of unique values for one categorical feature</p>
   (bn_cont): BatchNorm1d(20, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
   (layers): Sequential(
     (0): LinBnDrop(
-      (0): BatchNorm1d(20, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-      (1): Linear(in_features=20, out_features=40, bias=False)
-      (2): ReLU(inplace=True)
+      (0): Linear(in_features=20, out_features=40, bias=False)
+      (1): ReLU(inplace=True)
+      (2): BatchNorm1d(40, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
     )
     (1): LinBnDrop(
       (0): Linear(in_features=40, out_features=1, bias=True)
@@ -351,9 +351,9 @@ Each element denotes the amount of unique values for one categorical feature</p>
   (bn_cont): BatchNorm1d(20, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
   (layers): Sequential(
     (0): LinBnDrop(
-      (0): BatchNorm1d(37, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-      (1): Linear(in_features=37, out_features=40, bias=False)
-      (2): ReLU(inplace=True)
+      (0): Linear(in_features=37, out_features=40, bias=False)
+      (1): ReLU(inplace=True)
+      (2): BatchNorm1d(40, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
     )
     (1): LinBnDrop(
       (0): Linear(in_features=40, out_features=1, bias=True)

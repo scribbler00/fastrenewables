@@ -425,15 +425,18 @@ def get_structure(
     if percental_reduce >= 1.0:
         percental_reduce = percental_reduce / 100.0
 
-    while True:
-        new_size = int(ann_structure[-1] - ann_structure[-1] * percental_reduce)
+    new_size = int(ann_structure[-1] - ann_structure[-1] * percental_reduce)
+    if new_size >= min_value:
+        while True:
 
-        if new_size <= min_value:
-            new_size = min_value
-            ann_structure.append(new_size)
-            break
-        else:
-            ann_structure.append(new_size)
+            if new_size <= min_value:
+                new_size = min_value
+                ann_structure.append(new_size)
+                break
+            else:
+                ann_structure.append(new_size)
+
+            new_size = int(ann_structure[-1] - ann_structure[-1] * percental_reduce)
 
     if reverse_structure:
         ann_structure = list(reversed(ann_structure))
