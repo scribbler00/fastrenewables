@@ -690,6 +690,31 @@ class TabularRenewables(TabularPandas):
         self.procs = Pipeline(new_pipeline)
         self.setup()
 
+    def update_cats(self, new_cat_names):
+        """
+            new_cat_names a list of the new categorical features
+        """
+
+        self.cat_names = new_cat_names
+
+        new_pipeline = L()
+        found_categorify = False
+        for proc in self.procs:
+
+            if type(proc) == Categorify:
+                new_pipeline += Categorify()
+            else:
+                new_pipeline += proc
+
+        # in case there was not categorify previously we need to add one
+        if not found_categorify:
+            new_pipeline += Categorify()
+
+
+        self.new_pipeline = new_pipeline
+        self.procs = Pipeline(new_pipeline)
+        self.setup()
+
     def new(self, df, pre_process=None, splits=None, include_preprocess=False, y_block=TransformBlock()):
         pre_process = listify(pre_process)
         if include_preprocess:
