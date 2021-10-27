@@ -242,9 +242,9 @@ def _find_unique_and_non_unique_columns(to, group_by_col):
 
 # Cell
 #hide
-def _interpolate_columns(to, unique_values, non_unique_columns, group_by_col):
+def _interpolate_columns(to, unique_values, non_unique_columns, group_by_col, interpolate_function=_interpolate_df):
         # interpolate non unique columns
-        df = _apply_group_by(to.items.loc[:,np.unique(non_unique_columns)], group_by_col, _interpolate_df)
+        df = _apply_group_by(to.items.loc[:,np.unique(non_unique_columns)], group_by_col, interpolate_function)
         to.items = df
         if group_by_col in to.items.columns:
             for group_id,col_name in unique_values.keys():
@@ -294,7 +294,8 @@ class Interpolate(RenewablesTabularProc):
             return
 
         unique_values, non_unique_columns = _find_unique_and_non_unique_columns(to, self.group_by_col)
-        to = _interpolate_columns(to, unique_values, non_unique_columns, self.group_by_col)
+        to = _interpolate_columns(to, unique_values, non_unique_columns, self.group_by_col,
+                    interpolate_function=partial(_interpolate_df, sample_time=self.sample_time, limit=self.limit))
         to = _filter_nas(to)
         to = _correct_dypes(to)
 
@@ -703,6 +704,7 @@ class TabularRenewables(TabularPandas):
 
             if type(proc) == Categorify:
                 new_pipeline += Categorify()
+                found_categorify = True
             else:
                 new_pipeline += proc
 
