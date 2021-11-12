@@ -115,6 +115,17 @@ def _offset_correction(df, offset_correction):
             new_index.append(cur_index + pd.DateOffset(hours=i))
             i += offset_correction
         df.index = new_index
+    return df
+
+def _apply_group_by(to:pd.DataFrame, group_by_col, func, **kwargs):
+    if group_by_col in to.columns:
+        dfs = L()
+        for k,df_g in to.groupby(group_by_col):
+            dfs += func(df_g, **kwargs)
+        df = pd.concat(dfs, axis=0)
+    else:
+        df = func(to, **kwargs)
+    return df
 
 
 # Cell
@@ -122,26 +133,33 @@ class CreateTimeStampIndex(RenewablesTabularProc):
     """Assures a correct pandas timestamp."""
     order=0
     include_in_new=True
-    def __init__(self, index_col_name, offset_correction=None):
+    def __init__(self, index_col_name, offset_correction=None, group_by_col="TaskID"):
         self.index_col_name = index_col_name
         self.offset_correction = offset_correction
+        self.group_by_col = group_by_col
 
 
     def _create_timestamp_index(self, df, drop_index=True):
         _prepare_datetime_index(df, self.index_col_name, drop_index)
         _set_datetime_index(df)
-        _offset_correction(df, self.offset_correction)
+        df = _apply_group_by(
+            df,
+            self.group_by_col,
+            partial(_offset_correction, offset_correction=self.offset_correction),
+        )
+        return df
 
     def encodes(self, to):
         df = to.items
 
         if self.index_col_name in df.columns:
-            self._create_timestamp_index(df, drop_index=True)
+            df = self._create_timestamp_index(df, drop_index=True)
         # properly already processed
         elif self.index_col_name == to.items.index.name:
-            self._create_timestamp_index(df, drop_index=False)
+            df = self._create_timestamp_index(df, drop_index=False)
         else:
             warnings.warn(f"Timetamps column {self.index_col_name} not in columns {df.columns} or df.index.name")
+        to.items = df
 
 # Cell
 def get_samples_per_day(df, n_samples_to_check=100, expected_samples=[8,24,96]):
@@ -203,18 +221,6 @@ def _interpolate_df(df, sample_time="15Min", limit=5, drop_na=False, date_featur
 
 
         return df
-
-# Cell
-#hide
-def _apply_group_by(to:pd.DataFrame, group_by_col, func, **kwargs):
-    if group_by_col in to.columns:
-        dfs = L()
-        for k,df_g in to.groupby(group_by_col):
-            dfs += func(df_g, **kwargs)
-        df = pd.concat(dfs, axis=0)
-    else:
-        df = func(to, **kwargs)
-    return df
 
 # Cell
 #hide
@@ -489,18 +495,32 @@ class FilterMonths(RenewablesTabularProc):
 class FilterDays(RenewablesTabularProc):
     """Filter dataframe based on the last/first `n` number of days."""
     order = 10
-    def __init__(self, num_days, last=True):
+    def __init__(self, num_days, last=True, skip=False, group_by_col="TaskID"):
         self.num_days = num_days
         self.last=last
+        self.skip = skip
+        self.group_by_col=group_by_col
 
     def setups(self, to: Tabular):
         self.n_samples_per_day = get_samples_per_day(to.items)
 
     def encodes(self, to):
-        if self.last:
-            to.items = to.items[-(self.n_samples_per_day * self.num_days):]
-        else:
-            to.items = to.items[0:(self.n_samples_per_day * self.num_days)]
+        dfs = L()
+        for k,df in to.items.groupby(self.group_by_col):
+            if self.last and not self.skip:
+                df = df[-(self.n_samples_per_day * self.num_days):]
+            elif not self.last and not self.skip:
+                df = df[0:(self.n_samples_per_day * self.num_days)]
+            # skip/remove last n_days
+            elif self.last and self.skip:
+                df = df[0:(self.n_samples_per_day * self.num_days)]
+            # skip/remove first n_days
+            elif not self.last and self.skip:
+                df = df[(self.n_samples_per_day * (self.num_days+1)):]
+            dfs += df
+
+        df = pd.concat(dfs, axis=0)
+        to.items = df
 
 # Cell
 class DropCols(RenewablesTabularProc):

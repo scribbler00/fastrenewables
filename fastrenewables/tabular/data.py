@@ -31,6 +31,9 @@ class RenewableDataLoaders(DataLoaders):
                 NormalizePerTask,
                     Categorify]
 
+        y_block = RegressionBlock()
+        if "y_block" in list(kwargs.keys()):
+            y_block = kwargs["y_block"]
 
         splits = RandomSplitter(valid_pct=0.2) if splits is None else splits
         to = TabularRenewables(
@@ -41,6 +44,7 @@ class RenewableDataLoaders(DataLoaders):
             pre_process=pre_procs,
             procs=procs,
             splits=splits,
+            y_block=y_block
         )
 
 
