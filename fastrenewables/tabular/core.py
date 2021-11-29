@@ -518,8 +518,10 @@ class FilterDays(RenewablesTabularProc):
             elif not self.last and self.skip:
                 df = df[(self.n_samples_per_day * (self.num_days+1)):]
             dfs += df
-
-        df = pd.concat(dfs, axis=0)
+        if len(dfs) > 0:
+            df = pd.concat(dfs, axis=0)
+        else:
+            df = pd.DataFrame(columns=to.items.columns)
         to.items = df
 
 # Cell

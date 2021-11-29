@@ -525,9 +525,10 @@ class TimeseriesDataset(fastuple):
         return self.ys.shape[-1]
 
     def as_df(self, max_n=-1):
-        df_cont = pd.DataFrame(data=self.conts[:max_n].reshape(-1,self.conts.shape[1]), columns=self.cont_names)
-        df_cat = pd.DataFrame(data=self.cats[:max_n].reshape(-1,self.cats.shape[1]), columns=self.cat_names)
-        df_y = pd.DataFrame(data=self.ys[:max_n].reshape(-1,self.ys.shape[1]), columns=self.y_names)
+
+        df_cont = pd.DataFrame(data=torch.swapaxes(self.conts[:max_n], 1, 2).reshape(-1,self.conts.shape[1]), columns=self.cont_names)
+        df_cat = pd.DataFrame(data=torch.swapaxes(self.cats[:max_n], 1, 2).reshape(-1,self.cats.shape[1]), columns=self.cat_names)
+        df_y = pd.DataFrame(data=torch.swapaxes(self.ys[:max_n], 1, 2).reshape(-1,self.ys.shape[1]), columns=self.y_names)
         df_all = pd.concat([df_cont, df_cat, df_y], axis=1)
         df_all.set_index(self.indexes[:max_n,:,:].reshape(-1), inplace=True)
 
