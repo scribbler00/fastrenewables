@@ -379,7 +379,7 @@ class FilterOutliers(RenewablesTabularProc):
             else:
                 final_mask = final_mask & mask
 
-        to.items = to.items[final_mask]
+        to.items = to.items[final_mask.values]
 
 # Cell
 class AddSeasonalFeatures(RenewablesTabularProc):
