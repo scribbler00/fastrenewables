@@ -2,8 +2,8 @@
 
 __all__ = ['str_to_path', 'read_hdf', 'read_csv', 'read_files', 'RenewablesTabularProc', 'CreateTimeStampIndex',
            'get_samples_per_day', 'Interpolate', 'FilterInconsistentSamplesPerDay', 'FilterOutliers',
-           'AddSeasonalFeatures', 'FilterInfinity', 'FilterByCol', 'FilterYear', 'FilterHalf', 'FilterMonths',
-           'FilterDays', 'DropCols', 'Normalize', 'BinFeatures', 'RenewableSplits', 'ByWeeksSplitter',
+           'FilterEinsmanWind', 'AddSeasonalFeatures', 'FilterInfinity', 'FilterByCol', 'FilterYear', 'FilterHalf',
+           'FilterMonths', 'FilterDays', 'DropCols', 'Normalize', 'BinFeatures', 'RenewableSplits', 'ByWeeksSplitter',
            'TrainTestSplitByDays', 'TabularRenewables', 'ReadTabBatchRenewables', 'TabDataLoaderRenewables',
            'unique_cols', 'NormalizePerTask', 'VerifyAndNormalizeTarget', 'TabDataset', 'TabDataLoader',
            'TabDataLoaders']
@@ -379,7 +379,38 @@ class FilterOutliers(RenewablesTabularProc):
             else:
                 final_mask = final_mask & mask
 
-        to.items = to.items[final_mask.values]
+        to.items = to.items[np.array(final_mask.values, dtype=np.bool8)]
+
+# Cell
+class FilterEinsmanWind(RenewablesTabularProc):
+    """Adds seasonal features, such as month of the year, as continious or categorical feature."""
+    order=0
+    include_in_new=True
+    def __init__(self, column_wind = "WindSpeed58m", column_target = "PowerGeneration"):
+
+        self.column_target = column_target
+        self.column_wind = column_wind
+
+
+
+    def encodes(self, to):
+
+        mask_power_upper = to.items[self.column_target] < 0.005
+        mask_wind_upper = to.items[self.column_wind] > 7
+        mask_power_upper2 = to.items[self.column_target] < 0.02
+        mask_wind_upper2 = to.items[self.column_wind] > 10
+        mask_power_lower = to.items[self.column_target] > 0.5
+        mask_wind_lower = to.items[self.column_wind] < 2
+
+        final_mask = ~(
+            (mask_power_upper2 & mask_wind_upper2)
+            | (mask_power_upper & mask_wind_upper)
+            | (mask_power_lower & mask_wind_lower)
+        )
+
+        to.items = to.items[np.array(final_mask.values, dtype=np.bool8)]
+
+#
 
 # Cell
 class AddSeasonalFeatures(RenewablesTabularProc):
