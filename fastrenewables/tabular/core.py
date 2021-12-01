@@ -177,27 +177,29 @@ def get_samples_per_day(df, n_samples_to_check=100, expected_samples=[8,24,96]):
     integer
         amount of entries per day.
     """
-    minutes_per_day = 24*60
+    minutes_per_day = 24 * 60
     samples_per_day = -1
     cur_samples_per_day = -1
 
-
-    if len(df) == 0: return samples_per_day
+    if len(df) == 0:
+        return samples_per_day
 
     df_sorted = df.sort_index()
     indexes = df_sorted.index.unique()
     mins = 0
-    for i in range(1, min(n_samples_to_check+1,len(indexes))):
-        mins = (indexes[i] - indexes[i -1]).seconds // 60
+    all_samples_per_day = []
+    for i in range(1, min(n_samples_to_check + 1, len(indexes))):
+        mins = (indexes[i] - indexes[i - 1]).seconds // 60
         if mins == 0:
             continue
-        elif (minutes_per_day)%mins==0:
-            cur_samples_per_day = (minutes_per_day)/mins
+        elif (minutes_per_day) % mins == 0:
+            cur_samples_per_day = (minutes_per_day) / mins
 
         if cur_samples_per_day in expected_samples:
             samples_per_day = cur_samples_per_day
-            break
+            all_samples_per_day.append(samples_per_day)
 
+    samples_per_day = np.median(all_samples_per_day)
     if samples_per_day == -1:
         raise ValueError(f"{mins} is an unknown sampling time.")
 
