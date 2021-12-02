@@ -6,7 +6,7 @@ __all__ = ['train']
 # export
 from tqdm.notebook import tqdm, tnrange
 import matplotlib.pyplot as plt
-import seaborn as sns
+# import seaborn as sns
 import torch
 from fastai.torch_core import set_seed
 import pandas as pd
