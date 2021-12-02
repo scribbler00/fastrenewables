@@ -55,6 +55,9 @@ entries:
       title: gan.core
       url: gan.core.html
     - output: web,pdf
+      title: gan.learner
+      url: gan.learner.html
+    - output: web,pdf
       title: models.autoencoders
       url: autoencoder_models.html
     - output: web,pdf
