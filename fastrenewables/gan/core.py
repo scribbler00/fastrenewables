@@ -8,19 +8,26 @@ from torch.utils.data import Dataset
 import torch
 
 # Cell
-class WPDataset(Dataset):
+class WPDataset(torch.utils.data.Dataset):
     """TODO maik."""
 
-    def __init__(self, data, noise_size=100):
+    def __init__(self, cont_data, cat_data=None, noise_size=100):
 
-        self.data = data
+        self.cont_data = cont_data
+        self.cat_data = cat_data
+
+        if self.cat_data is None:
+            self.cat_data = torch.empty((len(cont_data),1))
+
         self.noise_size = noise_size
 
     def __len__(self):
-        return len(self.data)
+        return len(self.cont_data)
 
     def __getitem__(self, idx):
-        y = self.data[idx]
+        y_cont = self.cont_data[idx]
+        y_cat = self.cat_data[idx]
+
         x = torch.rand(self.noise_size)
 
-        return (x,y)
+        return (x, y_cat, y_cont)

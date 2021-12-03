@@ -95,12 +95,14 @@ index = {"contains_instance": "00a_utils.ipynb",
          "RenewableTimeseriesLearner": "08_timeseries.learner.ipynb",
          "renewable_timeseries_learner": "08_timeseries.learner.ipynb",
          "WPDataset": "09_gan.core.ipynb",
-         "train": "10_gan.learner.ipynb",
-         "Autoencoder": "11_autoencoder_models.ipynb",
-         "AutoencoderForecast": "11_autoencoder_models.ipynb",
-         "UnFlatten": "11_autoencoder_models.ipynb",
-         "VariationalAutoencoder": "11_autoencoder_models.ipynb",
-         "MeanStdWrapper": "12_probabilistic_models.ipynb"}
+         "train_gan": "10_gan.learner.ipynb",
+         "LinBnAct": "10_gan.model.ipynb",
+         "GANMLP": "10_gan.model.ipynb",
+         "Autoencoder": "12_autoencoder_models.ipynb",
+         "AutoencoderForecast": "12_autoencoder_models.ipynb",
+         "UnFlatten": "12_autoencoder_models.ipynb",
+         "VariationalAutoencoder": "12_autoencoder_models.ipynb",
+         "MeanStdWrapper": "13_probabilistic_models.ipynb"}
 
 modules = ["utils.py",
            "losses.py",
@@ -118,6 +120,7 @@ modules = ["utils.py",
            "timeseries/learner.py",
            "gan/core.py",
            "gan/learner.py",
+           "gan/model.py",
            "models/autoencoders.py",
            "models/prob.py"]
 
