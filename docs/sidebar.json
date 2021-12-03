@@ -16,8 +16,8 @@
     "timeseries.model": "timeseries.model.html",
     "timeseries.learner": "timeseries.learner.html",
     "gan.core": "gan.core.html",
-    "gan.learner": "gan.learner.html",
     "gan.model": "gan.model.html",
+    "gan.learner": "gan.learner.html",
     "models.autoencoders": "autoencoder_models.html",
     "models.prob": "probabilistic_models.html"
   }
