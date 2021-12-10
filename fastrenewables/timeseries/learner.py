@@ -38,7 +38,7 @@ def _swap_axes_and_flatten(tensr):
 # Cell
 def convert_to_tensor_ts(to, include_index=False, device="cpu", flatten=False):
     # to increase speed we direclty predict on all tensors
-    if isinstance(to, (TimeseriesDataset)):
+    if isinstance(to, (TimeseriesDataset, Timeseries)):
         with torch.no_grad():
             cats, conts, targets = _tensor_to_device(to.cats, device), _tensor_to_device(to.conts, device), _tensor_to_device(to.ys, device)
     else:
