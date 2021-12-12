@@ -19,6 +19,7 @@
     "gan.model": "gan.model.html",
     "gan.learner": "gan.learner.html",
     "models.autoencoders": "autoencoder_models.html",
-    "models.prob": "probabilistic_models.html"
+    "models.prob": "probabilistic_models.html",
+    "models.transfermodels": "transfer_models.html"
   }
 }

@@ -2,6 +2,7 @@
 
 title: timeseries.model
 
+
 keywords: fastai
 sidebar: home_sidebar
 
@@ -39,13 +40,6 @@ nb_path: "nbs/07_timeseries.model.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
 <div class="output_wrapper">
 <div class="output">
 
@@ -63,6 +57,13 @@ nb_path: "nbs/07_timeseries.model.ipynb"
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -154,13 +155,6 @@ nb_path: "nbs/07_timeseries.model.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
 <div class="output_wrapper">
 <div class="output">
 
@@ -168,7 +162,7 @@ nb_path: "nbs/07_timeseries.model.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="BasicTemporalBlock" class="doc_header"><code>class</code> <code>BasicTemporalBlock</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/model.py#L44" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BasicTemporalBlock</code>(<strong><code>n_inputs</code></strong>, <strong><code>n_outputs</code></strong>, <strong><code>kernel_size</code></strong>=<em><code>3</code></em>, <strong><code>act_func</code></strong>=<em><code>'ReLU'</code></em>, <strong><code>embedding_size</code></strong>=<em><code>None</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
+<h2 id="BasicTemporalBlock" class="doc_header"><code>class</code> <code>BasicTemporalBlock</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/model.py#L44" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BasicTemporalBlock</code>(<strong><code>n_inputs</code></strong>, <strong><code>n_outputs</code></strong>, <strong><code>kernel_size</code></strong>=<em><code>3</code></em>, <strong><code>act_func</code></strong>=<em><code>ReLU</code></em>, <strong><code>embedding_size</code></strong>=<em><code>None</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Extends fastai <code>ConvLayer</code> (CNN+normalization) to include results from an embedding layer,
 as proposed in Task-TCN (<a href="https://2021.ecmlpkdd.org/wp-content/uploads/2021/07/main.pdf">https://2021.ecmlpkdd.org/wp-content/uploads/2021/07/main.pdf</a>) for
@@ -180,6 +174,13 @@ MTL-Architectures.</p>
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -222,13 +223,6 @@ MTL-Architectures.</p>
     
 <div class="cell border-box-sizing code_cell rendered">
 
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
 <div class="output_wrapper">
 <div class="output">
 
@@ -236,7 +230,7 @@ MTL-Architectures.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ResidualBlock" class="doc_header"><code>class</code> <code>ResidualBlock</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/model.py#L117" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ResidualBlock</code>(<strong><code>n_inputs</code></strong>, <strong><code>n_outputs</code></strong>, <strong><code>kernel_size</code></strong>, <strong><code>stride</code></strong>, <strong><code>dilation</code></strong>, <strong><code>padding</code></strong>, <strong><code>act_func</code></strong>=<em><code>'ReLU'</code></em>, <strong><code>embedding_size</code></strong>=<em><code>None</code></em>, <strong><code>dropout</code></strong>=<em><code>0.2</code></em>) :: <code>Module</code></p>
+<h2 id="ResidualBlock" class="doc_header"><code>class</code> <code>ResidualBlock</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/model.py#L117" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ResidualBlock</code>(<strong><code>n_inputs</code></strong>, <strong><code>n_outputs</code></strong>, <strong><code>kernel_size</code></strong>, <strong><code>stride</code></strong>, <strong><code>dilation</code></strong>, <strong><code>padding</code></strong>, <strong><code>act_func</code></strong>=<em><code>ReLU</code></em>, <strong><code>embedding_size</code></strong>=<em><code>None</code></em>, <strong><code>dropout</code></strong>=<em><code>0.2</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>(Single) Residual block of a TCN.</p>
 
@@ -246,6 +240,13 @@ MTL-Architectures.</p>
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -305,13 +306,6 @@ MTL-Architectures.</p>
     
 <div class="cell border-box-sizing code_cell rendered">
 
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
 <div class="output_wrapper">
 <div class="output">
 
@@ -329,6 +323,13 @@ MTL-Architectures.</p>
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -355,13 +356,6 @@ MTL-Architectures.</p>
     
 <div class="cell border-box-sizing code_cell rendered">
 
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
 <div class="output_wrapper">
 <div class="output">
 
@@ -369,7 +363,7 @@ MTL-Architectures.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TemporalCNN" class="doc_header"><code>class</code> <code>TemporalCNN</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/model.py#L313" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TemporalCNN</code>(<strong><code>cnn_structure</code></strong>, <strong><code>kernel_size</code></strong>=<em><code>3</code></em>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>embedding_module</code></strong>=<em><code>None</code></em>, <strong><code>batch_norm_cont</code></strong>=<em><code>True</code></em>, <strong><code>cnn_type</code></strong>=<em><code>'tcn'</code></em>, <strong><code>y_ranges</code></strong>=<em><code>None</code></em>, <strong><code>final_activation</code></strong>=<em><code>'Identity'</code></em>, <strong><code>act_func</code></strong>=<em><code>'ReLU'</code></em>, <strong><code>add_embedding_at_layer</code></strong>=<em><code>[]</code></em>, <strong><code>input_sequence_length</code></strong>=<em><code>None</code></em>, <strong><code>output_sequence_length</code></strong>=<em><code>None</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>, <strong><code>sequence_transform</code></strong>=<em><code>None</code></em>) :: <code>Module</code></p>
+<h2 id="TemporalCNN" class="doc_header"><code>class</code> <code>TemporalCNN</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/model.py#L313" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TemporalCNN</code>(<strong><code>cnn_structure</code></strong>, <strong><code>kernel_size</code></strong>=<em><code>3</code></em>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>embedding_module</code></strong>=<em><code>None</code></em>, <strong><code>batch_norm_cont</code></strong>=<em><code>True</code></em>, <strong><code>cnn_type</code></strong>=<em><code>'tcn'</code></em>, <strong><code>y_ranges</code></strong>=<em><code>None</code></em>, <strong><code>final_activation</code></strong>=<em><code>Identity</code></em>, <strong><code>act_func</code></strong>=<em><code>ReLU</code></em>, <strong><code>add_embedding_at_layer</code></strong>=<em><code>[]</code></em>, <strong><code>input_sequence_length</code></strong>=<em><code>None</code></em>, <strong><code>output_sequence_length</code></strong>=<em><code>None</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>, <strong><code>sequence_transform</code></strong>=<em><code>None</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Module to create a CNN based architecture for timerseries such as a simple CNN, a TCN, or a Task-TCN.</p>
 
@@ -379,6 +373,13 @@ MTL-Architectures.</p>
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}

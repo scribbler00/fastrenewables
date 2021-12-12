@@ -102,7 +102,8 @@ index = {"contains_instance": "00a_utils.ipynb",
          "AutoencoderForecast": "12_autoencoder_models.ipynb",
          "UnFlatten": "12_autoencoder_models.ipynb",
          "VariationalAutoencoder": "12_autoencoder_models.ipynb",
-         "MeanStdWrapper": "13_probabilistic_models.ipynb"}
+         "MeanStdWrapper": "13_probabilistic_models.ipynb",
+         "LinearTransferModel": "14_transfer_models.ipynb"}
 
 modules = ["utils.py",
            "losses.py",
@@ -122,7 +123,8 @@ modules = ["utils.py",
            "gan/model.py",
            "gan/learner.py",
            "models/autoencoders.py",
-           "models/prob.py"]
+           "models/prob.py",
+           "models/transfermodels.py"]
 
 doc_url = "https://scribbler00.github.io/fastrenewables/"
 
