@@ -51,15 +51,15 @@ class BayesLinReg(BaseEstimator):
         eigenvalues = np.linalg.eigvalsh(M)
         identity_matrix = np.eye(np.size(X,1))#np.identity(self.n_features)
         N = len(X)
-
+        xTy = X.T @ y
 
         for idx in range(self.n_iter):
             params = [self.alpha, self.beta]
 
             # update the inverse covariance matrix (Bishop eq. 3.51)
-            w_precision = self.alpha * identity_matrix + self.beta * X.T @ X
+            w_precision = self.alpha * identity_matrix + self.beta * M
             # update the mean vector (Bishop eq. 3.50)
-            w_mean = self.beta * np.linalg.solve(w_precision, X.T @ y)
+            w_mean = self.beta * np.linalg.solve(w_precision, xTy)
 
 
             # TODO (Bishop eq. 3.91)
@@ -158,6 +158,17 @@ class BayesLinReg(BaseEstimator):
     def _log_posterior(self, X, y, w):
         return self._log_likelihood(X, y, w) + self._log_prior(w)
 
+    def log_prior(self):
+        return self._log_prior(self.w_mean)
+
+    def log_posterior(self, X, y):
+        X = self._check_and_prep(X)
+        return self._log_likelihood(X, y, self.w_mean) + self._log_prior(self.w_mean)
+
+    def log_likelihood(self, X, y):
+        X = self._check_and_prep(X)
+        return self._log_likelihood(X, y, self.w_mean) + self._log_prior(self.w_mean)
+
     def log_evidence(self, X:np.ndarray, y:np.ndarray):
         X, y = self._check_and_prep(X, y)
 
@@ -254,6 +265,22 @@ class ELM(BaseEstimator):
             elif callable(activation):
                 self.activations.append(activation)
 
+    @property
+    def alpha(self):
+        return self._prediction_model.alpha
+
+    @property
+    def beta(self):
+        return self._prediction_model.beta
+
+    @alpha.setter
+    def alpha(self, alpha):
+        self._prediction_model.alpha = alpha
+
+    @beta.setter
+    def beta(self, beta):
+        self._prediction_model.beta = beta
+
     def transform_X(self, X, W, b, activations):
         G = np.dot(X, W) + b
         Hs = []
@@ -340,6 +367,27 @@ class ELM(BaseEstimator):
     def log_evidence(self, X:np.ndarray, y:np.ndarray):
         X_transformed = self._prep_pred_X(X)
         return self._prediction_model.log_evidence(X_transformed, y)
+
+    def log_likelihood(self, X:np.ndarray, y:np.ndarray):
+        X_transformed = self._prep_pred_X(X)
+
+        log_likelihood = self._prediction_model.log_likelihood(
+            X_transformed,  y.reshape(-1)
+        )
+
+        return log_likelihood
+
+    def log_prior(self):
+        return self._prediction_model.log_prior()
+
+    def log_posterior(self, X:np.ndarray, y:np.ndarray):
+        X_transformed = self._prep_pred_X(X)
+
+        log_posterior = self._prediction_model.log_posterior(
+            X_transformed, y.reshape(-1)
+        )
+
+        return log_posterior
 
 # Cell
 def sample_bayes_linear_model(model, X, n_samples=100):

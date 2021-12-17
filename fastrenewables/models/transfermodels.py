@@ -16,7 +16,8 @@ from sklearn.datasets import make_regression
 from fastai.learner import *
 from ..utils_pytorch import *
 import copy
-
+from ..timeseries.model import *
+from ..baselines import BayesLinReg
 
 # Cell
 # export
@@ -33,15 +34,17 @@ test_eq(0.1, precision[0,0])
 # Cell
 class LinearTransferModel(nn.Module):
     def __init__(self, source_model, num_layers_to_remove=1,
-                 name_layers_or_function_to_remove="layers", use_original_weights=True,
-                alpha=1, beta=1, include_original_features=False):
+                 name_layers_or_function_to_remove="layers",
+                 use_original_weights=True,
+                 prediction_model=BayesLinReg(alpha=1, beta=1, empirical_bayes=False),
+                include_original_features=False):
         super().__init__()
         self.are_weights_initialized = False
-        self.alpha, self.beta = alpha, beta
         self.num_layers_to_remove = num_layers_to_remove
         self.ts_length = 1
         self.source_model = copy.deepcopy(source_model)
-
+        self._prediction_model = prediction_model
+        self.prediction_models = []
 
         if callable(name_layers_or_function_to_remove):
             name_layers_or_function_to_remove(self.source_model, num_layers_to_remove)
@@ -63,15 +66,23 @@ class LinearTransferModel(nn.Module):
             for element in layers[-1]:
                 if isinstance(element, nn.Linear):
                     # create mean matrix including bias
-                    self.w_mean = copy.copy(element.weight.data)
+                    w_mean = copy.copy(element.weight.data)
                     bias = copy.copy(element.bias.data)
-                    self.w_mean = self.w_mean.reshape(self.w_mean.shape[1])
-                    self.w_mean = torch.cat([bias, self.w_mean])
+                    w_mean = w_mean.reshape(w_mean.shape[1])
+                    w_mean = torch.cat([bias, w_mean])
 
                     # create precision and variance matrix
-                    self.n_features = self.w_mean.shape[0]
-                    _, self.w_precision = _create_matrices(self.n_features, self.alpha)
-                    self.w_covariance = torch.linalg.inv(self.w_precision)
+                    self.n_features = w_mean.shape[0]
+                    _, w_precision = _create_matrices(self.n_features, self.prediction_model.alpha)
+                    w_covariance = torch.linalg.inv(w_precision)
+
+                    w_mean= to_np(w_mean)
+                    w_covariance= to_np(w_covariance)
+                    w_precision= to_np(w_precision)
+
+                    self.prediction_model.w_mean = w_mean
+                    self.prediction_model.w_covariance = w_covariance
+                    self.prediction_model.w_precision = w_precision
 
                     self.are_weights_initialized = True
 
@@ -85,6 +96,27 @@ class LinearTransferModel(nn.Module):
         # fake param so that it can be used with pytorch trainers
         self.fake_param=nn.Parameter(torch.zeros((1,1), dtype=torch.float))
         self.fake_param.requires_grad =True
+    def _create_single_model(n_features):
+        model = BayesLinReg(self._prediction_model.alpha, self._prediction_model.beta)
+        model.n_features=n_features
+        return model
+
+
+    @property
+    def alpha(self):
+        return self._prediction_model.alpha
+
+    @property
+    def beta(self):
+        return self._prediction_model.beta
+
+    @alpha.setter
+    def alpha(self, alpha):
+        self.prediction_model.alpha = alpha
+
+    @beta.setter
+    def beta(self, beta):
+        self.prediction_model.beta = beta
 
     def transform(self, cats, conts):
         n_samples = conts.shape[0]
@@ -99,7 +131,7 @@ class LinearTransferModel(nn.Module):
             x_transformed = torch.cat([ conts.reshape(n_samples,-1), x_transformed], axis=1)
 
         # add feature for bias
-        x_transformed = torch.cat([ torch.ones(n_samples).reshape(n_samples,1), x_transformed], axis=1)
+#         x_transformed = torch.cat([  x_transformed], axis=1)
 
         return x_transformed
 
@@ -112,59 +144,49 @@ class LinearTransferModel(nn.Module):
         x_transformed = self.transform(cats, conts)
 
         if not self.are_weights_initialized:
-            self.n_features = x_transformed.shape[1]#*self.ts_length
+            self.n_features = x_transformed.shape[1]+1#*self.ts_length
+            self.prediction_model._create_matrices(to_np(x_transformed))
+#             w_mean, w_precision = _create_matrices(self.n_features, self.alpha)
+#             w_covariance = torch.linalg.inv(w_precision)
 
-            self.w_mean, self.w_precision = _create_matrices(self.n_features, self.alpha)
-            self.w_covariance = torch.linalg.inv(self.w_precision)
+#             self.prediction_model.w_mean = to_np(w_mean)
+#             self.prediction_model.w_covariance = to_np(w_covariance)
+#             self.prediction_model.w_precision = to_np(w_precision)
+
             self.are_weights_initialized=True
 
         if self.training:
             return x_transformed
         else:
-            preds = self._predict(x_transformed)[0]
+            preds = self.predict(cats, conts)
 
             return preds
 
-    def _predict(self, X):
-        # calcualte the predictive mean (Bishop eq. 3.58)
-        y_pred_mean = X @ self.w_mean
 
-        # calculate the predictive variance (Bishop eq. 3.59)
-        y_pred_var = 1 / self.beta + (X @ self.w_covariance * X).sum(axis=1)
-
-        # Drop a dimension from the mean and variance in case x and y were singletons
-        y_pred_mean = torch.squeeze(y_pred_mean)
-        y_pred_var = torch.squeeze(y_pred_var)
-
-        return y_pred_mean, y_pred_var ** 0.5
 
     def update(self, X, y):
-        """Update mean and precision. X needs to be the output of the original source model."""
+        X = to_np(X)
+        y = to_np(y)
 
-        w_precision = self.w_precision + self.beta * X.T @ X
-
-        w_covariance = torch.linalg.inv(w_precision)
-        w_mean = w_covariance @ (self.w_precision @ self.w_mean + self.beta * y @ X)
-
-        self.w_precision = w_precision
-        self.w_covariance = torch.linalg.inv(w_precision)
-
-        self.w_mean = w_mean
+        self.prediction_model.update(X,y)
 
         return self
 
-
     def predict(self, cats, conts):
         x_transformed = self.transform(cats, conts)
-        y_pred_mean, _ = self._predict(x_transformed)
+        x_transformed = to_np(x_transformed)
 
-        return y_pred_mean
+        y_pred_mean = self.prediction_model.predict(x_transformed)
+
+        return torch.tensor(y_pred_mean)
 
     def predict_proba(self, cats, conts):
         x_transformed = self.transform(cats, conts)
-        y_pred_mean, y_pred_std = self._predict(x_transformed)
+        x_transformed = to_np(x_transformed)
 
-        return y_pred_mean, y_pred_std
+        y_pred_mean, y_pred_std = self.prediction_model.predict_proba(x_transformed)
+
+        return torch.tensor(y_pred_mean), torch.tensor(y_pred_std)
 
     def loss_func(self, x_transformed, ys):
 
@@ -174,30 +196,6 @@ class LinearTransferModel(nn.Module):
         fake_loss.requires_grad=True
         return self.fake_param + fake_loss
 
-
-    def _log_prior(self, w):
-        return -0.5 * self.alpha * torch.sum(w ** 2)
-
-    def _log_likelihood(self, X, y, w):
-        return -0.5 * self.beta * torch.square(y - X @ w).sum()
-
-
-    def _log_posterior(self, X, y, w):
-        return self._log_likelihood(X, y, w) + self._log_prior(w)
-
-    def log_evidence(self, X, y):
-        X, y = self._check_and_prep(X, y)
-
-        N, M = X.shape
-
-        # E(\mathbf{m}_n) = \beta/2 \cdot ||y- X \mathbf{m}_n|| + \alpha/2 \mathbf{m}_n^T \mathbf{m}_n,
-        # where \mathbf{m}_n is the mean weight. This is the same as the negative of the posterior
-        Emn = -self._log_posterior(X, y, self.w_mean)
-
-        # Bishop eq. 3.86
-        return 0.5 * (M * np.log(self.alpha) + N * np.log(self.beta)
-            - np.linalg.slogdet(self.w_precision)[1] - N * np.log(2 * np.pi)
-        ) - Emn
 
 
 # Cell

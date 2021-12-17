@@ -186,6 +186,40 @@ nb_path: "nbs/00d_baselines.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">w_precision</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([[230.48188304, 317.15882209],
+       [317.15882209, 626.28012929]])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">get_test_data</span><span class="p">()</span>
 <span class="n">model</span><span class="o">.</span><span class="n">log_evidence</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
 </pre></div>
@@ -202,7 +236,7 @@ nb_path: "nbs/00d_baselines.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>-13.123700885696564</pre>
+<pre>-13.12370088569655</pre>
 </div>
 
 </div>
@@ -235,7 +269,7 @@ nb_path: "nbs/00d_baselines.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(0.8334876890839276, 0.08708964505511263)</pre>
+<pre>(0.8334876890839267, 0.08708964505511262)</pre>
 </div>
 
 </div>
@@ -257,7 +291,7 @@ nb_path: "nbs/00d_baselines.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RidgeRegression" class="doc_header"><code>class</code> <code>RidgeRegression</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/baselines.py#L176" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RidgeRegression</code>(<strong><code>l2_reg</code></strong>=<em><code>0.001</code></em>) :: <code>BaseEstimator</code></p>
+<h2 id="RidgeRegression" class="doc_header"><code>class</code> <code>RidgeRegression</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/baselines.py#L187" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RidgeRegression</code>(<strong><code>l2_reg</code></strong>=<em><code>0.001</code></em>) :: <code>BaseEstimator</code></p>
 </blockquote>
 <p>Base class for all estimators in scikit-learn.</p>
 <h2 id="Notes">Notes<a class="anchor-link" href="#Notes"> </a></h2><p>All estimators should specify all the parameters that can be set
@@ -292,7 +326,7 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="relu" class="doc_header"><code>relu</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/baselines.py#L197" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>relu</code>(<strong><code>x</code></strong>)</p>
+<h4 id="relu" class="doc_header"><code>relu</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/baselines.py#L208" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>relu</code>(<strong><code>x</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -316,7 +350,7 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="identity" class="doc_header"><code>identity</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/baselines.py#L200" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>identity</code>(<strong><code>x</code></strong>)</p>
+<h4 id="identity" class="doc_header"><code>identity</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/baselines.py#L211" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>identity</code>(<strong><code>x</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -340,7 +374,7 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="sigmoid" class="doc_header"><code>sigmoid</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/baselines.py#L203" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>sigmoid</code>(<strong><code>x</code></strong>)</p>
+<h4 id="sigmoid" class="doc_header"><code>sigmoid</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/baselines.py#L214" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>sigmoid</code>(<strong><code>x</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -371,7 +405,7 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ELM" class="doc_header"><code>class</code> <code>ELM</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/baselines.py#L214" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ELM</code>(<strong><code>n_hidden</code></strong>=<em><code>20</code></em>, <strong><code>activations</code></strong>=<em><code>relu</code></em>, <strong><code>prediction_model</code></strong>=<em><code>BayesLinReg()</code></em>, <strong><code>include_original_features</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>BaseEstimator</code></p>
+<h2 id="ELM" class="doc_header"><code>class</code> <code>ELM</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/baselines.py#L225" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ELM</code>(<strong><code>n_hidden</code></strong>=<em><code>20</code></em>, <strong><code>activations</code></strong>=<em><code>relu</code></em>, <strong><code>prediction_model</code></strong>=<em><code>BayesLinReg()</code></em>, <strong><code>include_original_features</code></strong>=<em><code>True</code></em>, <strong>**<code>kwargs</code></strong>) :: <code>BaseEstimator</code></p>
 </blockquote>
 <p>Base class for all estimators in scikit-learn.</p>
 <h2 id="Notes">Notes<a class="anchor-link" href="#Notes"> </a></h2><p>All estimators should specify all the parameters that can be set
@@ -475,7 +509,7 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="sample_bayes_linear_model" class="doc_header"><code>sample_bayes_linear_model</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/baselines.py#L345" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>sample_bayes_linear_model</code>(<strong><code>model</code></strong>, <strong><code>X</code></strong>, <strong><code>n_samples</code></strong>=<em><code>100</code></em>)</p>
+<h4 id="sample_bayes_linear_model" class="doc_header"><code>sample_bayes_linear_model</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/baselines.py#L393" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>sample_bayes_linear_model</code>(<strong><code>model</code></strong>, <strong><code>X</code></strong>, <strong><code>n_samples</code></strong>=<em><code>100</code></em>)</p>
 </blockquote>
 
 </div>
@@ -515,7 +549,7 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>&lt;ipython-input-17-bf128b1de62c&gt;:14: RuntimeWarning: covariance is not positive-semidefinite.
+<pre>&lt;ipython-input-18-bf128b1de62c&gt;:14: RuntimeWarning: covariance is not positive-semidefinite.
   sampled_mean = np.random.multivariate_normal(prediction_model.w_mean.reshape(-1),\
 </pre>
 </div>
@@ -526,9 +560,9 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>array([[1.39948967, 1.42046996],
-       [1.97165875, 1.87463682],
-       [1.71308782, 1.7284333 ]])</pre>
+<pre>array([[1.43426673, 1.40652201],
+       [1.95401251, 1.90933148],
+       [1.73627325, 1.73470814]])</pre>
 </div>
 
 </div>
@@ -650,7 +684,7 @@ arguments (no <code>*args</code> or <code>**kwargs</code>).</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MCLeanPowerCurve" class="doc_header"><code>class</code> <code>MCLeanPowerCurve</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/baselines.py#L364" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MCLeanPowerCurve</code>(<strong><code>power_curve_type</code></strong>=<em><code>'upland'</code></em>, <strong><code>normalize_ws</code></strong>=<em><code>False</code></em>) :: <code>BaseEstimator</code></p>
+<h2 id="MCLeanPowerCurve" class="doc_header"><code>class</code> <code>MCLeanPowerCurve</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/baselines.py#L412" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>MCLeanPowerCurve</code>(<strong><code>power_curve_type</code></strong>=<em><code>'upland'</code></em>, <strong><code>normalize_ws</code></strong>=<em><code>False</code></em>) :: <code>BaseEstimator</code></p>
 </blockquote>
 <p>Base class for all estimators in scikit-learn.</p>
 <h2 id="Notes">Notes<a class="anchor-link" href="#Notes"> </a></h2><p>All estimators should specify all the parameters that can be set
