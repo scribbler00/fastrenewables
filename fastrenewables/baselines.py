@@ -38,7 +38,7 @@ class BayesLinReg(BaseEstimator):
             self.n_features = X.shape[1]
 
             self.w_mean = np.zeros(self.n_features)
-            self.w_precision = np.identity(self.n_features) / self.alpha
+            self.w_precision = np.identity(self.n_features) * self.alpha
 
     def fit_empirical_bayes(self, X, y):
         X,y = self._check_and_prep(X, y)
