@@ -36,8 +36,7 @@ class LinearTransferModel(nn.Module):
     def __init__(self, source_model, num_layers_to_remove=1,
                  name_layers_or_function_to_remove="layers",
                  use_original_weights=True,
-                 prediction_model=BayesLinReg(alpha=1, beta=1, empirical_bayes=False),
-                include_original_features=False):
+                 prediction_model=BayesLinReg(alpha=1, beta=1, empirical_bayes=False)):
         super().__init__()
         self.are_weights_initialized = False
         self.num_layers_to_remove = num_layers_to_remove
@@ -45,6 +44,8 @@ class LinearTransferModel(nn.Module):
         self.source_model = copy.deepcopy(source_model)
         self._prediction_model = prediction_model
         self.prediction_models = []
+        if use_original_weights:
+            self._prediction_model.empirical_bayes=False
 
         if callable(name_layers_or_function_to_remove):
             name_layers_or_function_to_remove(self.source_model, num_layers_to_remove)
@@ -69,20 +70,14 @@ class LinearTransferModel(nn.Module):
                     w_mean = copy.copy(element.weight.data)
                     bias = copy.copy(element.bias.data)
                     w_mean = w_mean.reshape(w_mean.shape[1])
-                    w_mean = torch.cat([bias, w_mean])
+                    w_mean = to_np(torch.cat([bias, w_mean]))
 
                     # create precision and variance matrix
                     self.n_features = w_mean.shape[0]
-                    _, w_precision = _create_matrices(self.n_features, self.prediction_model.alpha)
-                    w_covariance = torch.linalg.inv(w_precision)
 
-                    w_mean= to_np(w_mean)
-                    w_covariance= to_np(w_covariance)
-                    w_precision= to_np(w_precision)
-
-                    self.prediction_model.w_mean = w_mean
-                    self.prediction_model.w_covariance = w_covariance
-                    self.prediction_model.w_precision = w_precision
+                    model = self._create_single_model(self.n_features)
+                    model.w_mean = w_mean
+                    self.prediction_models.append(model)
 
                     self.are_weights_initialized = True
 
@@ -91,14 +86,15 @@ class LinearTransferModel(nn.Module):
 
 
         freeze(self.source_model)
-        self.include_original_features = include_original_features
 
         # fake param so that it can be used with pytorch trainers
         self.fake_param=nn.Parameter(torch.zeros((1,1), dtype=torch.float))
         self.fake_param.requires_grad =True
-    def _create_single_model(n_features):
-        model = BayesLinReg(self._prediction_model.alpha, self._prediction_model.beta)
-        model.n_features=n_features
+
+    def _create_single_model(self,n_features):
+        model = copy.copy(self._prediction_model)
+        model._create_matrices(np.ones(n_features).reshape(1, n_features))
+        model.w_covariance = np.linalg.inv(model.w_precision)
         return model
 
 
@@ -112,28 +108,23 @@ class LinearTransferModel(nn.Module):
 
     @alpha.setter
     def alpha(self, alpha):
-        self.prediction_model.alpha = alpha
+        self._prediction_model.alpha = alpha
 
     @beta.setter
     def beta(self, beta):
-        self.prediction_model.beta = beta
+        self._prediction_model.beta = beta
 
-    def transform(self, cats, conts):
-        n_samples = conts.shape[0]
+    def correct_shape(self, x):
+        n_samples = x.shape[0]
+        return x.reshape(n_samples, -1)
 
+    def transform(self, cats, conts, as_np=False):
         x_transformed =  self.source_model(cats, conts)
 
-        # flatten and update n_samples in case of timeseries model
-        x_transformed = x_transformed.reshape(n_samples*self.ts_length, -1)
-        n_samples = x_transformed.shape[0]
+        x_transformed = self.correct_shape(x_transformed)
 
-        if self.include_original_features:
-            x_transformed = torch.cat([ conts.reshape(n_samples,-1), x_transformed], axis=1)
-
-        # add feature for bias
-#         x_transformed = torch.cat([  x_transformed], axis=1)
-
-        return x_transformed
+        if as_np: return to_np(x_transformed)
+        else: return x_transformed
 
     def forward(self, cats, conts):
         n_samples = conts.shape[0]
@@ -144,60 +135,80 @@ class LinearTransferModel(nn.Module):
         x_transformed = self.transform(cats, conts)
 
         if not self.are_weights_initialized:
-            self.n_features = x_transformed.shape[1]+1#*self.ts_length
-            self.prediction_model._create_matrices(to_np(x_transformed))
-#             w_mean, w_precision = _create_matrices(self.n_features, self.alpha)
-#             w_covariance = torch.linalg.inv(w_precision)
+            self.n_features = x_transformed.shape[1]+1
 
-#             self.prediction_model.w_mean = to_np(w_mean)
-#             self.prediction_model.w_covariance = to_np(w_covariance)
-#             self.prediction_model.w_precision = to_np(w_precision)
+            for idx in range(self.ts_length):
+                model = self._create_single_model(self.n_features)
+                self.prediction_models.append(model)
 
             self.are_weights_initialized=True
 
         if self.training:
             return x_transformed
         else:
-            preds = self.predict(cats, conts)
+            preds = self.pred_transformed_X(x_transformed)
 
             return preds
-
-
 
     def update(self, X, y):
         X = to_np(X)
         y = to_np(y)
+        y = self.correct_shape(y)
 
-        self.prediction_model.update(X,y)
+        for idx, prediction_model in enumerate(self.prediction_models):
+            prediction_model.fit(X, y[:,idx].ravel())
 
         return self
 
     def predict(self, cats, conts):
-        x_transformed = self.transform(cats, conts)
-        x_transformed = to_np(x_transformed)
-
-        y_pred_mean = self.prediction_model.predict(x_transformed)
-
-        return torch.tensor(y_pred_mean)
+        x_transformed = self.transform(cats, conts, as_np=True)
+        return self.pred_transformed_X(x_transformed)
 
     def predict_proba(self, cats, conts):
-        x_transformed = self.transform(cats, conts)
-        x_transformed = to_np(x_transformed)
+        x_transformed = self.transform(cats, conts, as_np=True)
+        return self.pred_transformed_X(x_transformed, include_std=True)
 
-        y_pred_mean, y_pred_std = self.prediction_model.predict_proba(x_transformed)
+    def pred_transformed_X(self, x_transformed, include_std=False):
+        y_pred_means = np.zeros((len(x_transformed), len(self.prediction_models)))
+        y_pred_stds = np.zeros((len(x_transformed), len(self.prediction_models)))
 
-        return torch.tensor(y_pred_mean), torch.tensor(y_pred_std)
+        for idx, prediction_model in enumerate(self.prediction_models):
+            y_pred_mean, y_pred_std = prediction_model.predict_proba(x_transformed)
+            y_pred_means[:,idx] = y_pred_mean
+            y_pred_stds[:,idx] = y_pred_std
+        if include_std:
+            return torch.tensor(y_pred_means), torch.tensor(y_pred_stds),
+        else:
+            return torch.tensor(y_pred_means)
 
     def loss_func(self, x_transformed, ys):
+        ys = self.correct_shape(ys)
+        if self.training:
+            self.update(x_transformed, ys)
 
-        _tmp = self.update(x_transformed, ys.ravel())
+            fake_loss = torch.tensor([0], dtype=torch.float)
+            fake_loss.requires_grad=True
+            return self.fake_param + fake_loss
+        else:
+            # in case of validation return MSE
+            return ((x_transformed-ys)**2).mean()
 
-        fake_loss = torch.tensor([0], dtype=torch.float)
-        fake_loss.requires_grad=True
-        return self.fake_param + fake_loss
+    def log_evidence(self, cats, conts, ys, logme=False):
+        evidences = []
+        ys = to_np(self.correct_shape(ys))
 
+        x_transformed = self.transform(cats, conts, as_np=True)
+        for idx, pred_model in enumerate(self.prediction_models):
+            ev = pred_model.log_evidence(x_transformed, ys[:,idx].ravel())
+            evidences.append(ev)
 
+        evidences = np.array(evidences)
+
+        if logme:
+            evidences = evidences / len(conts)
+
+        return evidences.mean()
 
 # Cell
-def reduce_layers_tcn_model(tcn_model, num_layers=1):
+def reduce_layers_tcn_model(tcn_model, num_layers=0):
     tcn_model.layers.temporal_blocks = tcn_model.layers.temporal_blocks[:-num_layers]
