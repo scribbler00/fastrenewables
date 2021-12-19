@@ -79,13 +79,13 @@ def update_single_model(model, dls):
     return target_learner.model
 
 # Cell
-def rank_by_evidence(cats, conts, targets, models):
+def rank_by_evidence(cats, conts, targets, models, logme=True):
     evidences = np.zeros(len(models))
     for idx,model in enumerate(models):
         if isinstance(model, BaseEstimator):
-            evidences[idx] = model.log_evidence(to_np(conts), to_np(targets), logme=True)
+            evidences[idx] = model.log_evidence(to_np(conts), to_np(targets), logme=logme)
         else:
-            evidences[idx] = model.log_evidence(cats, conts, targets, logme=True)
+            evidences[idx] = model.log_evidence(cats, conts, targets, logme=logme)
     sort_ids = evidences.argsort()[::-1]
     return evidences.reshape(len(models), 1), sort_ids
 
@@ -181,7 +181,8 @@ class BayesModelAveraing(nn.Module):
 
         if self.training:
             if self.rank_measure=="evidence":
-                self.rank_measure_values, self.sord_ids = rank_by_evidence(cats, conts, targets, self.source_models)
+                self.rank_measure_values, self.sord_ids = rank_by_evidence(cats, conts,
+                                                                           targets, self.source_models)
             else:
                 raise NotImplemented
 
@@ -229,6 +230,16 @@ class BayesModelAveraing(nn.Module):
         yhat = self._predict(cats, conts)
 
         return yhat
+
+    def log_evidence(self, dls, ds_idx=0):
+        ds = dls.train_ds
+        if ds_idx==1:
+            ds = dls.valid_ds
+
+        cats, conts, targets = self.conversion_to_tensor(ds)
+        evidences, _ = rank_by_evidence(cats, conts, targets, self.source_models, logme=False)
+
+        return evidences.mean()
 
 
 # Cell
