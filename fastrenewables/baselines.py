@@ -263,7 +263,8 @@ class BayesLinReg(BaseEstimator):
         return self._log_likelihood(X, y, self.w_mean) + self._log_prior(self.w_mean)
 
     def log_evidence(self, X:np.ndarray, y:np.ndarray):
-        if self.use_fixed_point:
+        # for compability reasons with older versions
+        if getattr(self, 'use_fixed_point', False):
             N,D = X.shape
             t = self.alpha / self.beta
             u, s, vh, sigma = _fixed_point_svd(X)
