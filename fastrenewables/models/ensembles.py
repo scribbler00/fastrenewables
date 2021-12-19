@@ -231,13 +231,13 @@ class BayesModelAveraing(nn.Module):
 
         return yhat
 
-    def log_evidence(self, dls, ds_idx=0):
+    def log_evidence(self, dls, ds_idx=0,logme=False):
         ds = dls.train_ds
         if ds_idx==1:
             ds = dls.valid_ds
 
         cats, conts, targets = self.conversion_to_tensor(ds)
-        evidences, _ = rank_by_evidence(cats, conts, targets, self.source_models, logme=False)
+        evidences, _ = rank_by_evidence(cats, conts, targets, self.source_models, logme=logme)
 
         return evidences.mean()
 
