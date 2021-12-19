@@ -468,9 +468,13 @@ class ELM(BaseEstimator):
     def get_params(self, deep=False):
         return super().get_params()
 
-    def log_evidence(self, X:np.ndarray, y:np.ndarray):
+    def log_evidence(self, X:np.ndarray, y:np.ndarray, logme=False):
         X_transformed = self._prep_pred_X(X)
-        return self._prediction_model.log_evidence(X_transformed, y)
+        evidence =  self._prediction_model.log_evidence(X_transformed, y)
+
+        if logme:
+            evidence = evidence / len(X)
+        return evidence
 
     def log_likelihood(self, X:np.ndarray, y:np.ndarray):
         X_transformed = self._prep_pred_X(X)

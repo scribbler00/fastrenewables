@@ -18,6 +18,7 @@ from ..utils_pytorch import *
 import copy
 from ..timeseries.model import *
 from ..baselines import BayesLinReg
+from ..tabular.learner import convert_to_tensor
 
 # Cell
 # export
@@ -177,9 +178,9 @@ class LinearTransferModel(nn.Module):
             y_pred_means[:,idx] = y_pred_mean
             y_pred_stds[:,idx] = y_pred_std
         if include_std:
-            return torch.tensor(y_pred_means), torch.tensor(y_pred_stds),
+            return torch.tensor(y_pred_means, dtype=torch.float32), torch.tensor(y_pred_stds, dtype=torch.float32),
         else:
-            return torch.tensor(y_pred_means)
+            return torch.tensor(y_pred_means, dtype=torch.float32)
 
     def loss_func(self, x_transformed, ys):
         ys = self.correct_shape(ys)
@@ -193,6 +194,17 @@ class LinearTransferModel(nn.Module):
             # in case of validation return MSE
             return ((x_transformed-ys)**2).mean()
 
+    def log_posterior(self, cats, conts, ys):
+        ys = to_np(self.correct_shape(ys))
+
+        x_transformed = self.transform(cats, conts, as_np=True)
+
+        posteriors = np.zeros((len(self.prediction_models),1))
+        for idx, pred_model in enumerate(self.prediction_models):
+            log_posterior = pred_model.log_posterior(x_transformed, ys[:,idx].ravel())
+            posteriors[idx] = log_posterior
+        return posteriors
+
     def log_evidence(self, cats, conts, ys, logme=False):
         evidences = []
         ys = to_np(self.correct_shape(ys))
@@ -202,7 +214,7 @@ class LinearTransferModel(nn.Module):
             ev = pred_model.log_evidence(x_transformed, ys[:,idx].ravel())
             evidences.append(ev)
 
-        evidences = np.array(evidences)
+        evidences = np.array(evidences, dtype=np.float)
 
         if logme:
             evidences = evidences / len(conts)
