@@ -139,9 +139,14 @@ def get_preds(cats, conts, models):
         if isinstance(model, BaseEstimator):
             yhat = model.predict(to_np(conts)).reshape(-1,ts_length)
             yhats.append(yhat)
-        else:
+        elif hasattr(model, "predict"):
             yhat = model.predict(cats, conts).reshape(-1,ts_length)
             yhats.append(to_np(yhat))
+        elif hasattr(model, "forward"):
+            yhat = model.forward(cats, conts).reshape(-1,ts_length)
+            yhats.append(to_np(yhat))
+        else:
+            raise ValueError("Unknown prediction function.")
 
     yhats = np.concatenate(yhats, axis=1).reshape(len(conts),len(models),ts_length)
 
@@ -176,28 +181,39 @@ class BayesModelAveraing(nn.Module):
 
         self.ensemble_weights = None
 
-    def fit(self, dls):
-        cats, conts, targets = self.conversion_to_tensor(dls.train_ds)
-
+    def fit_tensors(self, cats, conts, targets):
         if self.training:
-            if self.rank_measure=="evidence":
-                self.rank_measure_values, self.sord_ids = rank_by_evidence(cats, conts,
-                                                                           targets, self.source_models)
+            if self.rank_measure == "evidence":
+                self.rank_measure_values, self.sord_ids = rank_by_evidence(
+                    cats, conts, targets, self.source_models
+                )
             else:
                 raise NotImplemented
 
             if self.n_best_models != -1:
-                self.source_models = self.source_models[self.sord_ids[0:self.n_best_models]]
-                self.rank_measure_values = self.rank_measure_values[self.sord_ids[0:self.n_best_models]]
+                self.source_models = self.source_models[
+                    self.sord_ids[0 : self.n_best_models]
+                ]
+                self.rank_measure_values = self.rank_measure_values[
+                    self.sord_ids[0 : self.n_best_models]
+                ]
 
-        if self.weighting_strategy=="evidence":
-            self.ensemble_weights, _ = rank_by_evidence(cats, conts, targets, self.source_models)
+        if self.weighting_strategy == "evidence":
+            self.ensemble_weights, _ = rank_by_evidence(
+                cats, conts, targets, self.source_models
+            )
 
-        elif self.weighting_strategy=="posterior":
-            self.ensemble_weights = get_posterioirs(cats, conts, targets, self.source_models)
+        elif self.weighting_strategy == "posterior":
+            self.ensemble_weights = get_posterioirs(
+                cats, conts, targets, self.source_models
+            )
 
         if self.weighting_strategy != "uncertainty":
             self.ensemble_weights = normalize_weight(self.ensemble_weights)
+
+    def fit(self, dls):
+        cats, conts, targets = self.conversion_to_tensor(dls.train_ds)
+        self.fit_tensors(cats, conts, targets)
 
 
     def _predict(self, cats, conts):
@@ -397,21 +413,15 @@ class CSGE(nn.Module):
         self.timedependent_weights = None
         self.local_weights = None
 
-    def fit(self, dls, ds_idx=0):
-        if ds_idx==0:
-            ds = dls.train_ds
-        else:
-            ds = dls.valid_ds
+    def fit_tensors(self, cats, conts, targets):
         self.ts_length = 1
-
-
-        cats, conts, targets = self.conversion_to_tensor(ds)
 
         if self.is_timeseries_data:
             self.ts_length = conts.shape[2]
 
             conts_non_ts = _flatten_ts(conts)
-            cats_non_ts = _flatten_ts(cats)
+            if len(cats)>0:
+                cats_non_ts = _flatten_ts(cats)
             targets_non_ts = _flatten_ts(targets)
         else:
             conts_non_ts = conts
@@ -420,7 +430,9 @@ class CSGE(nn.Module):
 
         if self.is_timeseries_data and not self.is_timeseries_model:
             preds = get_preds(cats, conts_non_ts, self.source_models)
-            preds = _unflatten_to_ts(preds, self.ts_length, 1) # assume univariate output
+            preds = _unflatten_to_ts(
+                preds, self.ts_length, 1
+            )  # assume univariate output
         else:
             preds = get_preds(cats, conts, self.source_models)
 
@@ -428,12 +440,25 @@ class CSGE(nn.Module):
 
         self.global_weights = get_global_weight(self.error_matrix, self.eta_global)
 
-        self.time_dependent_weights = get_timedependent_weight(self.error_matrix, self.eta_time)
+        self.time_dependent_weights = get_timedependent_weight(
+            self.error_matrix, self.eta_time
+        )
 
-        self.local_weight = get_local_weight(conts, self.error_matrix,
-                                             self.error_expectation_regressor,
-                                             do_fit=True,
-                                             eta=self.eta_local)
+        self.local_weight = get_local_weight(
+            conts,
+            self.error_matrix,
+            self.error_expectation_regressor,
+            do_fit=True,
+            eta=self.eta_local,
+        )
+
+    def fit(self, dls, ds_idx=0):
+        if ds_idx == 0:
+            ds = dls.train_ds
+        else:
+            ds = dls.valid_ds
+        cats, conts, targets = self.conversion_to_tensor(ds)
+        self.fit_tensor(cats, conts, targets)
 
     def calc_final_weights(self):
         final_weights = self.global_weights*self.time_dependent_weights
