@@ -458,7 +458,7 @@ class CSGE(nn.Module):
         else:
             ds = dls.valid_ds
         cats, conts, targets = self.conversion_to_tensor(ds)
-        self.fit_tensor(cats, conts, targets)
+        self.fit_tensors(cats, conts, targets)
 
     def calc_final_weights(self):
         final_weights = self.global_weights*self.time_dependent_weights

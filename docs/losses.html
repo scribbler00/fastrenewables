@@ -308,7 +308,73 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="GaussianNegativeLogLikelihoodLoss" class="doc_header"><code>class</code> <code>GaussianNegativeLogLikelihoodLoss</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/losses.py#L224" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GaussianNegativeLogLikelihoodLoss</code>() :: <code>Module</code></p>
+<h2 id="BTuningLoss" class="doc_header"><code>class</code> <code>BTuningLoss</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/losses.py#L187" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BTuningLoss</code>(<strong><code>base_loss</code></strong>=<em><code>MSELoss()</code></em>, <strong><code>lambd</code></strong>=<em><code>0.5</code></em>) :: <code>Module</code></p>
+</blockquote>
+<p>Calculate the B-Tuning Loss based on Ranking and <code>Tuning Pre-trained Models: A New Paradigm of Exploiting Model Hubs</code></p>
+<h2 id="Parameters">Parameters<a class="anchor-link" href="#Parameters"> </a></h2>
+<pre><code>lambd : float
+scalar for the loss</code></pre>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="btuning_rmse" class="doc_header"><code>btuning_rmse</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/losses.py#L242" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>btuning_rmse</code>(<strong><code>y_hat</code></strong>, <strong><code>y</code></strong>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="GaussianNegativeLogLikelihoodLoss" class="doc_header"><code>class</code> <code>GaussianNegativeLogLikelihoodLoss</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/losses.py#L283" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GaussianNegativeLogLikelihoodLoss</code>() :: <code>Module</code></p>
 </blockquote>
 <p>.. math::
     Loss = \frac{1}{N} \sum_{i} \frac{1}{2} \exp(- s_i) || y_i - \hat{y}_i ||^2 + \frac{1}{2} s_i</p>
@@ -341,7 +407,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RSSLoss" class="doc_header"><code>class</code> <code>RSSLoss</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/losses.py#L246" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RSSLoss</code>() :: <code>Module</code></p>
+<h2 id="RSSLoss" class="doc_header"><code>class</code> <code>RSSLoss</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/losses.py#L305" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RSSLoss</code>() :: <code>Module</code></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
