@@ -238,14 +238,18 @@ class BTuningModel(nn.Module):
     def forward(self, cats, conts):
         yhat_source_model = self.source_model(cats, conts)
         yhat_b_tuning_models = []
+        n_samples = len(conts)
+        is_ts = True if len(yhat_source_model.shape) == 3 else False
         for b_tuning_model in self.b_tuning_models:
             cur_y_hat = b_tuning_model(cats, conts)
+            if is_ts:
+                cur_y_hat = cur_y_hat.reshape(n_samples, 1, -1)
             yhat_b_tuning_models.append(cur_y_hat)
         yhat_b_tuning_models = torch.cat(yhat_b_tuning_models, axis=1)
-        if len(yhat_source_model.shape)==3 and len(yhat_b_tuning_models.shape)==2:
-            yhat_b_tuning_models = yhat_b_tuning_models[:,np.newaxis, :]
+        # if is_ts and len(yhat_b_tuning_models.shape) == 2:
+        #     yhat_b_tuning_models = yhat_b_tuning_models[:, np.newaxis, :]
 
-        yhat_all = torch.cat([yhat_source_model, yhat_b_tuning_models],axis=1)
+        yhat_all = torch.cat([yhat_source_model, yhat_b_tuning_models], axis=1)
 
         return yhat_all
 
