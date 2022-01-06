@@ -10,7 +10,10 @@ import matplotlib.pyplot as plt
 
 from tqdm import tqdm
 
-from .core import get_dataloaders
+#from fastrenewables.gan.core import get_dataloaders
+from ..tabular.data import *
+from ..tabular.core import *
+import glob
 
 # Cell
 # first drafts for the actual learner and model classes
@@ -27,9 +30,9 @@ class DummyDataset(torch.utils.data.Dataset):
         return self.n_samples
 
     def __getitem__(self, idx):
-        y_cat = self.cat_data[:, idx]
-        y_cont = self.cont_data[:, idx]
-        return y_cat, y_cont
+        x_cat = self.cat_data[:, idx]
+        x_cont = self.cont_data[:, idx]
+        return x_cat, x_cont
 
 class W_Gan(nn.Module):
     def __init__(self, generator, discriminator, gen_optim, dis_optim, clip=0.001):
@@ -80,22 +83,28 @@ class GanLearner():
         # gan should contain a class which itself contains a generator and discriminator/critic class and combines them
         self.gan = gan
 
-    def generate_samples(self, x, n_z=100):
+    def noise(self, x, n_z=100):
         z = torch.randn(x.shape[0], n_z)
         return z
+
+    def generate_samples(self, x):
+        z = self.noise(x)
+        fake_samples = self.gan.generator(z).detach()
+        return fake_samples
 
     def fit(self, dl, epochs=5, n_gen=1, n_dis=1):
         # train gan and store parameters and losses in given class
         for e in tqdm(range(epochs)):
 
-            for x_cat, x_cont in dl:
+            for x_cat, x_cont, _ in dl:
 
                 for _ in range(n_dis):
-                    z = self.generate_samples(x_cont)
+                    z = self.noise(x_cont)
                     self.gan.train_discriminator(z, x_cont)
 
                 for _ in range(n_gen):
-                    z = self.generate_samples(x_cont)
+                    z = self.noise(x_cont)
                     self.gan.train_generator(z)
+                break
 
         return
