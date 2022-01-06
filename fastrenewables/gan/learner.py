@@ -10,6 +10,8 @@ import matplotlib.pyplot as plt
 
 from tqdm import tqdm
 
+from .core import get_dataloaders
+
 # Cell
 # first drafts for the actual learner and model classes
 
