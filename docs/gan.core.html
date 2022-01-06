@@ -32,6 +32,88 @@ nb_path: "nbs/09_gan.core.ipynb"
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#class WPDataset(torch.utils.data.Dataset):</span>
+<span class="c1">#</span>
+<span class="c1">#    def __init__(self, cont_data, cat_data=None):</span>
+<span class="c1">#</span>
+<span class="c1">#        self.cont_data = cont_data</span>
+<span class="c1">#        self.cat_data = cat_data</span>
+<span class="c1">#        </span>
+<span class="c1">#        if self.cat_data is None:</span>
+<span class="c1">#            self.cat_data = torch.empty((len(cont_data),1))</span>
+<span class="c1">#</span>
+<span class="c1">#    def __len__(self):</span>
+<span class="c1">#        return len(self.cont_data)</span>
+<span class="c1">#    </span>
+<span class="c1">#    def __getitem__(self, idx):</span>
+<span class="c1">#        y_cont = self.cont_data[idx]</span>
+<span class="c1">#        y_cat = self.cat_data[idx]</span>
+<span class="c1">#        </span>
+<span class="c1">#        return y_cat, y_cont</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#data_dir = f&#39;../../../../../data/preprocessed/{data_folder}/mtl_files/fold_00_test.pkl&#39;</span>
+<span class="c1">#</span>
+<span class="c1">#data_dir</span>
+<span class="c1">#</span>
+<span class="c1">#data = pickle.load(open(data_dir, &#39;rb&#39;))</span>
+<span class="c1">#</span>
+<span class="c1">#dls = data.dataloaders()</span>
+<span class="c1">#</span>
+<span class="c1">#for x_cat, x_cont, y in dls.train:</span>
+<span class="c1">#    print(x_cat.shape)</span>
+<span class="c1">#    print(x_cont.shape)</span>
+<span class="c1">#    print(y.shape)</span>
+<span class="c1">#    break</span>
+<span class="c1">#</span>
+<span class="c1">#len(dls.train)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
 <div class="output">
@@ -40,9 +122,8 @@ nb_path: "nbs/09_gan.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="WPDataset" class="doc_header"><code>class</code> <code>WPDataset</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/gan/core.py#L11" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>WPDataset</code>(<strong><code>cont_data</code></strong>, <strong><code>cat_data</code></strong>=<em><code>None</code></em>, <strong><code>noise_size</code></strong>=<em><code>100</code></em>) :: <code>Dataset</code></p>
+<h4 id="get_dataloaders" class="doc_header"><code>get_dataloaders</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/gan/core.py#L14" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_dataloaders</code>(<strong><code>folder</code></strong>, <strong><code>idx</code></strong>=<em><code>'00'</code></em>)</p>
 </blockquote>
-<p>TODO maik.</p>
 
 </div>
 
@@ -57,6 +138,41 @@ nb_path: "nbs/09_gan.core.ipynb"
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dls</span> <span class="o">=</span> <span class="n">get_dataloaders</span><span class="p">(</span><span class="s1">&#39;WINDSYN&#39;</span><span class="p">)</span>
+<span class="n">train_dl</span> <span class="o">=</span> <span class="n">dls</span><span class="o">.</span><span class="n">train</span>
+<span class="nb">len</span><span class="p">(</span><span class="n">train_dl</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>13640</pre>
+</div>
+
+</div>
+
+</div>
+</div>
 
 </div>
     {% endraw %}

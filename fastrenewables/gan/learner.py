@@ -13,6 +13,7 @@ from tqdm import tqdm
 #from fastrenewables.gan.core import get_dataloaders
 from ..tabular.data import *
 from ..tabular.core import *
+from .model import *
 import glob
 
 # Cell
@@ -45,29 +46,28 @@ class W_Gan(nn.Module):
         self.real_loss = []
         self.fake_loss = []
 
-    def train_generator(self, z):
+    def train_generator(self, z, x_cat, x_cont):
         # train the generator model
         self.generator.zero_grad()
-        x_fake = self.generator(z)
-        y_fake = self.discriminator(x_fake)
+        x_cont_fake = self.generator(z, z)
+        y_fake = self.discriminator(x_cat, x_cont_fake)
         loss = - y_fake.mean()
         loss.backward()
         self.gen_optim.step()
         return
 
-    def train_discriminator(self, z, x_cont):
+    def train_discriminator(self, z, x_cat, x_cont):
         # train the discriminator model
         self.discriminator.zero_grad()
-        x_real = x_cont
-        y_real = self.discriminator(x_real)
+        y_real = self.discriminator(x_cat, x_cont)
         real_loss = - y_real.mean()
         real_loss.backward()
         self.dis_optim.step()
         self.real_loss.append(real_loss.item())
 
         self.discriminator.zero_grad()
-        x_fake = self.generator(z).detach()
-        y_fake = self.discriminator(x_fake)
+        x_cont_fake = self.generator(z, z).detach()
+        y_fake = self.discriminator(x_cat, x_cont_fake)
         fake_loss = y_fake.mean()
         fake_loss.backward()
         self.dis_optim.step()
@@ -89,22 +89,23 @@ class GanLearner():
 
     def generate_samples(self, x):
         z = self.noise(x)
-        fake_samples = self.gan.generator(z).detach()
+        fake_samples = self.gan.generator(z, z).detach()
         return fake_samples
 
     def fit(self, dl, epochs=5, n_gen=1, n_dis=1):
         # train gan and store parameters and losses in given class
         for e in tqdm(range(epochs)):
 
-            for x_cat, x_cont, _ in dl:
+            for x_cat, x_cont, y in dl:
+                x_cat = None
 
                 for _ in range(n_dis):
                     z = self.noise(x_cont)
-                    self.gan.train_discriminator(z, x_cont)
+                    self.gan.train_discriminator(z, x_cat, x_cont)
 
                 for _ in range(n_gen):
                     z = self.noise(x_cont)
-                    self.gan.train_generator(z)
+                    self.gan.train_generator(z, x_cat, x_cont)
                 break
 
         return
