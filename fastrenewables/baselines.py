@@ -174,7 +174,7 @@ class BayesLinReg(BaseEstimator):
         X = np.atleast_2d(X)
         X = _append_one_col(X)
 
-        self.w_mean, self.w_precision, self.alpha, self.beta = _fit_fixed_point(X,y)
+        self.w_mean, self.w_precision, self.alpha, self.beta = _fit_fixed_point(X,y, n_iter=self.n_iter)
         # import so that model is not creating new matrices
         self.n_features = X.shape[1]
 
