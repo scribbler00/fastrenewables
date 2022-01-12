@@ -67,8 +67,9 @@ def _fit_fixed_point(X: np.ndarray, y: np.ndarray, n_iter=100):
 
     if idx+1==n_iter:
         print(f"Optimization of alpha {alpha:0.2f} and beta {beta:0.2f} not terminated. ")
-
-    evidence = evidence_fixed_point(N, D, sigma, alpha, beta, m2, res2)
+        evidence = -1e18
+    else:
+        evidence = evidence_fixed_point(N, D, sigma, alpha, beta, m2, res2)
 
     evidence /= N
     w_mean = 1.0 / (t + sigma) * s * x
