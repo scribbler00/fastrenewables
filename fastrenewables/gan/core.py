@@ -7,6 +7,7 @@ __all__ = ['WPDataset']
 import torch
 
 # Cell
+# todo: erweitern/anpassen
 class WPDataset(torch.utils.data.Dataset):
 
     def __init__(self, cont_data, cat_data=None, y=None):

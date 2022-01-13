@@ -49,7 +49,7 @@ class W_Gan(nn.Module):
     def train_generator(self, z, x_cat, x_cont):
         # train the generator model
         self.generator.zero_grad()
-        x_cont_fake = self.generator(z, z)
+        x_cont_fake = self.generator(x_cat, z)
         y_fake = self.discriminator(x_cat, x_cont_fake)
         loss = - y_fake.mean()
         loss.backward()
@@ -79,6 +79,8 @@ class W_Gan(nn.Module):
 
 class GanLearner():
     def __init__(self, gan, device='cuda' if torch.cuda.is_available() else 'cpu'):
+        #todo: add plotting handling
+        # learner.to(device)
         super(GanLearner, self).__init__()
         # gan should contain a class which itself contains a generator and discriminator/critic class and combines them
         self.gan = gan
@@ -95,7 +97,7 @@ class GanLearner():
         fake_samples = self.gan.generator(z, z).detach()
         return fake_samples
 
-    def fit(self, dl, epochs=5, n_gen=1, n_dis=1):
+    def fit(self, dl, epochs=10, n_gen=1, n_dis=1, plot_epochs=10):
         # train gan and store parameters and losses in given class
         for e in tqdm(range(epochs)):
 
@@ -113,4 +115,10 @@ class GanLearner():
                     self.gan.train_generator(z, x_cat, x_cont)
                 break
 
+            if (e+1)%plot_epochs==0:
+                plt.figure(figsize=(16, 9))
+                plt.plot(self.gan.real_loss, label='Real Loss')
+                plt.plot(self.gan.fake_loss, label='Fake Loss')
+                plt.legend()
+                plt.show()
         return
