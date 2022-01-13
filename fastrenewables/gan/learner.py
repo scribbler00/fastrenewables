@@ -17,7 +17,6 @@ from .model import *
 import glob
 
 # Cell
-# first drafts for the actual learner and model classes
 
 class DummyDataset(torch.utils.data.Dataset):
 
@@ -78,13 +77,14 @@ class W_Gan(nn.Module):
         return
 
 class GanLearner():
-    def __init__(self, gan, device='cuda' if torch.cuda.is_available() else 'cpu'):
-        #todo: add plotting handling
-        # learner.to(device)
+    def __init__(self, gan, device='cpu'):
         super(GanLearner, self).__init__()
         # gan should contain a class which itself contains a generator and discriminator/critic class and combines them
         self.gan = gan
         self.device = device
+
+    def to_device(self, device='cuda' if torch.cuda.is_available() else 'cpu'):
+        self.device=device
         self.gan.generator = self.gan.generator.to(torch.device(device))
         self.gan.discriminator = self.gan.discriminator.to(torch.device(device))
 
@@ -99,6 +99,8 @@ class GanLearner():
 
     def fit(self, dl, epochs=10, n_gen=1, n_dis=1, plot_epochs=10):
         # train gan and store parameters and losses in given class
+        self.to_device()
+
         for e in tqdm(range(epochs)):
 
             for x_cat, x_cont, y in dl:
@@ -121,4 +123,6 @@ class GanLearner():
                 plt.plot(self.gan.fake_loss, label='Fake Loss')
                 plt.legend()
                 plt.show()
+
+        self.to_device('cpu')
         return
