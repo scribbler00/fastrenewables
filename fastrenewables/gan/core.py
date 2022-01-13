@@ -10,7 +10,7 @@ import torch
 class WPDataset(torch.utils.data.Dataset):
 
     def __init__(self, cont_data, cat_data=None, y=None):
-
+        super(WPDataset, self).__init__()
         self.cont_data = cont_data
         self.cat_data = cat_data
         self.y = y

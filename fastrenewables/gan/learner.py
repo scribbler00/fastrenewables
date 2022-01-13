@@ -78,13 +78,16 @@ class W_Gan(nn.Module):
         return
 
 class GanLearner():
-    def __init__(self, gan):
+    def __init__(self, gan, device='cuda' if torch.cuda.is_available() else 'cpu'):
         super(GanLearner, self).__init__()
         # gan should contain a class which itself contains a generator and discriminator/critic class and combines them
         self.gan = gan
+        self.device = device
+        self.gan.generator = self.gan.generator.to(torch.device(device))
+        self.gan.discriminator = self.gan.discriminator.to(torch.device(device))
 
     def noise(self, x, n_z=100):
-        z = torch.randn(x.shape[0], n_z)
+        z = torch.randn(x.shape[0], n_z).to(self.device)
         return z
 
     def generate_samples(self, x):
@@ -97,7 +100,9 @@ class GanLearner():
         for e in tqdm(range(epochs)):
 
             for x_cat, x_cont, y in dl:
-                x_cat = None
+                x_cat = x_cat.to(self.device)
+                x_cont = x_cont.to(self.device)
+                #x_cat = None
 
                 for _ in range(n_dis):
                     z = self.noise(x_cont)
