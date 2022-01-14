@@ -138,7 +138,10 @@ class LinearTransferModel(nn.Module):
             return x.reshape(n_samples, -1)
         else:
             n_features = x.shape[1]
-            return x.reshape(-1, n_features)
+            if len(x.shape)==3:
+                return x.swapaxes(1, 2).reshape(-1, n_features)
+            else:
+                return x.reshape(-1, n_features)
 
     def transform(self, cats, conts, as_np=False):
         x_transformed = self.source_model(cats, conts)
