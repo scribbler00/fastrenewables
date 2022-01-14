@@ -35,35 +35,51 @@ test_eq(0.1, precision[0,0])
 
 # Cell
 class LinearTransferModel(nn.Module):
-    def __init__(self, source_model, num_layers_to_remove=1,
-                 name_layers_or_function_to_remove="layers",
-                 use_original_weights=True,
-                 prediction_model=BayesLinReg(alpha=1, beta=1, empirical_bayes=False)):
+    def __init__(
+        self,
+        source_model,
+        num_layers_to_remove=1,
+        name_layers_or_function_to_remove="layers",
+        use_original_weights=True,
+        prediction_model=BayesLinReg(alpha=1, beta=1, empirical_bayes=False),
+        as_multivariate_target=True,
+    ):
         super().__init__()
         self.are_weights_initialized = False
+        self.as_multivariate_target = as_multivariate_target
         self.num_layers_to_remove = num_layers_to_remove
         self.ts_length = 1
         self.source_model = copy.deepcopy(source_model)
         self._prediction_model = prediction_model
         self.prediction_models = []
         if use_original_weights:
-            self._prediction_model.empirical_bayes=False
+            self._prediction_model.empirical_bayes = False
 
         if callable(name_layers_or_function_to_remove):
             name_layers_or_function_to_remove(self.source_model, num_layers_to_remove)
         elif type(name_layers_or_function_to_remove) == str:
-            layers = getattrs(self.source_model, name_layers_or_function_to_remove, default=None)[0]
+            layers = getattrs(
+                self.source_model, name_layers_or_function_to_remove, default=None
+            )[0]
             if layers is None:
-                raise ValueError(f"Could not find layers by given name {name_layers_or_function_to_remove}.")
+                raise ValueError(
+                    f"Could not find layers by given name {name_layers_or_function_to_remove}."
+                )
             elif isinstance(layers, torch.nn.modules.container.Sequential):
-                setattr(self.source_model, name_layers_or_function_to_remove, layers[0:-self.num_layers_to_remove])
+                setattr(
+                    self.source_model,
+                    name_layers_or_function_to_remove,
+                    layers[0 : -self.num_layers_to_remove],
+                )
             else:
                 raise ValueError(f"Only sequential layers are supported.")
         else:
             ValueError("Unknown type for name_layers_or_function_to_remove")
 
         if num_layers_to_remove != 1 and use_original_weights:
-            raise ValueError("Can only reuse weights when using the last layers due to the dimension.")
+            raise ValueError(
+                "Can only reuse weights when using the last layers due to the dimension."
+            )
         elif num_layers_to_remove == 1 and use_original_weights:
 
             for element in layers[-1]:
@@ -84,21 +100,21 @@ class LinearTransferModel(nn.Module):
                     self.are_weights_initialized = True
 
             if not self.are_weights_initialized:
-                raise ValueError(f"Could not find linear layer in last layer {self.layers[-1]}")
-
+                raise ValueError(
+                    f"Could not find linear layer in last layer {self.layers[-1]}"
+                )
 
         freeze(self.source_model)
 
         # fake param so that it can be used with pytorch trainers
-        self.fake_param=nn.Parameter(torch.zeros((1,1), dtype=torch.float))
-        self.fake_param.requires_grad =True
+        self.fake_param = nn.Parameter(torch.zeros((1, 1), dtype=torch.float))
+        self.fake_param.requires_grad = True
 
-    def _create_single_model(self,n_features):
+    def _create_single_model(self, n_features):
         model = copy.copy(self._prediction_model)
         model._create_matrices(np.ones(n_features).reshape(1, n_features))
         model.w_covariance = np.linalg.inv(model.w_precision)
         return model
-
 
     @property
     def alpha(self):
@@ -117,33 +133,40 @@ class LinearTransferModel(nn.Module):
         self._prediction_model.beta = beta
 
     def correct_shape(self, x):
-        n_samples = x.shape[0]
-        return x.reshape(n_samples, -1)
+        if self.as_multivariate_target:
+            n_samples = x.shape[0]
+            return x.reshape(n_samples, -1)
+        else:
+            n_features = x.shape[1]
+            return x.reshape(-1, n_features)
 
     def transform(self, cats, conts, as_np=False):
-        x_transformed =  self.source_model(cats, conts)
+        x_transformed = self.source_model(cats, conts)
 
         x_transformed = self.correct_shape(x_transformed)
 
-        if as_np: return to_np(x_transformed)
-        else: return x_transformed
+        if as_np:
+            return to_np(x_transformed)
+        else:
+            return x_transformed
 
     def forward(self, cats, conts):
         n_samples = conts.shape[0]
         self.ts_length = 1
-        if len(conts.shape) == 3:
+
+        if len(conts.shape) == 3 and self.as_multivariate_target:
             self.ts_length = conts.shape[2]
 
         x_transformed = self.transform(cats, conts)
 
         if not self.are_weights_initialized:
-            self.n_features = x_transformed.shape[1]+1
+            self.n_features = x_transformed.shape[1] + 1
 
             for idx in range(self.ts_length):
                 model = self._create_single_model(self.n_features)
                 self.prediction_models.append(model)
 
-            self.are_weights_initialized=True
+            self.are_weights_initialized = True
 
         if self.training:
             return x_transformed
@@ -158,7 +181,7 @@ class LinearTransferModel(nn.Module):
         y = self.correct_shape(y)
 
         for idx, prediction_model in enumerate(self.prediction_models):
-            prediction_model.fit(X, y[:,idx].ravel())
+            prediction_model.fit(X, y[:, idx].ravel())
 
         return self
 
@@ -176,10 +199,13 @@ class LinearTransferModel(nn.Module):
 
         for idx, prediction_model in enumerate(self.prediction_models):
             y_pred_mean, y_pred_std = prediction_model.predict_proba(x_transformed)
-            y_pred_means[:,idx] = y_pred_mean
-            y_pred_stds[:,idx] = y_pred_std
+            y_pred_means[:, idx] = y_pred_mean
+            y_pred_stds[:, idx] = y_pred_std
         if include_std:
-            return torch.tensor(y_pred_means, dtype=torch.float32), torch.tensor(y_pred_stds, dtype=torch.float32),
+            return (
+                torch.tensor(y_pred_means, dtype=torch.float32),
+                torch.tensor(y_pred_stds, dtype=torch.float32),
+            )
         else:
             return torch.tensor(y_pred_means, dtype=torch.float32)
 
@@ -189,20 +215,20 @@ class LinearTransferModel(nn.Module):
             self.update(x_transformed, ys)
 
             fake_loss = torch.tensor([0], dtype=torch.float)
-            fake_loss.requires_grad=True
+            fake_loss.requires_grad = True
             return self.fake_param + fake_loss
         else:
             # in case of validation return MSE
-            return ((x_transformed-ys)**2).mean()
+            return ((x_transformed - ys) ** 2).mean()
 
     def log_posterior(self, cats, conts, ys):
         ys = to_np(self.correct_shape(ys))
 
         x_transformed = self.transform(cats, conts, as_np=True)
 
-        posteriors = np.zeros((len(self.prediction_models),1))
+        posteriors = np.zeros((len(self.prediction_models), 1))
         for idx, pred_model in enumerate(self.prediction_models):
-            log_posterior = pred_model.log_posterior(x_transformed, ys[:,idx].ravel())
+            log_posterior = pred_model.log_posterior(x_transformed, ys[:, idx].ravel())
             posteriors[idx] = log_posterior
         return posteriors
 
@@ -212,7 +238,7 @@ class LinearTransferModel(nn.Module):
 
         x_transformed = self.transform(cats, conts, as_np=True)
         for idx, pred_model in enumerate(self.prediction_models):
-            ev = pred_model.log_evidence(x_transformed, ys[:,idx].ravel())
+            ev = pred_model.log_evidence(x_transformed, ys[:, idx].ravel())
             evidences.append(ev)
 
         evidences = np.array(evidences, dtype=np.float)
@@ -221,6 +247,7 @@ class LinearTransferModel(nn.Module):
             evidences = evidences / len(conts)
 
         return evidences.mean()
+
 
 # Cell
 
