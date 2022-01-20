@@ -50,9 +50,9 @@ class GANMLP(torch.nn.Module):
 
         self.layers = nn.Sequential(*layers)
 
-    def forward(self, cat, x):
+    def forward(self, cat, continuous_data):
         if self.embedding_module is not None:
             cat = self.embedding_module(cat)
-            x = torch.cat([cat, continuous_data], 1)
+            continuous_data = torch.cat([cat, continuous_data], 1)
 
-        return self.layers(x)
+        return self.layers(continuous_data)
