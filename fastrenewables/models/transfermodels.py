@@ -276,8 +276,6 @@ class BTuningModel(nn.Module):
                 cur_y_hat = cur_y_hat.reshape(n_samples, 1, -1)
             yhat_b_tuning_models.append(cur_y_hat)
         yhat_b_tuning_models = torch.cat(yhat_b_tuning_models, axis=1)
-        # if is_ts and len(yhat_b_tuning_models.shape) == 2:
-        #     yhat_b_tuning_models = yhat_b_tuning_models[:, np.newaxis, :]
 
         yhat_all = torch.cat([yhat_source_model, yhat_b_tuning_models], axis=1)
 

@@ -3,7 +3,7 @@
 __all__ = ['normalize_weight', 'weight_preds', 'update_single_model', 'rank_by_evidence', 'get_posterioirs',
            'get_predictive_uncertainty', 'get_preds', 'BayesModelAveraing', 'squared_error', 'soft_gating',
            'create_error_matrix', 'get_global_weight', 'get_timedependent_weight', 'simple_local_error_estimator',
-           'get_local_weight', 'turnOffTrackingStats', 'CSGE', 'LocalErrorPredictor']
+           'get_local_weight', 'LocalErrorPredictor', 'turnOffTrackingStats', 'CSGE']
 
 # Cell
 import os
@@ -133,8 +133,10 @@ def get_predictive_uncertainty(cats, conts, models):
 def get_preds(cats, conts, models, convert_to_np=True):
     yhats, ystds = [], []
     ts_length = 1
+
     if len(conts.shape) == 3:
         ts_length = conts.shape[2]
+
     for idx, model in enumerate(models):
         if isinstance(model, BaseEstimator):
             yhat = model.predict(to_np(conts)).reshape(-1, ts_length)
@@ -278,6 +280,9 @@ def soft_gating(errors, eta, eps=1e-9):
 # Cell
 # hide
 def _flatten_ts(x):
+    if len(x.shape) == 2:
+        return x
+
     n_samples, n_features, ts_length = x.shape
 
     if isinstance(x, np.ndarray):
@@ -288,6 +293,9 @@ def _flatten_ts(x):
     return x
 
 def _unflatten_to_ts(x, ts_length, n_features):
+    if len(x) == 0 or n_features == 0:
+        return x
+
     x = x.reshape(-1, ts_length, n_features)
     if isinstance(x, np.ndarray):
         x = x.swapaxes(1,2)
@@ -297,6 +305,7 @@ def _unflatten_to_ts(x, ts_length, n_features):
     return x
 
 # Cell
+# hide
 def create_error_matrix(targets, preds, error_function=squared_error):
     """
         N=#samples, k=#ensembles, t=forecast horizon
@@ -325,38 +334,46 @@ def create_error_matrix(targets, preds, error_function=squared_error):
     if error_function == squared_error:
         error_matrix = error_matrix**0.5
 
-    if not isinstance(error_matrix, np.ndarray):
-        error_matrix = to_np(error_matrix)
-
     return error_matrix
 
 # Cell
+# hide
 def get_global_weight(error_matrix, eta=1):
     """expected to be of shape n_samples x n_ensembles x forecast_horizon """
-    # average accross all forecast horizon and samples
-    # either via error_matrix.mean(0).mean(1) or error_matrix.mean(2).mean(0)
 
     global_weight =  error_matrix.mean(0).mean(1)
+
+    global_weight = Variable(global_weight)
+    global_weight.requires_grad = True
 
     return soft_gating(global_weight.reshape(-1,1), eta)
 
 # Cell
+# hide
 def get_timedependent_weight(error_matrix, eta=1):
-    """expected to be of shape n_samples x n_ensembles x forecast_horizon """
-    # average accross all samples
+    """
+        Caclulates timedepentend input.
+        Input expected to be of shape n_samples x n_ensembles x forecast_horizon
+        Output is of size n_ensembles x forecast_horizon
+    """
+    if len(error_matrix.shape) != 3:
+        raise ValueError("Error matrix is not of dimension n_samples x n_ensembles x forecast_horizon.")
+
     N,k,t =error_matrix.shape
+    # average accross all samples
     time_depentent_weight =  error_matrix.mean(0)
 
-#     if not isinstance(time_depentent_weight, np.ndarray):
-#             time_depentent_weight = to_np(time_depentent_weight)
+    time_depentent_weight = Variable(time_depentent_weight)
+    time_depentent_weight.requires_grad = False
 
+    new_time_depentent_weight = []
     for t_i in range(t):
-        time_depentent_weight[:,t_i] = soft_gating(time_depentent_weight[:,t_i], eta)
+        new_time_depentent_weight += [soft_gating(time_depentent_weight[:,t_i], eta).reshape((k,1))]
 
-
-    return time_depentent_weight
+    return torch.cat(new_time_depentent_weight, axis=1)
 
 # Cell
+# hide
 from sklearn.decomposition import PCA
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.pipeline import Pipeline
@@ -366,273 +383,51 @@ def simple_local_error_estimator(param_dict = {"n_components":5, "n_neighbors": 
                      ('knn', KNeighborsRegressor(n_neighbors=param_dict["n_neighbors"]))])
     return pipe
 
-def get_local_weight(conts, error_matrix, error_expectation_regressor, eta=1):
-    N,k,t = error_matrix.shape
-
-    if len(conts.shape)==3:
-        conts=_flatten_ts(conts)
-
-    if not isinstance(conts,np.ndarray):
-        conts = to_np(conts)
-
-    # todo check timeseries that is the same for each timestep
-    local_error_expectation = error_expectation_regressor.predict(conts)
-
-    local_error_expectation = _unflatten_to_ts(local_error_expectation,
-                                               ts_length=t, n_features=k)
-
-    # we should have an error matrix of shape Nxk
-#     for n in range(len(local_error_expectation)):
-#         local_error_expectation[n,:] = soft_gating(local_error_expectation[n,], eta)
-
-    return local_error_expectation
 
 # Cell
+# hide
 
-def turnOffTrackingStats(module):
-        if hasattr(module, "track_running_stats"):
-            module.track_running_stats = False
-        for childMod in module.children():
-            turnOffTrackingStats(childMod)
+def get_local_weight(conts, error_expectation_regressor, eta=1):
+    """
+      Calculates the expected local error based on an trained error expectation reggressor.
+      Based on this matrix with shape n_samples x n_ensembles the weights are calculated.
+    """
+    with torch.no_grad():
+        if len(conts.shape)==3:
+            conts=_flatten_ts(conts)
 
+        if not isinstance(conts,np.ndarray):
+            conts = to_np(conts)
 
-class CSGE(nn.Module):
-    def __init__(self, source_models,
-                       eta_global=10, eta_time=10, eta_local=10,
-                 is_timeseries_model=False,
-                 is_timeseries_data=False,
-                 use_elm=True,
-                 n_hidden=200,
-                 ts_length=1):
-        """
-        """
-        super().__init__()
-        self.source_models = np.array(source_models)
-        self.is_timeseries_data = is_timeseries_data
-        self.is_timeseries_model = is_timeseries_model
-        self.error_expectation_regressor = \
-            LocalErrorPredictor(len(source_models), use_elm=use_elm, n_hidden=n_hidden)
+        # todo check timeseries that is the same for each timestep
+        local_error_expectation = error_expectation_regressor.predict(conts)
 
-        self.conversion_to_tensor = convert_to_tensor_ts if self.is_timeseries_data else convert_to_tensor
+        if type(local_error_expectation) == np.ndarray:
+            local_error_expectation = torch.tensor(local_error_expectation)
 
-        self.ts_length = ts_length
-        self.error_matrix = None
-        self.global_weights = None
-        self.timedependent_weights = None
-        self.local_weights = None
+        if len(local_error_expectation.shape) != 2:
+            raise ValueError(f"Local error matrix is not of dimension n_samples x n_ensembles x forecast_horizon. It is of size {local_error_expectation.shape}")
+        N,k = local_error_expectation.shape
 
-        self.eta_global = nn.Parameter(torch.Tensor([eta_global]))
-        self.eta_local = nn.Parameter(torch.Tensor([eta_local]))
-        self.eta_time = nn.Parameter(torch.Tensor([eta_time]))
-
-#     def setup_complete_data(self, cats, conts, targets):
-#         if len(conts.shape) == 3:
-#             # is already timeseries data
-#             conts_non_ts = _flatten_ts(conts)
-#             if len(cats)>0 and cats.numel() != 0:
-#                 cats_non_ts = _flatten_ts(cats)
-#             else:
-#                 cats_non_ts = cats
-#             targets_non_ts = _flatten_ts(targets)
-#         else:
-#             cats_non_ts, conts_non_ts, targets_non_ts = cats, conts, targets
-#             conts = _unflatten_to_ts(conts, self.ts_length, conts.shape[1])
-#             targets = _unflatten_to_ts(targets, self.ts_length, targets.shape[1])
-#             if len(cats)>0 and cats.numel() != 0:
-#                 cats_non_ts = _unflatten_to_ts(cats, self.ts_length, cats.shape[1])
+#     local_error_expectation = Variable(local_error_expectation)
+    local_error_expectation.requires_grad = False
 
 
-#         if self.is_timeseries_model:
-#             preds = get_preds(cats, conts, self.source_models, convert_to_np=False)
-#         else:
-#             preds = get_preds(cats_non_ts, conts_non_ts, self.source_models, convert_to_np=False)
-#             preds = _unflatten_to_ts(
-#                 preds, self.ts_length, len(self.source_models)
-#             )
-#         self.cats, self.conts, self.targets = cats, conts, targets
-#         self.cats_non_ts, self.conts_non_ts, self.targets_non_ts = cats_non_ts, conts_non_ts, targets_non_ts
-#         self.targets, self.preds = targets, preds
+    # we should have an error matrix of shape Nxk (n_samples x n_ensembles)
+    local_weight = []
+    for n in range(len(local_error_expectation)):
+        local_weight += [soft_gating(local_error_expectation[n,], eta).reshape(1,k)]
+    local_weight = torch.cat(local_weight, axis=0)
 
-    def setup_complete_data(self, cats, conts, targets=None):
-        targets_non_ts = None
-        if len(conts.shape) == 3:
-            # is already timeseries data
-            conts_non_ts = _flatten_ts(conts)
-            if len(cats)>0 and cats.numel() != 0:
-                cats_non_ts = _flatten_ts(cats)
-            else:
-                cats_non_ts = cats
-            if targets is not None:  targets_non_ts = _flatten_ts(targets)
-        else:
-            cats_non_ts, conts_non_ts, targets_non_ts = cats, conts, targets
-            conts = _unflatten_to_ts(conts, self.ts_length, conts.shape[1])
-            if targets is not None: targets = _unflatten_to_ts(targets, self.ts_length, targets.shape[1])
-            if len(cats)>0 and cats.numel() != 0:
-                cats_non_ts = _unflatten_to_ts(cats, self.ts_length, cats.shape[1])
+    return local_weight
 
-
-        if self.is_timeseries_model:
-            preds = get_preds(cats, conts, self.source_models, convert_to_np=False)
-        else:
-            preds = get_preds(cats_non_ts, conts_non_ts, self.source_models, convert_to_np=False)
-            preds = _unflatten_to_ts(
-                preds, self.ts_length, len(self.source_models)
-            )
-        self.cats, self.conts, self.targets = cats, conts, targets
-        self.cats_non_ts, self.conts_non_ts, self.targets_non_ts = cats_non_ts, conts_non_ts, targets_non_ts
-        self.targets, self.preds = targets, preds
-
-
-    def fit(self, dls, ds_idx=0, n_epochs=1):
-        turnOffTrackingStats(self)
-        if ds_idx == 0:
-            ds = dls.train_ds
-        else:
-            ds = dls.valid_ds
-
-        cats, conts, targets = self.conversion_to_tensor(ds)
-
-        # we do an initial fit to setup everything
-        with torch.no_grad():
-            self.setup_complete_data(cats, conts, targets)
-            # TODO: fit local predictors
-            self.error_matrix = torch.tensor(create_error_matrix(self.targets, self.preds))
-            # update local, global, and timedependent weight
-
-            self.global_weights = get_global_weight(self.error_matrix, self.eta_global)
-
-            self.error_expectation_regressor.fit(self.conts, self.error_matrix)
-
-            self.local_weight = get_local_weight(
-                self.conts_non_ts,
-                self.error_matrix,
-                self.error_expectation_regressor,
-                eta=self.eta_local,
-            )
-
-            if self.ts_length>1 or self.is_timeseries_data:
-                self.time_dependent_weights = get_timedependent_weight(
-                    self.error_matrix, self.eta_time
-                )
-
-    def calc_final_weights(self):
-        if self.ts_length>1 or self.is_timeseries_data:
-            final_weights = self.global_weights*self.time_dependent_weights
-        else:
-            final_weights = self.global_weights
-        final_weights = self.global_weights
-
-        final_weights = normalize_weight(final_weights)
-
-        final_weights = final_weights*self.local_weights
-
-        self.final_weights = final_weights
-        self.final_weights = normalize_weight(final_weights)
-
-        return self.final_weights
-
-    def _predict(self, cats, conts):
-        yhat = get_preds(cats, conts, self.source_models, convert_to_np=False)
-
-        if self.ts_length != 1 and not self.is_timeseries_data:
-            yhat = _unflatten_to_ts(yhat, self.ts_length, yhat.shape[1])
-#         yhat = torch.tensor(yhat)
-
-        self.local_weights = get_local_weight(conts, self.error_matrix,
-                                              self.error_expectation_regressor,
-                                              )
-
-        final_weights = self.calc_final_weights()
-
-        yhat = weight_preds(yhat, final_weights)
-
-        return yhat
-
-#     def forward(self, cats, conts):
-#         self.global_weights = get_global_weight(self.error_matrix, self.eta_global)
-
-#         self.local_weight = get_local_weight(
-#             self.conts_non_ts,
-#             self.error_matrix,
-#             self.error_expectation_regressor,
-#             eta=self.eta_local,
-#         )
-
-#         if self.ts_length>1 or self.is_timeseries_data:
-#             self.time_dependent_weights = get_timedependent_weight(
-#                 self.error_matrix, self.eta_time
-#             )
-
-#         yhat = self._predict(cats, conts)
-
-#         return yhat
-
-    def forward(self, cats, conts):
-        self.setup_complete_data(cats, conts)
-        self.global_weights = get_global_weight(self.error_matrix, self.eta_global)
-
-        self.local_weights = get_local_weight(
-            self.conts_non_ts,
-            self.error_matrix,
-            self.error_expectation_regressor,
-            eta=self.eta_local,
-        )
-
-        self.local_weights = Variable(self.local_weights)
-        self.local_weights.requires_grad = True
-
-        def vSoftGate(t, eta, eps=1e-18):
-            t = torch.sum(t, dim=1).reshape(t.shape[0], 1) / (t ** eta + eps)
-            return t / torch.sum(t, dim=1).reshape(t.shape[0], 1)
-
-        # TODO as Variable before applying soft gating formula
-
-        # we should have an error matrix of shape Nxk
-        new_local_weights = []
-        for n in range(len(self.local_weights)):
-            new_local_weights.append(
-                soft_gating(self.local_weights[n,], self.eta_local)[np.newaxis, :, :]
-            )
-        self.local_weights = torch.cat(new_local_weights)
-
-        # TODO as Variable before applying soft gating formula
-        if self.ts_length > 1 or self.is_timeseries_data:
-            self.time_dependent_weights = get_timedependent_weight(
-                self.error_matrix, self.eta_time
-            )
-
-        yhat = (
-            self.preds
-        )  # get_preds(cats, conts, self.source_models, convert_to_np=False)
-
-        if self.ts_length != 1 and not self.is_timeseries_data:
-            yhat = _unflatten_to_ts(yhat, self.ts_length, yhat.shape[1])
-
-        final_weights = self.global_weights * self.local_weights
-
-        final_weights = normalize_weight(final_weights)
-
-
-        # print(yhat.shape, final_weights.shape)
-
-        yhat = weight_preds(yhat, final_weights)
-
-        # yhat = self._predict(cats, conts)
-
-        return yhat
-
-    def predict(self, dls, ds_idx=0):
-        ds = dls.train_ds
-        if ds_idx==1:
-            ds = dls.valid_ds
-
-        cats, conts, targets = self.conversion_to_tensor(ds)
-
-        yhat = self._predict(cats, conts)
-
-        return yhat, targets
-
+# Cell
+# hide
 class LocalErrorPredictor(BaseEstimator):
+    """
+       This is a wrapper for a multivariate Bayesian linear regression/extreme learning machine
+       to provide local error forecasts for the CSGE.
+    """
     def __init__(self, n_models=1, use_elm=True, n_hidden=200):
         self.n_models = n_models
         self.use_elm = use_elm
@@ -675,3 +470,180 @@ class LocalErrorPredictor(BaseEstimator):
         preds = torch.cat(preds, axis=1)
 
         return preds
+
+# Cell
+def turnOffTrackingStats(module):
+        if hasattr(module, "track_running_stats"):
+            module.track_running_stats = False
+        for childMod in module.children():
+            turnOffTrackingStats(childMod)
+
+
+class CSGE(nn.Module):
+    def __init__(self, source_models,
+                       eta_global=10, eta_time=10, eta_local=10,
+                 is_timeseries_model=False,
+                 is_timeseries_data=False,
+                 use_elm=True,
+                 n_hidden=200,
+                 ts_length=1):
+        """
+        """
+        super().__init__()
+        self.source_models = np.array(source_models)
+        self.is_timeseries_data = is_timeseries_data
+        self.is_timeseries_model = is_timeseries_model
+
+        self.error_expectation_regressor = \
+            LocalErrorPredictor(len(source_models), use_elm=use_elm, n_hidden=n_hidden)
+
+        self.conversion_to_tensor = convert_to_tensor_ts if self.is_timeseries_data else convert_to_tensor
+
+        self.ts_length = ts_length
+        self.n_ensembles = len(self.source_models)
+        self.error_matrix = None
+        self.global_weights = None
+        self.timedependent_weights = None
+        self.local_weights = None
+        self.n_features = None
+
+        self.eta_global = nn.Parameter(torch.Tensor([eta_global]))
+        self.eta_local = nn.Parameter(torch.Tensor([eta_local]))
+        self.eta_time = nn.Parameter(torch.Tensor([eta_time]))
+
+    def create_preds(self, cats, conts):
+        if self.is_timeseries_model:
+            preds = get_preds(cats, conts, self.source_models, convert_to_np=False)
+        else:
+            preds = get_preds(_flatten_ts(cats), _flatten_ts(conts),
+                              self.source_models, convert_to_np=False)
+
+            preds = _unflatten_to_ts(preds, self.ts_length, self.n_ensembles)
+
+        return preds
+
+    def create_error_matrix(self, preds, targets):
+        self.error_matrix = create_error_matrix(targets, preds)
+        if not isinstance(self.error_matrix, type(torch.tensor(1))):
+            raise ValueError(f"Unexpected data type: {type(self.error_matrix)}")
+
+    def _single_data_as_ts(self, data, n_features):
+        if data is None:
+            return data
+        elif len(data.shape) == 3:
+            raise ValueError()
+        else:
+            return _unflatten_to_ts(data, self.ts_length, n_features)
+
+    def _n_features(self,data):
+        if data is None:
+            return 0
+        elif len(data) == 0:
+            return 0
+        else:
+            return data.shape[1]
+
+    def all_data_as_ts(self, cats, conts, targets=None):
+        if self.is_timeseries_model:
+            return cats,  conts, targets
+        else:
+            return self._single_data_as_ts(cats, n_features=self._n_features(cats)), \
+                   self._single_data_as_ts(conts, n_features=self.n_features), \
+                   self._single_data_as_ts(targets, n_features=self._n_features(targets))
+
+
+    def fit(self, dls, ds_idx=0, n_epochs=1):
+        turnOffTrackingStats(self)
+        if ds_idx == 0:
+            ds = dls.train_ds
+        else:
+            ds = dls.valid_ds
+
+        cats, conts, targets = self.conversion_to_tensor(ds)
+        self.n_features = conts.shape[1]
+        cats, conts, targets = self.all_data_as_ts(cats, conts, targets)
+
+        # we do an initial fit to setup everything and check dimensions
+        with torch.no_grad():
+            preds = self.create_preds(cats, conts)
+            self.create_error_matrix(preds, targets)
+
+            self.global_weights = get_global_weight(self.error_matrix, self.eta_global)
+
+            self.error_expectation_regressor.fit(conts, self.error_matrix)
+            self.local_weights = self.get_local_weight(conts)
+
+            self.timedependent_weights = get_timedependent_weight(
+                self.error_matrix, self.eta_time
+            )
+
+            assert len(conts) == self.error_matrix.shape[0]
+            assert self.n_ensembles == self.error_matrix.shape[1]
+            assert self.ts_length == self.error_matrix.shape[2]
+
+            assert self.n_ensembles == self.global_weights.shape[0]
+            assert 1 == self.global_weights.shape[1]
+            assert 2==len(self.global_weights.shape)
+
+            assert len(conts) == self.local_weights.shape[0]
+            assert self.n_ensembles == self.local_weights.shape[1]
+            assert 3==len(self.local_weights.shape)
+
+            assert self.n_ensembles == csge_model.timedependent_weights.shape[0]
+            assert self.ts_length == csge_model.timedependent_weights.shape[1]
+            assert 2==len(csge_model.timedependent_weights.shape)
+
+    def get_local_weight(self, conts):
+        local_weights = get_local_weight(conts, self.error_expectation_regressor, self.eta_local)
+
+        local_weights = _unflatten_to_ts(local_weights, self.ts_length, self.n_ensembles)
+
+        return local_weights
+
+    def calc_final_weights(self, ):
+
+        final_weights = self.global_weights*self.timedependent_weights
+        final_weights = normalize_weight(final_weights)
+
+        final_weights = self.local_weights*final_weights
+        final_weights = normalize_weight(final_weights)
+
+        return final_weights
+
+    def forward(self, cats, conts):
+        cats, conts, targets = self.all_data_as_ts(cats, conts, None)
+
+        self.global_weights = get_global_weight(self.error_matrix, self.eta_global)
+
+        self.timedependent_weights = get_timedependent_weight(
+                self.error_matrix, self.eta_time
+            )
+
+        yhat = self._predict(cats, conts)
+
+        return yhat
+
+
+    def _predict(self, cats, conts):
+        yhat = self.create_preds(cats, conts)
+        self.local_weights = self.get_local_weight(conts)
+
+        final_weights = self.calc_final_weights()
+
+        yhat = weight_preds(yhat, final_weights)
+
+        return yhat
+
+
+    def predict(self, dls, ds_idx=0):
+        ds = dls.train_ds
+        if ds_idx==1:
+            ds = dls.valid_ds
+        with torch.no_grad():
+            cats, conts, targets = self.conversion_to_tensor(ds)
+            cats, conts, targets = self.all_data_as_ts(cats, conts, targets)
+
+            yhat = self._predict(cats, conts)
+
+            return yhat, targets.reshape(yhat.shape[0],yhat.shape[1])
+
