@@ -434,13 +434,6 @@ class LocalErrorPredictor(BaseEstimator):
         self.n_hidden = n_hidden
 
     def fit(self, conts, errors):
-
-        if len(conts.shape)==3:
-            conts=_flatten_ts(conts)
-
-        if len(errors.shape)==3:
-            errors=_flatten_ts(errors)
-
         if not isinstance(conts,np.ndarray):
             conts = to_np(conts)
 
@@ -468,6 +461,9 @@ class LocalErrorPredictor(BaseEstimator):
             preds.append(torch.tensor(pred).reshape(-1,1))
 
         preds = torch.cat(preds, axis=1)
+        preds[preds<0] = 1
+        preds[preds>1] = 1
+
 
         return preds
 
@@ -481,11 +477,10 @@ def turnOffTrackingStats(module):
 
 class CSGE(nn.Module):
     def __init__(self, source_models,
+                       local_error_estimator,
                        eta_global=10, eta_time=10, eta_local=10,
                  is_timeseries_model=False,
                  is_timeseries_data=False,
-                 use_elm=True,
-                 n_hidden=200,
                  ts_length=1):
         """
         """
@@ -493,10 +488,7 @@ class CSGE(nn.Module):
         self.source_models = np.array(source_models)
         self.is_timeseries_data = is_timeseries_data
         self.is_timeseries_model = is_timeseries_model
-
-        self.error_expectation_regressor = \
-            LocalErrorPredictor(len(source_models), use_elm=use_elm, n_hidden=n_hidden)
-
+        self.local_error_estimator = local_error_estimator
         self.conversion_to_tensor = convert_to_tensor_ts if self.is_timeseries_data else convert_to_tensor
 
         self.ts_length = ts_length
@@ -519,7 +511,6 @@ class CSGE(nn.Module):
                               self.source_models, convert_to_np=False)
 
             preds = _unflatten_to_ts(preds, self.ts_length, self.n_ensembles)
-
         return preds
 
     def create_error_matrix(self, preds, targets):
@@ -570,7 +561,7 @@ class CSGE(nn.Module):
 
             self.global_weights = get_global_weight(self.error_matrix, self.eta_global)
 
-            self.error_expectation_regressor.fit(conts, self.error_matrix)
+            self.local_error_estimator.fit(_flatten_ts(conts), _flatten_ts(self.error_matrix))
             self.local_weights = self.get_local_weight(conts)
 
             self.timedependent_weights = get_timedependent_weight(
@@ -589,12 +580,12 @@ class CSGE(nn.Module):
             assert self.n_ensembles == self.local_weights.shape[1]
             assert 3==len(self.local_weights.shape)
 
-            assert self.n_ensembles == csge_model.timedependent_weights.shape[0]
-            assert self.ts_length == csge_model.timedependent_weights.shape[1]
-            assert 2==len(csge_model.timedependent_weights.shape)
+            assert self.n_ensembles == self.timedependent_weights.shape[0]
+            assert self.ts_length == self.timedependent_weights.shape[1]
+            assert 2==len(self.timedependent_weights.shape)
 
     def get_local_weight(self, conts):
-        local_weights = get_local_weight(conts, self.error_expectation_regressor, self.eta_local)
+        local_weights = get_local_weight(_flatten_ts(conts), self.local_error_estimator, self.eta_local)
 
         local_weights = _unflatten_to_ts(local_weights, self.ts_length, self.n_ensembles)
 
@@ -626,6 +617,7 @@ class CSGE(nn.Module):
 
     def _predict(self, cats, conts):
         yhat = self.create_preds(cats, conts)
+
         self.local_weights = self.get_local_weight(conts)
 
         final_weights = self.calc_final_weights()
