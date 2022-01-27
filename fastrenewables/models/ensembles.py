@@ -485,7 +485,9 @@ class CSGE(nn.Module):
         """
         """
         super().__init__()
-        self.source_models = np.array(source_models)
+
+        self.source_models = torch.nn.Sequential(*source_models)
+#         self.source_models = np.array(source_models)
         self.is_timeseries_data = is_timeseries_data
         self.is_timeseries_model = is_timeseries_model
         self.local_error_estimator = local_error_estimator
