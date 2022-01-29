@@ -197,8 +197,7 @@ class BayesModelAveraing(nn.Module):
                 self.rank_measure_values, self.sord_ids = rank_by_evidence(
                     cats, conts, targets, self.source_models
                 )
-            else:
-                raise NotImplemented
+
 
             if self.n_best_models != -1:
                 self.source_models = self.source_models[
