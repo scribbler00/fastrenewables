@@ -129,7 +129,8 @@ index = {"contains_instance": "00a_utils.ipynb",
          "get_local_weight": "15_ensemble_models.ipynb",
          "LocalErrorPredictor": "15_ensemble_models.ipynb",
          "turnOffTrackingStats": "15_ensemble_models.ipynb",
-         "CSGE": "15_ensemble_models.ipynb"}
+         "CSGE": "15_ensemble_models.ipynb",
+         "TorchSklearnWrapper": "15_ensemble_models.ipynb"}
 
 modules = ["utils.py",
            "losses.py",

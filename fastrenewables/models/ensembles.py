@@ -3,7 +3,7 @@
 __all__ = ['normalize_weight', 'weight_preds', 'update_single_model', 'rank_by_evidence', 'get_posterioirs',
            'get_predictive_uncertainty', 'get_preds', 'BayesModelAveraing', 'squared_error', 'soft_gating',
            'create_error_matrix', 'get_global_weight', 'get_timedependent_weight', 'simple_local_error_estimator',
-           'get_local_weight', 'LocalErrorPredictor', 'turnOffTrackingStats', 'CSGE']
+           'get_local_weight', 'LocalErrorPredictor', 'turnOffTrackingStats', 'CSGE', 'TorchSklearnWrapper']
 
 # Cell
 import os
@@ -512,6 +512,7 @@ class CSGE(nn.Module):
                               self.source_models, convert_to_np=False)
 
             preds = _unflatten_to_ts(preds, self.ts_length, self.n_ensembles)
+
         return preds
 
     def create_error_matrix(self, preds, targets):
@@ -640,3 +641,29 @@ class CSGE(nn.Module):
 
             return yhat, targets.reshape(yhat.shape[0],yhat.shape[1])
 
+
+
+# Cell
+class TorchSklearnWrapper(nn.Module):
+    def __init__(self, source_models):
+        """Wrapper to include sklearn models in the CSGE."""
+        super().__init__()
+        self.source_models = source_models
+
+    def forward(self, cats, conts):
+        X = to_np(conts)
+        if len(X.shape) == 3:
+            N,D,t = X.shape
+        else:
+            N,D,t = X.shape,1
+
+        X = _flatten_ts(X)
+
+        # TODO: could be multiple models
+        yhat = self.source_models.predict(X)
+        yhat = torch.tensor(yhat).float().reshape(-1,1)
+        # TODO: could be multiple models
+        yhat = _unflatten_to_ts(yhat, t, 1)
+
+
+        return yhat
