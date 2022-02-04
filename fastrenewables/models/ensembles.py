@@ -653,9 +653,10 @@ class TorchSklearnWrapper(nn.Module):
     def forward(self, cats, conts):
         X = to_np(conts)
         if len(X.shape) == 3:
-            N,D,t = X.shape
+            N, D, t = X.shape
         else:
-            N,D,t = X.shape,1
+            N, D = X.shape
+            t = 1
 
         X = _flatten_ts(X)
 
