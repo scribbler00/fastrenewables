@@ -224,12 +224,13 @@ class BayesModelAveraing(nn.Module):
         cats, conts, targets = self.conversion_to_tensor(dls.train_ds)
         self.fit_tensors(cats, conts, targets)
 
-
     def _predict(self, cats, conts):
-        if self.weighting_strategy=="uncertainty":
-            yhat, y_uncertainty = get_predictive_uncertainty(cats, conts, self.source_models)
+        if self.weighting_strategy == "uncertainty":
+            yhat, y_uncertainty = get_predictive_uncertainty(
+                cats, conts, self.source_models
+            )
             if len(y_uncertainty.shape) == 2:
-                y_uncertainty = y_uncertainty[:,:, np.newaxis]
+                y_uncertainty = y_uncertainty[:, :, np.newaxis]
 
             self.ensemble_weights = normalize_weight(y_uncertainty)
         else:
@@ -239,19 +240,52 @@ class BayesModelAveraing(nn.Module):
 
         return yhat
 
-    def forward(self, cats, conts):
-        yhat = self._predict(cats, conts)
+    def _predict_proba(self, cats, conts):
+        if self.weighting_strategy == "uncertainty":
+            yhat, y_uncertainty = get_predictive_uncertainty(
+                cats, conts, self.source_models
+            )
+            if len(y_uncertainty.shape) == 2:
+                y_uncertainty = y_uncertainty[:, :, np.newaxis]
 
-        return yhat
+            self.ensemble_weights = normalize_weight(y_uncertainty)
+        else:
+            yhat, y_uncertainty = get_predictive_uncertainty(
+                cats, conts, self.source_models
+            )
+
+        yhat = weight_preds(yhat, self.ensemble_weights)
+        yhat_std = weight_preds(1 / y_uncertainty, self.ensemble_weights)
+
+        return yhat, yhat_std
+
+    def forward(self, cats, conts, pred_proba=False):
+        if pred_proba:
+            yhat, yhat_std = self._predict_proba(cats, conts)
+            return yhat, yhat_std
+        else:
+            yhat = self._predict(cats, conts)
+            return yhat
 
     def predict(self, dls, ds_idx=0):
         ds = dls.train_ds
-        if ds_idx==1:
+        if ds_idx == 1:
             ds = dls.valid_ds
 
         cats, conts, _ = self.conversion_to_tensor(ds)
 
         yhat = self._predict(cats, conts)
+
+        return yhat
+
+    def predict_proba(self, dls, ds_idx=0):
+        ds = dls.train_ds
+        if ds_idx == 1:
+            ds = dls.valid_ds
+
+        cats, conts, _ = self.conversion_to_tensor(ds)
+
+        yhat = self._predict_proba(cats, conts)
 
         return yhat
 
