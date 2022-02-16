@@ -9,8 +9,7 @@ import torch.nn as nn
 import matplotlib.pyplot as plt
 
 from tqdm import tqdm
-from torch.nn import BCELoss
-#from fastrenewables.gan.core import get_dataloaders
+from torch.nn import BCELoss, CrossEntropyLoss
 from ..tabular.data import *
 from ..tabular.core import *
 from .model import *
@@ -20,27 +19,25 @@ import glob
 
 class DummyDataset(torch.utils.data.Dataset):
 
-    def __init__(self, n_samples=1000, n_cat_feats=10, n_cont_feats=10):
+    def __init__(self, n_samples=1000, n_cat_feats=10, n_cont_feats=10, n_targets=1):
 
         self.n_samples = n_samples
-        self.cat_data = torch.randn(n_cat_feats, n_samples)
-        self.cont_data = torch.randn(n_cont_feats, n_samples)
+        self.cat = torch.randn(n_cat_feats, n_samples)
+        self.cont = torch.randn(n_cont_feats, n_samples)
+        self.y = torch.randn(n_targets, n_samples)
 
     def __len__(self):
         return self.n_samples
 
     def __getitem__(self, idx):
-        x_cat = self.cat_data[:, idx]
-        x_cont = self.cont_data[:, idx]
-        return x_cat, x_cont
+        x_cat = self.cat[:, idx]
+        x_cont = self.cont[:, idx]
+        y = self.y[:, idx]
+        return x_cat, x_cont, y
+
 
 class Gan(nn.Module):
-    def __init__(self, generator, discriminator,
-                 gen_optim,
-                 dis_optim,
-                 device="cpu",
-                 is_auxilary=False,
-                auxilary_weighting_factor=1):
+    def __init__(self, generator, discriminator, gen_optim, dis_optim, auxiliary=False, auxiliary_weighting_factor=1):
         super(Gan, self).__init__()
         self.generator = generator
         self.discriminator = discriminator
@@ -48,36 +45,36 @@ class Gan(nn.Module):
         self.dis_optim = dis_optim
         self.real_loss = []
         self.fake_loss = []
+        self.auxiliary = auxiliary
         self.bce_loss = BCELoss()
-        self.device = device
-        self.is_auxilary = is_auxilary
-        self.auxiliary_loss_function = torch.nn.CrossEntropyLoss().to(device)
-        self.auxilary_weighting_factor=auxilary_weighting_factor
+        self.auxiliary_loss_function = CrossEntropyLoss()
+        self.auxiliary_weighting_factor=auxiliary_weighting_factor
+
+    def to_device(self, device):
+        self.generator = self.generator.to(device)
+        self.discriminator = self.discriminator.to(device)
+        self.bce_loss = self.bce_loss.to(device)
+        self.auxiliary_loss_function = self.auxiliary_loss_function.to(device)
 
     def _split_pred(self, y):
-        if self.is_auxilary:
+        if self.auxiliary:
             y, class_probs = y
         else:
             y, class_probs = y, None
         return y, class_probs
 
     def auxiliary_loss(self, class_probs, y):
-
-        return self.auxiliary_loss_function(class_probs, y.to(self.device).ravel()) * self.auxilary_weighting_factor
+        return self.auxiliary_loss_function(class_probs, y.ravel().to(torch.int64))*self.auxiliary_weighting_factor
 
     def train_generator(self, z, x_cat, x_cont, y):
         # train the generator model
         self.generator.zero_grad()
         x_cont_fake = self.generator(x_cat, z)
         y_fake = self.discriminator(None, x_cont_fake)
-
-
         y_fake, class_probs = self._split_pred(y_fake)
-        loss = self.bce_loss(y_fake, torch.ones_like(y_fake).to(self.device))
-        if self.is_auxilary:
-            loss = (loss + self.auxiliary_loss(class_probs, y )) / 2
-
-
+        loss = self.bce_loss(y_fake, torch.ones_like(y_fake))
+        if self.auxiliary:
+            loss = (loss + self.auxiliary_loss(class_probs, y))/2
         loss.backward()
         self.gen_optim.step()
         return
@@ -87,10 +84,9 @@ class Gan(nn.Module):
         self.discriminator.zero_grad()
         y_real = self.discriminator(None, x_cont)
         y_real, class_probs = self._split_pred(y_real)
-
-        real_loss = self.bce_loss(y_real, torch.ones_like(y_real).to(self.device))
-        if self.is_auxilary:
-            real_loss = (real_loss + self.auxiliary_loss(class_probs, y )) / 2
+        real_loss = self.bce_loss(y_real, torch.ones_like(y_real))
+        if self.auxiliary:
+            real_loss = (real_loss + self.auxiliary_loss(class_probs, y)) / 2
 
         real_loss.backward()
         self.dis_optim.step()
@@ -101,14 +97,13 @@ class Gan(nn.Module):
         y_fake = self.discriminator(None, x_cont_fake)
         y_fake, class_probs = self._split_pred(y_fake)
 
-        fake_loss =  self.bce_loss(y_fake, torch.zeros_like(y_fake).to(self.device),)
-        if self.is_auxilary:
-            fake_loss = (fake_loss + self.auxiliary_loss(class_probs, y )) / 2
+        fake_loss =  self.bce_loss(y_fake, torch.zeros_like(y_fake))
+        if self.auxiliary:
+            fake_loss = (fake_loss + self.auxiliary_loss(class_probs, y)) / 2
 
         fake_loss.backward()
         self.dis_optim.step()
         self.fake_loss.append(fake_loss.item())
-
         return
 
 
@@ -154,17 +149,14 @@ class W_Gan(nn.Module):
             p = torch.clamp(p, -self.clip, self.clip)
         return
 
+
 class GanLearner():
-    def __init__(self, gan, device='cpu'):
+    def __init__(self, gan):
         super(GanLearner, self).__init__()
         # gan should contain a class which itself contains a generator and discriminator/critic class and combines them
         self.gan = gan
-        self.device = device
-
-    def to_device(self, device='cuda' if torch.cuda.is_available() else 'cpu'):
-        self.device=device
-        self.gan.generator = self.gan.generator.to(torch.device(device))
-        self.gan.discriminator = self.gan.discriminator.to(torch.device(device))
+        self.device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+        #self.device = torch.device('cpu')
 
     def noise(self, x, n_z=100):
         z = torch.randn(x.shape[0], n_z).to(self.device)
@@ -177,14 +169,14 @@ class GanLearner():
 
     def fit(self, dl, epochs=10, n_gen=1, n_dis=1, plot_epochs=10):
         # train gan and store parameters and losses in given class
-        self.to_device()
+        self.gan.to_device(self.device)
 
         for e in tqdm(range(epochs)):
 
             for x_cat, x_cont, y in dl:
                 x_cat = x_cat.to(self.device)
                 x_cont = x_cont.to(self.device)
-                #x_cat = None
+                y = y.to(self.device)
 
                 for _ in range(n_dis):
                     z = self.noise(x_cont)
@@ -202,5 +194,6 @@ class GanLearner():
                 plt.legend()
                 plt.show()
 
-        self.to_device('cpu')
+        self.gan.to_device('cpu')
+
         return
