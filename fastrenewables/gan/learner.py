@@ -156,7 +156,6 @@ class GanLearner():
         # gan should contain a class which itself contains a generator and discriminator/critic class and combines them
         self.gan = gan
         self.device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
-        #self.device = torch.device('cpu')
 
     def noise(self, x, n_z=100):
         z = torch.randn(x.shape[0], n_z).to(self.device)
