@@ -59,17 +59,22 @@ class GANMLP(torch.nn.Module):
 
 
 class AuxiliaryDiscriminator(torch.nn.Module):
-    def __init__(self, basic_discriminator, n_classes, input_size):
+    def __init__(self, basic_discriminator, n_classes, input_size, model_type='mlp'):
         super(AuxiliaryDiscriminator, self).__init__()
         self.basic_discriminator = basic_discriminator
         self.n_classes = n_classes
         self.input_size = input_size
 
-        self.adv_layer = nn.Sequential(nn.Linear(self.input_size, 1), nn.Sigmoid())
-        self.aux_layer = nn.Sequential(nn.Linear(self.input_size, self.n_classes), nn.Softmax(dim=1))
+        #todo: add conv layer for tcn:
+        if model_type == 'mlp':
+            self.adv_layer = nn.Sequential(nn.Linear(self.input_size, 1), nn.Sigmoid())
+            self.aux_layer = nn.Sequential(nn.Linear(self.input_size, self.n_classes), nn.Softmax(dim=1))
+        elif model_type == 'tcn':
+            self.adv_layer = nn.Sequential(nn.Flatten(), nn.Linear(self.input_size, 1), nn.Sigmoid())
+            self.aux_layer = nn.Sequential(nn.Flatten(), nn.Linear(self.input_size, self.n_classes), nn.Softmax(dim=1))
 
-    def forward(self,cats,conts):
-        out = self.basic_discriminator(cats, conts)
+    def forward(self, cats, conts):
+        out = self.basic_discriminator(None, conts)
 
         validity = self.adv_layer(out)
         label = self.aux_layer(out)
