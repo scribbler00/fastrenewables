@@ -199,7 +199,8 @@ class GanLearner():
                 x_cat = x_cat.to(self.device)
                 x_cont = x_cont.to(self.device)
                 y = y.to(self.device)
-                y = y.squeeze(1)[:, 0] # <- quite ugly but does the job
+                if y.dim() == 3:
+                    y = y.squeeze(1)[:, 0] # <- quite ugly but does the job
 
                 for _ in range(n_dis):
                     z = self.noise(x_cont)
