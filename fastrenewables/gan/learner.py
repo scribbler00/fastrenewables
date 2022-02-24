@@ -83,7 +83,8 @@ class Gan(nn.Module):
         return y, class_probs
 
     def auxiliary_loss(self, class_probs, y):
-        return self.auxiliary_loss_function(class_probs, y.ravel().to(torch.int64))*self.auxiliary_weighting_factor
+        return self.auxiliary_loss_function(class_probs, y)*self.auxiliary_weighting_factor
+        #return self.auxiliary_loss_function(class_probs, y.ravel().to(torch.int64))*self.auxiliary_weighting_factor
 
     def train_generator(self, z, x_cat, x_cont, y):
         # train the generator model
@@ -200,7 +201,7 @@ class GanLearner():
                 x_cont = x_cont.to(self.device)
                 y = y.to(self.device)
                 if y.dim() == 3:
-                    y = y.squeeze(1)[:, 0] # <- quite ugly but does the job
+                    y = y.flatten(1, 2)[:, 0]
 
                 for _ in range(n_dis):
                     z = self.noise(x_cont)
