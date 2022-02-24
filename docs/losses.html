@@ -149,6 +149,14 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 <div class="output_area">
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>torch.Size([3])
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
 
 
 <div class="output_text output_subarea output_execute_result">
@@ -174,7 +182,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="CnnMSELoss" class="doc_header"><code>class</code> <code>CnnMSELoss</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/losses.py#L110" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CnnMSELoss</code>() :: <code>MSELoss</code></p>
+<h2 id="CnnMSELoss" class="doc_header"><code>class</code> <code>CnnMSELoss</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/losses.py#L111" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>CnnMSELoss</code>() :: <code>MSELoss</code></p>
 </blockquote>
 <p>Creates a criterion that measures the mean squared error (squared L2 norm) between
 each element in the input :math:<code>x</code> and target :math:<code>y</code>.</p>
@@ -253,7 +261,7 @@ of :math:<code>n</code> elements each.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="VAEReconstructionLoss" class="doc_header"><code>class</code> <code>VAEReconstructionLoss</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/losses.py#L135" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>VAEReconstructionLoss</code>(<strong><code>model</code></strong>, <strong><code>reconstruction_cost_function</code></strong>=<em><code>MSELoss()</code></em>) :: <code>Module</code></p>
+<h2 id="VAEReconstructionLoss" class="doc_header"><code>class</code> <code>VAEReconstructionLoss</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/losses.py#L136" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>VAEReconstructionLoss</code>(<strong><code>model</code></strong>, <strong><code>reconstruction_cost_function</code></strong>=<em><code>MSELoss()</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -308,7 +316,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="BTuningLoss" class="doc_header"><code>class</code> <code>BTuningLoss</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/losses.py#L188" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BTuningLoss</code>(<strong><code>base_loss</code></strong>=<em><code>MSELoss()</code></em>, <strong><code>lambd</code></strong>=<em><code>0.5</code></em>) :: <code>Module</code></p>
+<h2 id="BTuningLoss" class="doc_header"><code>class</code> <code>BTuningLoss</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/losses.py#L189" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BTuningLoss</code>(<strong><code>base_loss</code></strong>=<em><code>MSELoss()</code></em>, <strong><code>lambd</code></strong>=<em><code>0.5</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Calculate the B-Tuning Loss based on Ranking and <code>Tuning Pre-trained Models: A New Paradigm of Exploiting Model Hubs</code></p>
 <h2 id="Parameters">Parameters<a class="anchor-link" href="#Parameters"> </a></h2>
@@ -343,7 +351,7 @@ scalar for the loss</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="btuning_rmse" class="doc_header"><code>btuning_rmse</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/losses.py#L243" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>btuning_rmse</code>(<strong><code>y_hat</code></strong>, <strong><code>y</code></strong>)</p>
+<h4 id="btuning_rmse" class="doc_header"><code>btuning_rmse</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/losses.py#L244" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>btuning_rmse</code>(<strong><code>y_hat</code></strong>, <strong><code>y</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -374,7 +382,7 @@ scalar for the loss</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="GaussianNegativeLogLikelihoodLoss" class="doc_header"><code>class</code> <code>GaussianNegativeLogLikelihoodLoss</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/losses.py#L284" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GaussianNegativeLogLikelihoodLoss</code>() :: <code>Module</code></p>
+<h2 id="GaussianNegativeLogLikelihoodLoss" class="doc_header"><code>class</code> <code>GaussianNegativeLogLikelihoodLoss</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/losses.py#L285" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GaussianNegativeLogLikelihoodLoss</code>() :: <code>Module</code></p>
 </blockquote>
 <p>.. math::
     Loss = \frac{1}{N} \sum_{i} \frac{1}{2} \exp(- s_i) || y_i - \hat{y}_i ||^2 + \frac{1}{2} s_i</p>
@@ -407,7 +415,7 @@ scalar for the loss</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RSSLoss" class="doc_header"><code>class</code> <code>RSSLoss</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/losses.py#L306" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RSSLoss</code>() :: <code>Module</code></p>
+<h2 id="RSSLoss" class="doc_header"><code>class</code> <code>RSSLoss</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/losses.py#L307" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RSSLoss</code>() :: <code>Module</code></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -462,7 +470,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="L2SPLoss" class="doc_header"><code>class</code> <code>L2SPLoss</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/losses.py#L332" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>L2SPLoss</code>(<strong><code>source_params</code></strong>, <strong><code>target_params</code></strong>, <strong><code>base_loss</code></strong>=<em><code>MSELoss()</code></em>, <strong><code>lambd</code></strong>=<em><code>0.1</code></em>) :: <code>Module</code></p>
+<h2 id="L2SPLoss" class="doc_header"><code>class</code> <code>L2SPLoss</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/losses.py#L333" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>L2SPLoss</code>(<strong><code>source_params</code></strong>, <strong><code>target_params</code></strong>, <strong><code>base_loss</code></strong>=<em><code>MSELoss()</code></em>, <strong><code>lambd</code></strong>=<em><code>0.1</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Calculate the L2SP Loss based on Explicit inductive bias for transfer learning with convolutional networks</p>
 <h2 id="Parameters">Parameters<a class="anchor-link" href="#Parameters"> </a></h2>

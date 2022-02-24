@@ -4,6 +4,8 @@ __all__ = ["index", "modules", "custom_doc_links", "git_url"]
 
 index = {"contains_instance": "00a_utils.ipynb",
          "filter_preds": "00a_utils.ipynb",
+         "flatten_ts": "00a_utils.ipynb",
+         "unflatten_to_ts": "00a_utils.ipynb",
          "VILoss": "00b_losses.ipynb",
          "Quantile_Score": "00b_losses.ipynb",
          "CnnMSELoss": "00b_losses.ipynb",

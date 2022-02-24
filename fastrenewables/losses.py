@@ -7,7 +7,7 @@ __all__ = ['VILoss', 'Quantile_Score', 'CnnMSELoss', 'VAEReconstructionLoss', 'B
 from torch import nn
 import torch
 from fastai.losses import MSELossFlat
-
+from .utils import unflatten_to_ts, flatten_ts
 
 # Cell
 class VILoss(nn.Module):
@@ -92,7 +92,8 @@ class Quantile_Score(torch.nn.Module):
                           [0.3, 0.4, 0.45],])
             res = array([0.125 , 0.2   , 0.25  , 0.0625])
         """
-
+        y = flatten_ts(y)
+        y_hat = flatten_ts(y_hat)
         y = self.reshape_1(y)
         v = y - y_hat
 

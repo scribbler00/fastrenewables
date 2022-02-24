@@ -24,6 +24,7 @@ from ..baselines import BayesLinReg, ELM
 from .transfermodels import *
 from ..tabular.learner import *
 from ..timeseries.learner import *
+from ..utils import unflatten_to_ts, flatten_ts
 from sklearn.base import BaseEstimator
 import numpy as np
 
@@ -312,33 +313,6 @@ def soft_gating(errors, eta, eps=1e-9):
 
 # Cell
 # hide
-def _flatten_ts(x):
-    if len(x.shape) == 2:
-        return x
-
-    n_samples, n_features, ts_length = x.shape
-
-    if isinstance(x, np.ndarray):
-        x = x.swapaxes(1,2)
-    else:
-        x = x.permute(0,2,1)
-    x = x.reshape(n_samples*ts_length, n_features)
-    return x
-
-def _unflatten_to_ts(x, ts_length, n_features):
-    if len(x) == 0 or n_features == 0:
-        return x
-
-    x = x.reshape(-1, ts_length, n_features)
-    if isinstance(x, np.ndarray):
-        x = x.swapaxes(1,2)
-    else:
-        x = x.permute(0,2,1)
-
-    return x
-
-# Cell
-# hide
 def create_error_matrix(targets, preds, error_function=squared_error):
     """
         N=#samples, k=#ensembles, t=forecast horizon
@@ -427,7 +401,7 @@ def get_local_weight(conts, error_expectation_regressor, eta=1):
     """
     with torch.no_grad():
         if len(conts.shape)==3:
-            conts=_flatten_ts(conts)
+            conts=flatten_ts(conts)
 
         if not isinstance(conts,np.ndarray):
             conts = to_np(conts)
@@ -483,7 +457,7 @@ class LocalErrorPredictor(BaseEstimator):
 
     def predict(self, conts):
         if len(conts.shape)==3:
-            conts=_flatten_ts(conts)
+            conts=flatten_ts(conts)
 
         if not isinstance(conts,np.ndarray):
             conts = to_np(conts)
@@ -542,10 +516,10 @@ class CSGE(nn.Module):
         if self.is_timeseries_model:
             preds = get_preds(cats, conts, self.source_models, convert_to_np=False)
         else:
-            preds = get_preds(_flatten_ts(cats), _flatten_ts(conts),
+            preds = get_preds(flatten_ts(cats), flatten_ts(conts),
                               self.source_models, convert_to_np=False)
 
-            preds = _unflatten_to_ts(preds, self.ts_length, self.n_ensembles)
+            preds = unflatten_to_ts(preds, self.ts_length, self.n_ensembles)
 
         return preds
 
@@ -560,7 +534,7 @@ class CSGE(nn.Module):
         elif len(data.shape) == 3:
             raise ValueError()
         else:
-            return _unflatten_to_ts(data, self.ts_length, n_features)
+            return unflatten_to_ts(data, self.ts_length, n_features)
 
     def _n_features(self,data):
         if data is None:
@@ -597,7 +571,7 @@ class CSGE(nn.Module):
 
             self.global_weights = get_global_weight(self.error_matrix, self.eta_global)
 
-            self.local_error_estimator.fit(_flatten_ts(conts), _flatten_ts(self.error_matrix))
+            self.local_error_estimator.fit(flatten_ts(conts), flatten_ts(self.error_matrix))
             self.local_weights = self.get_local_weight(conts)
 
             self.timedependent_weights = get_timedependent_weight(
@@ -621,9 +595,9 @@ class CSGE(nn.Module):
             assert 2==len(self.timedependent_weights.shape)
 
     def get_local_weight(self, conts):
-        local_weights = get_local_weight(_flatten_ts(conts), self.local_error_estimator, self.eta_local)
+        local_weights = get_local_weight(flatten_ts(conts), self.local_error_estimator, self.eta_local)
 
-        local_weights = _unflatten_to_ts(local_weights, self.ts_length, self.n_ensembles)
+        local_weights = unflatten_to_ts(local_weights, self.ts_length, self.n_ensembles)
 
         return local_weights
 
@@ -692,13 +666,13 @@ class TorchSklearnWrapper(nn.Module):
             N, D = X.shape
             t = 1
 
-        X = _flatten_ts(X)
+        X = flatten_ts(X)
 
         # TODO: could be multiple models
         yhat = self.source_models.predict(X)
         yhat = torch.tensor(yhat).float().reshape(-1,1)
         # TODO: could be multiple models
-        yhat = _unflatten_to_ts(yhat, t, 1)
+        yhat = unflatten_to_ts(yhat, t, 1)
 
 
         return yhat
