@@ -658,8 +658,8 @@ class TorchSklearnWrapper(nn.Module):
         super().__init__()
         self.source_models = source_models
 
-    def forward(self, cats, conts):
-        X = to_np(conts)
+    def _reshape_for_sklearn(self, X):
+        X = to_np(X)
         if len(X.shape) == 3:
             N, D, t = X.shape
         else:
@@ -668,11 +668,21 @@ class TorchSklearnWrapper(nn.Module):
 
         X = flatten_ts(X)
 
+        return X, N, D, t
+
+    def fit(self, cats, conts, targets):
+        X, _, _, _ = self._reshape_for_sklearn(conts)
+        targets, _, _, _ = self._reshape_for_sklearn(targets)
+
+        self.source_models = self.source_models.fit(X, targets.ravel())
+
+    def forward(self, cats, conts):
+        X, N, D, t = self._reshape_for_sklearn(conts)
+
         # TODO: could be multiple models
         yhat = self.source_models.predict(X)
-        yhat = torch.tensor(yhat).float().reshape(-1,1)
+        yhat = torch.tensor(yhat).float().reshape(-1, 1)
         # TODO: could be multiple models
         yhat = unflatten_to_ts(yhat, t, 1)
-
 
         return yhat

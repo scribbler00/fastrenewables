@@ -23,7 +23,7 @@ def filter_preds(targets, preds, min_value=0, max_value=1.1, filter_nas=True):
     preds[preds > max_value] = max_value
 
     if filter_nas:
-        mask_nans = ~np.isnan(preds)
+        mask_nans = np.logical_not(np.isnan(preds, dtype=np.bool))
         preds, targets = preds[mask_nans], targets[mask_nans]
 
     return targets, preds
