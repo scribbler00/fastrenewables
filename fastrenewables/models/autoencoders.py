@@ -78,15 +78,22 @@ class UnFlatten(nn.Module):
 # Cell
 @variational_estimator
 class VariationalAutoencoder(Autoencoder):
-    def __init__(self, encoder, decoder, h_dim, z_dim):
+    def __init__(self, encoder, decoder, h_dim, z_dim, is_ts=False, kernel_size=3):
         super().__init__(encoder, decoder)
         self.h_dim = h_dim
         self.z_dim = z_dim
         self.flatten = Flatten()
         self.unflatten = UnFlatten()
 
-        self.hidden2mu = nn.Linear(h_dim, z_dim)
-        self.hidden2logvar = nn.Linear(h_dim, z_dim)
+
+        if is_ts:
+            self.hidden2mu = nn.Conv1d(h_dim, z_dim, kernel_size=kernel_size, padding=kernel_size//2)
+            self.hidden2logvar = nn.Conv1d(h_dim, z_dim, kernel_size=kernel_size, padding=kernel_size//2)
+        else:
+            self.hidden2mu = nn.Linear(h_dim, z_dim)
+            self.hidden2logvar = nn.Linear(h_dim, z_dim)
+
+
         self.latent_dimensions = None
         self._mu, self._logvar = None, None
 
@@ -94,9 +101,9 @@ class VariationalAutoencoder(Autoencoder):
 
         x_hidden = self.encoder(categorical_data, continuous_data)
 
-        self.latent_dimensions = x_hidden.shape
+#         self.latent_dimensions = x_hidden.shape
 
-        x_hidden = self.flatten(x_hidden)
+#         x_hidden = self.flatten(x_hidden)
 
         mu, logvar = self.hidden2mu(x_hidden), self.hidden2logvar(x_hidden)
 
@@ -110,14 +117,14 @@ class VariationalAutoencoder(Autoencoder):
 
     def decode(self, categorical_data, continuous_data, as_np=False, latent_dimensions=None):
 
-        if not latent_dimensions and not self.latent_dimensions:
-            raise ValueError("latent_dimensions are not set to unflatten data.")
-        if not latent_dimensions:
-            latent_dimensions = self.latent_dimensions
+#         if not latent_dimensions and not self.latent_dimensions:
+#             raise ValueError("latent_dimensions are not set to unflatten data.")
+#         if not latent_dimensions:
+#             latent_dimensions = self.latent_dimensions
 
-        x = self.unflatten(continuous_data, latent_dimensions)
+#         x = self.unflatten(continuous_data, latent_dimensions)
 
-        x = self.decoder(categorical_data, x)
+        x = self.decoder(categorical_data, continuous_data)
 
         if as_np: return to_np(x)
         else: return x
