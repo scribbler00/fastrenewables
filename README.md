@@ -12,6 +12,4 @@ We hope this project will help you to get excelent results for limited data in r
 
 `pip install fastrenewables`
 
-## How to use
-
-Fill me in please! Don't forget code examples:
+## The repositorty is still under development. So propably a lot of corner cases are still missing and potentialy api changes will happen in the future.
