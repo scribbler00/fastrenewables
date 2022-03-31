@@ -89,7 +89,7 @@ class AuxiliaryDiscriminator(torch.nn.Module):
             self.aux_layer = nn.Sequential(nn.Linear(self.input_size, self.n_classes), nn.Softmax(dim=1))
 
     def forward(self, cats, conts):
-        out = self.basic_discriminator(None, conts)
+        out = self.basic_discriminator(cats, conts)
         if self.model_type == 'tcn':
             out = out.flatten(1, 2)
         validity = self.adv_layer(out)
