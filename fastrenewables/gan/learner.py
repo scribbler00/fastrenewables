@@ -13,6 +13,7 @@ from torch.nn import BCELoss, CrossEntropyLoss
 from ..tabular.data import *
 from ..tabular.core import *
 from .model import *
+from ..timeseries.model import TemporalCNN
 import glob
 
 # Cell
@@ -40,9 +41,9 @@ class DummyDatasetTS(torch.utils.data.Dataset):
     def __init__(self, n_samples=10000, n_cat_feats=4, n_cont_feats=16, n_targets=1, len_ts=96):
 
         self.n_samples = n_samples
-        self.cat = torch.randn(n_samples, n_cat_feats, len_ts)
-        self.cont = torch.randn(n_samples, n_cont_feats, len_ts)
-        self.y = torch.randn(n_samples, n_targets)
+        self.cat = torch.rand(n_samples, n_cat_feats, len_ts)
+        self.cont = torch.rand(n_samples, n_cont_feats, len_ts)
+        self.y = torch.rand(n_samples, n_targets)
 
     def __len__(self):
         return self.n_samples
@@ -82,7 +83,7 @@ class Gan(nn.Module):
         return y, class_probs
 
     def auxiliary_loss(self, class_probs, y):
-        return self.auxiliary_loss_function(class_probs, y)*self.auxiliary_weighting_factor
+        return self.auxiliary_loss_function(class_probs, y.ravel().to(torch.int64))*self.auxiliary_weighting_factor
 
     def train_generator(self, z, x_cat, x_cont, y):
         # train the generator model
@@ -92,7 +93,7 @@ class Gan(nn.Module):
         y_fake, class_probs = self._split_pred(y_fake)
         loss = self.bce_loss(y_fake, torch.ones_like(y_fake))
         if self.auxiliary:
-            aux_loss = self.auxiliary_loss(class_probs, y.ravel().to(torch.int64))
+            aux_loss = self.auxiliary_loss(class_probs, y)
             loss = (loss + aux_loss)/2
         loss.backward()
         self.gen_optim.step()
@@ -105,7 +106,7 @@ class Gan(nn.Module):
         y_real, class_probs = self._split_pred(y_real)
         real_loss = self.bce_loss(y_real, torch.ones_like(y_real))
         if self.auxiliary:
-            aux_loss = self.auxiliary_loss(class_probs, y.ravel().to(torch.int64))
+            aux_loss = self.auxiliary_loss(class_probs, y)
             real_loss = (real_loss + aux_loss)/2
 
         real_loss.backward()
@@ -119,7 +120,7 @@ class Gan(nn.Module):
 
         fake_loss =  self.bce_loss(y_fake, torch.zeros_like(y_fake))
         if self.auxiliary:
-            aux_loss = self.auxiliary_loss(class_probs, y.ravel().to(torch.int64))
+            aux_loss = self.auxiliary_loss(class_probs, y)
             fake_loss = (fake_loss + aux_loss)/2
 
         fake_loss.backward()

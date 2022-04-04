@@ -61,7 +61,7 @@ class GANMLP(torch.nn.Module):
             layer = LinBnAct(ann_structure[idx-1], ann_structure[idx], cur_use_bn , cur_act_cls )
             layers.append(layer)
         if final_activation is not None:
-            layers.append(final_activation)
+            layers.append(final_activation())
 
         self.layers = nn.Sequential(*layers)
 
@@ -85,13 +85,13 @@ class AuxiliaryDiscriminator(torch.nn.Module):
             self.adv_layer = nn.Sequential(nn.Linear(self.input_size, 1), nn.Sigmoid())
             self.aux_layer = nn.Sequential(nn.Linear(self.input_size, self.n_classes), nn.Softmax(dim=1))
         elif self.model_type == 'tcn':
-            self.adv_layer = nn.Sequential(nn.Linear(self.input_size, 1), nn.Sigmoid())
-            self.aux_layer = nn.Sequential(nn.Linear(self.input_size, self.n_classes), nn.Softmax(dim=1))
+            self.adv_layer = nn.Sequential(nn.Flatten(1), nn.Linear(self.input_size*96, 1), nn.Sigmoid())
+            self.aux_layer = nn.Sequential(nn.Flatten(1), nn.Linear(self.input_size*96, self.n_classes), nn.Softmax(dim=1))
 
     def forward(self, cats, conts):
         out = self.basic_discriminator(cats, conts)
-        if self.model_type == 'tcn':
-            out = out.flatten(1, 2)
+        #if self.model_type == 'tcn':
+            #out = out.flatten(1, 2)
         validity = self.adv_layer(out)
         label = self.aux_layer(out)
 
