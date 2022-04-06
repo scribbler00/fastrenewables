@@ -84,7 +84,7 @@ class AuxiliaryDiscriminator(torch.nn.Module):
         if self.model_type == 'mlp':
             self.adv_layer = nn.Sequential(nn.Linear(self.input_size, 1), nn.Sigmoid())
             self.aux_layer = nn.Sequential(nn.Linear(self.input_size, self.n_classes), nn.Softmax(dim=1))
-        elif self.model_type == 'tcn':
+        elif self.model_type == 'cnn':
             self.adv_layer = nn.Sequential(nn.Flatten(1), nn.Linear(self.input_size*96, 1), nn.Sigmoid())
             self.aux_layer = nn.Sequential(nn.Flatten(1), nn.Linear(self.input_size*96, self.n_classes), nn.Softmax(dim=1))
 

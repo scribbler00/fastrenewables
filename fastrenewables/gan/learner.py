@@ -56,6 +56,7 @@ class DummyDatasetTS(torch.utils.data.Dataset):
 
 
 class Gan(nn.Module):
+
     def __init__(self, generator, discriminator, gen_optim, dis_optim, auxiliary=False, auxiliary_weighting_factor=1):
         super(Gan, self).__init__()
         self.generator = generator
