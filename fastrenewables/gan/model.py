@@ -24,6 +24,7 @@ def flatten_ts(x):
     return x
 
 # Cell
+
 def LinBnAct(si, so, use_bn, act_cls):
     layers = [nn.Linear(si,so)]
     if use_bn:
@@ -74,7 +75,7 @@ class GANMLP(torch.nn.Module):
 
 
 class AuxiliaryDiscriminator(torch.nn.Module):
-    def __init__(self, basic_discriminator, n_classes, input_size, model_type='mlp'):
+    def __init__(self, basic_discriminator, n_classes, input_size, len_ts, model_type='mlp'):
         super(AuxiliaryDiscriminator, self).__init__()
         self.basic_discriminator = basic_discriminator
         self.n_classes = n_classes
@@ -85,8 +86,8 @@ class AuxiliaryDiscriminator(torch.nn.Module):
             self.adv_layer = nn.Sequential(nn.Linear(self.input_size, 1), nn.Sigmoid())
             self.aux_layer = nn.Sequential(nn.Linear(self.input_size, self.n_classes), nn.Softmax(dim=1))
         elif self.model_type == 'cnn':
-            self.adv_layer = nn.Sequential(nn.Flatten(1), nn.Linear(self.input_size*96, 1), nn.Sigmoid())
-            self.aux_layer = nn.Sequential(nn.Flatten(1), nn.Linear(self.input_size*96, self.n_classes), nn.Softmax(dim=1))
+            self.adv_layer = nn.Sequential(nn.Flatten(1), nn.Linear(self.input_size*len_ts, 1), nn.Sigmoid())
+            self.aux_layer = nn.Sequential(nn.Flatten(1), nn.Linear(self.input_size*len_ts, self.n_classes), nn.Softmax(dim=1))
 
     def forward(self, cats, conts):
         out = self.basic_discriminator(cats, conts)
