@@ -16,17 +16,17 @@ class DummyDataset(torch.utils.data.Dataset):
 
         self.n_samples = n_samples
         if n_dim == 2:
-            self.cat = torch.rand(n_samples, n_cat_feats)
-            self.cont = torch.rand(n_samples, n_cont_feats)
-            self.y = torch.rand(n_samples, n_targets)
+            self.cat = torch.ones(n_samples, n_cat_feats)
+            self.cont = torch.ones(n_samples, n_cont_feats)
+            self.y = torch.ones(n_samples, n_targets)
         elif n_dim == 3:
-            self.cat = torch.rand(n_samples, n_cat_feats, len_ts)
-            self.cont = torch.rand(n_samples, n_cont_feats, len_ts)
-            self.y = torch.rand(n_samples, n_targets)
+            self.cat = torch.ones(n_samples, n_cat_feats, len_ts)
+            self.cont = torch.ones(n_samples, n_cont_feats, len_ts)
+            self.y = torch.ones(n_samples, n_targets, len_ts)
         elif n_dim == 4:
-            self.cat = torch.rand(n_samples, n_cat_feats, len_ts, len_ts)
-            self.cont = torch.rand(n_samples, n_cont_feats, len_ts, len_ts)
-            self.y = torch.rand(n_samples, n_targets)
+            self.cat = torch.ones(n_samples, n_cat_feats, len_ts, len_ts)
+            self.cont = torch.ones(n_samples, n_cont_feats, len_ts, len_ts)
+            self.y = torch.ones(n_samples, n_targets, len_ts, len_ts)
 
     def __len__(self):
         return self.n_samples
