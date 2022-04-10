@@ -9,13 +9,10 @@ import torch.nn as nn
 import matplotlib.pyplot as plt
 
 from tqdm import tqdm
-
-#from fastrenewables.tabular.data import *
-#from fastrenewables.tabular.core import *
 from ..synthetic_data import *
 from .model import *
 
-import glob
+#import glob
 
 # Cell
 
@@ -33,11 +30,9 @@ class GANLearner():
         return fake_samples
 
     def fit(self, dl, epochs=10, plot_epochs=10, save_model=False):
-        # train gan and store parameters and losses in given class
+
         self.gan.to_device(self.gan.device)
-
         for e in tqdm(range(epochs)):
-
             for x_cat, x_cont, y in dl:
                 x_cat = x_cat.to(self.gan.device)
                 x_cont = x_cont.to(self.gan.device)
