@@ -3,7 +3,6 @@
 __all__ = ['flatten_ts', 'LinBnAct', 'GANMLP', 'GANCNN', 'GAN', 'WGAN', 'AuxiliaryDiscriminator', 'get_gan_model']
 
 # Cell
-# export
 
 import numpy as np
 import torch
@@ -11,6 +10,7 @@ import torch.nn as nn
 import matplotlib.pyplot as plt
 
 from torch.nn import BCELoss, CrossEntropyLoss
+from tqdm import tqdm
 
 from ..synthetic_data import DummyDataset
 from ..timeseries.model import TemporalCNN
@@ -183,8 +183,9 @@ class GAN(nn.Module):
         z = self.noise(x_cont)
         x_gen = self.generator(x_cat, z)
         assert(x_gen.shape == x_cont.shape)
-        self.discriminator(None, x_gen)
-        return
+        y = self.discriminator(None, x_gen)
+        out = self._split_pred(y)
+        return out
 
 # Cell
 

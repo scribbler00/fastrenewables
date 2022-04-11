@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 
 class DummyDataset(torch.utils.data.Dataset):
 
-    def __init__(self, n_samples=100, n_cat_feats=2, n_cont_feats=4, n_targets=1, len_ts=24, n_dim=2):
+    def __init__(self, n_samples=100, n_cat_feats=2, n_cont_feats=2, n_targets=1, len_ts=24, n_dim=2):
 
         self.n_samples = n_samples
         if n_dim == 2:
@@ -41,7 +41,7 @@ class DummyDataset(torch.utils.data.Dataset):
 
 class SineDataset(torch.utils.data.Dataset):
 
-    def __init__(self, n_samples=100, n_classes=2, n_features=4, len_ts=24, noise=0.05):
+    def __init__(self, n_samples=100, n_classes=2, n_features=2, len_ts=24, noise=0.05):
         self.n_samples = n_samples
         self.n_classes = n_classes
         self.n_features = n_features
