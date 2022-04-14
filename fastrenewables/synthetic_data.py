@@ -18,15 +18,15 @@ class DummyDataset(torch.utils.data.Dataset):
         if n_dim == 2:
             self.cat = torch.ones(n_samples, n_cat_feats)
             self.cont = torch.ones(n_samples, n_cont_feats)
-            self.y = torch.ones(n_samples, n_targets)
         elif n_dim == 3:
             self.cat = torch.ones(n_samples, n_cat_feats, len_ts)
             self.cont = torch.ones(n_samples, n_cont_feats, len_ts)
-            self.y = torch.ones(n_samples, n_targets, len_ts)
+            #self.y = torch.ones(n_samples, n_targets, len_ts)
         elif n_dim == 4:
             self.cat = torch.ones(n_samples, n_cat_feats, len_ts, len_ts)
             self.cont = torch.ones(n_samples, n_cont_feats, len_ts, len_ts)
-            self.y = torch.ones(n_samples, n_targets, len_ts, len_ts)
+            #self.y = torch.ones(n_samples, n_targets, len_ts, len_ts)
+        self.y = torch.ones(n_samples, n_targets)
 
     def __len__(self):
         return self.n_samples
@@ -34,7 +34,7 @@ class DummyDataset(torch.utils.data.Dataset):
     def __getitem__(self, idx):
         x_cat = self.cat[idx, :]
         x_cont = self.cont[idx, :]
-        y = self.y[idx]
+        y = self.y[idx, :]
         return x_cat, x_cont, y
 
 # Cell

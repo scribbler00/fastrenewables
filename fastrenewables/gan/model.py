@@ -9,6 +9,7 @@ import torch
 import torch.nn as nn
 import matplotlib.pyplot as plt
 
+from functools import partial
 from torch.nn import BCELoss, CrossEntropyLoss
 from tqdm import tqdm
 
@@ -46,7 +47,6 @@ def LinBnAct(si, so, use_bn, act_cls):
 
 class GANMLP(torch.nn.Module):
     def __init__(self, ann_structure, bn_cont=False, act_fct=torch.nn.ReLU, final_act_fct=nn.Sigmoid, embedding_module=None, transpose=False):
-        # transpose doesn't change anything here but is needed for consistency
         super(GANMLP, self).__init__()
 
         n_cont = ann_structure[0]
@@ -83,13 +83,24 @@ class GANMLP(torch.nn.Module):
 # Cell
 
 class GANCNN(torch.nn.Module):
-    def __init__(self, ann_structure, bn_cont=False, act_fct=nn.ReLU, final_act_fct=nn.Sigmoid, embedding_module=None, transpose=False):
+    def __init__(self, ann_structure, n_z=100, len_ts=1, bn_cont=False, act_fct=nn.ReLU, final_act_fct=nn.Sigmoid, embedding_module=None, transpose=False):
         super(GANCNN, self).__init__()
 
-        self.model = TemporalCNN(cnn_structure=ann_structure, batch_norm_cont=bn_cont, cnn_type='cnn', act_func=act_fct, final_activation=final_act_fct, transpose=transpose)
+        self.conv_net = TemporalCNN(cnn_structure=ann_structure, batch_norm_cont=bn_cont, cnn_type='cnn', act_func=act_fct, final_activation=final_act_fct, transpose=transpose)
+        self.transpose = transpose
+        if self.transpose:
+            self.model_in = nn.Sequential(nn.Linear(n_z, ann_structure[0]*len_ts), nn.Unflatten(1, (ann_structure[0], len_ts)))
+        if not self.transpose:
+            self.model_out = nn.Sequential(nn.Flatten(), nn.Linear(len_ts, 1))
 
     def forward(self, x_cat, x_cont):
-        return self.model(x_cat, x_cont)
+        if self.transpose:
+            x = self.model_in(x_cont)
+            x = self.conv_net(x_cat, x)
+        else:
+            x = self.conv_net(x_cat, x_cont)
+            x = self.model_out(x)
+        return x
 
 # Cell
 
@@ -112,10 +123,10 @@ class GAN(nn.Module):
         self.to_device(self.device)
 
     def noise(self, x):
-        if x.dim() == 2:
-            z = torch.randn(x.shape[0], self.n_z).to(self.device)
-        elif x.dim() == 3:
-            z = torch.randn(x.shape[0], self.n_z, x.shape[2]).to(self.device)
+        #if x.dim() == 2:
+        z = torch.randn(x.shape[0], self.n_z).to(self.device)
+        #elif x.dim() == 3:
+            #z = torch.randn(x.shape[0], self.n_z, x.shape[2]).to(self.device)
         return z
 
     def to_device(self, device):
@@ -237,20 +248,15 @@ class WGAN(GAN):
 # Cell
 
 class AuxiliaryDiscriminator(torch.nn.Module):
-    def __init__(self, basic_discriminator, n_classes, final_input_size, len_ts=1, model_type='mlp'):
+    def __init__(self, basic_discriminator, n_classes, final_input_size, len_ts=1):
         super(AuxiliaryDiscriminator, self).__init__()
         self.basic_discriminator = basic_discriminator
         self.n_classes = n_classes
         self.final_input_size = final_input_size
         self.len_ts = len_ts
-        self.model_type = model_type
 
-        if self.model_type == 'mlp':
-            self.adv_layer = nn.Sequential(nn.Linear(self.final_input_size, 1), nn.Sigmoid())
-            self.aux_layer = nn.Sequential(nn.Linear(self.final_input_size, self.n_classes), nn.Softmax(dim=1))
-        elif self.model_type == 'cnn':
-            self.adv_layer = nn.Sequential(nn.Flatten(1), nn.Linear(self.final_input_size*self.len_ts, 1), nn.Sigmoid())
-            self.aux_layer = nn.Sequential(nn.Flatten(1), nn.Linear(self.final_input_size*self.len_ts, self.n_classes), nn.Softmax(dim=1))
+        self.adv_layer = nn.Sequential(nn.Linear(self.final_input_size, 1), nn.Sigmoid())
+        self.aux_layer = nn.Sequential(nn.Linear(self.final_input_size, self.n_classes), nn.Softmax(dim=1))
 
     def forward(self, cats, conts):
         out = self.basic_discriminator(cats, conts)
@@ -261,7 +267,7 @@ class AuxiliaryDiscriminator(torch.nn.Module):
 
 # Cell
 
-def get_gan_model(gan_type, model_type, structure, len_ts=1, n_classes=1):
+def get_gan_model(gan_type, model_type, structure, len_ts=1, n_classes=1, n_z=100):
     gen_structure = structure.copy()
     structure.reverse()
     dis_structure = structure
@@ -269,9 +275,9 @@ def get_gan_model(gan_type, model_type, structure, len_ts=1, n_classes=1):
     n_z = gen_structure[0]
 
     if model_type == 'mlp':
-        model_fct = GANMLP
+        model_fct = partial(GANMLP)
     elif model_type == 'cnn':
-        model_fct = GANCNN
+        model_fct = partial(GANCNN, n_z=n_z, len_ts=len_ts)
 
     if gan_type == 'bce' or gan_type == 'aux':
         final_act_dis = nn.Sigmoid
@@ -285,10 +291,9 @@ def get_gan_model(gan_type, model_type, structure, len_ts=1, n_classes=1):
     generator = model_fct(ann_structure=gen_structure, act_fct=nn.ReLU, final_act_fct=nn.Sigmoid, transpose=True)
     if gan_type == 'aux':
         auxiliary = True
-        dis_structure = dis_structure[:-1]
         final_input_size = dis_structure[-1]
         discriminator = model_fct(ann_structure=dis_structure, act_fct=nn.LeakyReLU, final_act_fct=final_act_dis)
-        discriminator = AuxiliaryDiscriminator(basic_discriminator=discriminator, n_classes=n_classes, final_input_size=final_input_size, len_ts=len_ts, model_type=model_type)
+        discriminator = AuxiliaryDiscriminator(basic_discriminator=discriminator, n_classes=n_classes, final_input_size=final_input_size, len_ts=len_ts)
     else:
         auxiliary = False
         discriminator = model_fct(ann_structure=dis_structure, act_fct=nn.LeakyReLU, final_act_fct=final_act_dis)
