@@ -38,6 +38,7 @@ class DummyDataset(torch.utils.data.Dataset):
         return x_cat, x_cont, y
 
 # Cell
+torch.pi = torch.acos(torch.zeros(1)).item() * 2
 
 class SineDataset(torch.utils.data.Dataset):
 

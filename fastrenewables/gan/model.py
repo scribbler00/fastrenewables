@@ -87,12 +87,26 @@ class GANCNN(torch.nn.Module):
     def __init__(self, ann_structure, n_z=100, len_ts=1, bn_cont=False, act_fct=nn.ReLU, final_act_fct=nn.Sigmoid, embedding_module=None, transpose=False):
         super(GANCNN, self).__init__()
 
-        self.conv_net = TemporalCNN(cnn_structure=ann_structure, batch_norm_cont=bn_cont, cnn_type='cnn', act_func=act_fct, final_activation=final_act_fct, transpose=transpose)
+        self.conv_net = TemporalCNN(cnn_structure=ann_structure, batch_norm_cont=bn_cont,
+                                    cnn_type='cnn', act_func=act_fct,
+                                    # TODO: this is not the final layer
+                                    final_activation=act_fct, transpose=transpose)
         self.transpose = transpose
         if self.transpose:
-            self.model_in = nn.Sequential(nn.Linear(n_z, ann_structure[0]*len_ts), nn.Unflatten(1, (ann_structure[0], len_ts)))
+            if final_act_fct is not None:
+                self.model_in = nn.Sequential(nn.Linear(n_z, ann_structure[0]*len_ts), final_act_fct(),
+                                          nn.Unflatten(1, (ann_structure[0], len_ts))
+                                         )
+            else:
+                self.model_in = nn.Sequential(nn.Linear(n_z, ann_structure[0]*len_ts),
+                                          nn.Unflatten(1, (ann_structure[0], len_ts))
+                                         )
         if not self.transpose:
-            self.model_out = nn.Sequential(nn.Flatten(), nn.Linear(len_ts, 1))
+            # TODO ugly
+            if final_act_fct is not None:
+                self.model_out = nn.Sequential(nn.Flatten(), nn.Linear(len_ts, 1), final_act_fct())
+            else:
+                self.model_out = nn.Sequential(nn.Flatten(), nn.Linear(len_ts, 1))
 
     def forward(self, x_cat, x_cont):
         if self.transpose:
