@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 from ..synthetic_data import *
 from .model import *
+from ..tabular.model import EmbeddingModule
 
 #import glob
 

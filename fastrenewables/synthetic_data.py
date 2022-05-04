@@ -73,7 +73,8 @@ class SineDataset(torch.utils.data.Dataset):
                     a = amplitudes[:, f_idx]
                     f = frequencies[:, f_idx]
                     p = phases[:, f_idx]
-                    self.cat_data[c*self.n_samples + idx, f_idx, :] = p + self.noise*torch.randn_like(t)
+                    #self.cat_data[c*self.n_samples + idx, f_idx, :] = p + self.noise*torch.randn_like(t)
+                    self.cat_data[c*self.n_samples + idx, f_idx, :] = c
                     self.cont_data[c*self.n_samples + idx, f_idx, :] = a*torch.sin(2*torch.pi*f*t + p) + self.noise*torch.randn_like(t)
 
     def __len__(self):

@@ -15,6 +15,7 @@ from tqdm import tqdm
 
 from ..synthetic_data import DummyDataset
 from ..timeseries.model import TemporalCNN
+from ..tabular.model import EmbeddingModule
 
 # Cell
 
@@ -75,8 +76,8 @@ class GANMLP(torch.nn.Module):
 
     def forward(self, x_cat, x_cont):
         if self.embedding_module is not None:
-            cat = self.embedding_module(x_cat)
-            x_cont = torch.cat([x_cat, x_cont], 1)
+            x_cat_e = self.embedding_module(x_cat)
+            x_cont = torch.cat([x_cat_e, x_cont], 1)
 
         return self.model(x_cont)
 
@@ -123,10 +124,7 @@ class GAN(nn.Module):
         self.to_device(self.device)
 
     def noise(self, x):
-        #if x.dim() == 2:
         z = torch.randn(x.shape[0], self.n_z).to(self.device)
-        #elif x.dim() == 3:
-            #z = torch.randn(x.shape[0], self.n_z, x.shape[2]).to(self.device)
         return z
 
     def to_device(self, device):
@@ -267,7 +265,7 @@ class AuxiliaryDiscriminator(torch.nn.Module):
 
 # Cell
 
-def get_gan_model(gan_type, model_type, structure, len_ts=1, n_classes=1, n_z=100):
+def get_gan_model(gan_type, model_type, structure, len_ts=1, n_classes=1, n_z=100, emb_module=None):
     gen_structure = structure.copy()
     structure.reverse()
     dis_structure = structure
@@ -288,7 +286,7 @@ def get_gan_model(gan_type, model_type, structure, len_ts=1, n_classes=1, n_z=10
         opt_fct = torch.optim.RMSprop
         gan_class = WGAN
 
-    generator = model_fct(ann_structure=gen_structure, act_fct=nn.ReLU, final_act_fct=nn.Sigmoid, transpose=True)
+    generator = model_fct(ann_structure=gen_structure, act_fct=nn.ReLU, final_act_fct=nn.Sigmoid, transpose=True, embedding_module=emb_module)
     if gan_type == 'aux':
         auxiliary = True
         final_input_size = dis_structure[-1]
