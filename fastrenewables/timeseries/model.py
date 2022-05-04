@@ -115,6 +115,7 @@ class BasicTemporalBlock(nn.Module):
 
 # Cell
 class ResidualBlock(nn.Module):
+    # todo: doesn't support transposedconv-layer
     """
         (Single) Residual block of a TCN.
     """
@@ -129,13 +130,19 @@ class ResidualBlock(nn.Module):
         act_func=nn.ReLU,
         embedding_size=None,
         dropout=0.2,
+        transpose=False #todo if needed
     ):
         super(ResidualBlock, self).__init__()
         self.embedding_size = embedding_size
         self.act_func = Identity if act_func is None else act_func
 
+        if transpose:
+            conv_fct = nn.ConvTranspose1d
+        else:
+            conv_fct = nn.Conv1d
+
         self.conv1 = weight_norm(
-            nn.Conv1d(
+            conv_fct(
                 n_inputs,
                 n_outputs,
                 kernel_size,
@@ -150,7 +157,7 @@ class ResidualBlock(nn.Module):
         self.dropout1 = nn.Dropout2d(dropout)
 
         self.conv2 = weight_norm(
-            nn.Conv1d(
+            conv_fct(
                 n_outputs,
                 n_outputs,
                 kernel_size,
@@ -176,14 +183,14 @@ class ResidualBlock(nn.Module):
         )
 
         self.downsample = (
-            nn.Conv1d(n_inputs, n_outputs, 1) if n_inputs != n_outputs else None
+            conv_fct(n_inputs, n_outputs, 1) if n_inputs != n_outputs else None
         )
 
         self.act_func3 = self.act_func()
 
         if self.embedding_size is not None:
             self.embedding_transform = (
-                nn.Conv1d(self.embedding_size, n_outputs, 1)
+                conv_fct(self.embedding_size, n_outputs, 1)
                 if (self.embedding_size != n_outputs)
                 and (self.embedding_size is not None)
                 else None
@@ -281,6 +288,7 @@ class TemporalConvNet(nn.Module):
                     if i in add_embedding_at_layer
                     else None,
                     act_func=act_func if i < num_levels - 1 else final_activation,
+                    transpose=transpose
                 )
             elif self.cnn_type == "cnn":
                 cur_layer = BasicTemporalBlock(

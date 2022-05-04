@@ -76,6 +76,8 @@ nb_path: "nbs/07_timeseries.model.ipynb"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">Chomp1d</span><span class="p">(</span><span class="mi">1</span><span class="p">)(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">8</span><span class="p">))</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">24</span><span class="p">)</span>
+<span class="n">Chomp1d</span><span class="p">(</span><span class="mi">1</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
 </pre></div>
 
     </div>
@@ -90,7 +92,7 @@ nb_path: "nbs/07_timeseries.model.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor([[[1, 2, 3, 4, 5, 6]]])</pre>
+<pre>torch.Size([32, 8, 23])</pre>
 </div>
 
 </div>
@@ -141,10 +143,30 @@ nb_path: "nbs/07_timeseries.model.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">??</span>ConvLayer
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ConvLayer</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">transpose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>ConvLayer(
+  (0): ConvTranspose2d(1, 2, kernel_size=(3, 3), stride=(1, 1), bias=False)
+  (1): BatchNorm2d(2, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (2): ReLU()
+)</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -154,7 +176,99 @@ nb_path: "nbs/07_timeseries.model.ipynb"
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
 
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">??</span>ConvLayer
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea ">
+<pre><span class="ansi-red-fg">Init signature:</span>
+ConvLayer<span class="ansi-blue-fg">(</span>
+    ni<span class="ansi-blue-fg">,</span>
+    nf<span class="ansi-blue-fg">,</span>
+    ks<span class="ansi-blue-fg">=</span><span class="ansi-cyan-fg">3</span><span class="ansi-blue-fg">,</span>
+    stride<span class="ansi-blue-fg">=</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">,</span>
+    padding<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">,</span>
+    bias<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">,</span>
+    ndim<span class="ansi-blue-fg">=</span><span class="ansi-cyan-fg">2</span><span class="ansi-blue-fg">,</span>
+    norm_type<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">&lt;</span>NormType<span class="ansi-blue-fg">.</span>Batch<span class="ansi-blue-fg">:</span> <span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">&gt;</span><span class="ansi-blue-fg">,</span>
+    bn_1st<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">True</span><span class="ansi-blue-fg">,</span>
+    act_cls<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">&lt;</span><span class="ansi-green-fg">class</span> <span class="ansi-blue-fg">&#39;torch.nn.modules.activation.ReLU&#39;</span><span class="ansi-blue-fg">&gt;</span><span class="ansi-blue-fg">,</span>
+    transpose<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">False</span><span class="ansi-blue-fg">,</span>
+    init<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">&#39;auto&#39;</span><span class="ansi-blue-fg">,</span>
+    xtra<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">,</span>
+    bias_std<span class="ansi-blue-fg">=</span><span class="ansi-cyan-fg">0.01</span><span class="ansi-blue-fg">,</span>
+    dilation<span class="ansi-blue-fg">:</span> Union<span class="ansi-blue-fg">[</span>int<span class="ansi-blue-fg">,</span> Tuple<span class="ansi-blue-fg">[</span>int<span class="ansi-blue-fg">,</span> int<span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">]</span> <span class="ansi-blue-fg">=</span> <span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">,</span>
+    groups<span class="ansi-blue-fg">:</span> int <span class="ansi-blue-fg">=</span> <span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">,</span>
+    padding_mode<span class="ansi-blue-fg">:</span> str <span class="ansi-blue-fg">=</span> <span class="ansi-blue-fg">&#39;zeros&#39;</span><span class="ansi-blue-fg">,</span>
+    device<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">,</span>
+    dtype<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">,</span>
+<span class="ansi-blue-fg">)</span>
+<span class="ansi-red-fg">Source:</span>        
+<span class="ansi-green-fg">class</span> ConvLayer<span class="ansi-blue-fg">(</span>nn<span class="ansi-blue-fg">.</span>Sequential<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+    <span class="ansi-blue-fg">&#34;Create a sequence of convolutional (`ni` to `nf`), ReLU (if `use_activ`) and `norm_type` layers.&#34;</span>
+    <span class="ansi-blue-fg">@</span>delegates<span class="ansi-blue-fg">(</span>nn<span class="ansi-blue-fg">.</span>Conv2d<span class="ansi-blue-fg">)</span>
+    <span class="ansi-green-fg">def</span> __init__<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> ni<span class="ansi-blue-fg">,</span> nf<span class="ansi-blue-fg">,</span> ks<span class="ansi-blue-fg">=</span><span class="ansi-cyan-fg">3</span><span class="ansi-blue-fg">,</span> stride<span class="ansi-blue-fg">=</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">,</span> padding<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">,</span> bias<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">,</span> ndim<span class="ansi-blue-fg">=</span><span class="ansi-cyan-fg">2</span><span class="ansi-blue-fg">,</span> norm_type<span class="ansi-blue-fg">=</span>NormType<span class="ansi-blue-fg">.</span>Batch<span class="ansi-blue-fg">,</span> bn_1st<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">True</span><span class="ansi-blue-fg">,</span>
+                 act_cls<span class="ansi-blue-fg">=</span>defaults<span class="ansi-blue-fg">.</span>activation<span class="ansi-blue-fg">,</span> transpose<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">False</span><span class="ansi-blue-fg">,</span> init<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">&#39;auto&#39;</span><span class="ansi-blue-fg">,</span> xtra<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">,</span> bias_std<span class="ansi-blue-fg">=</span><span class="ansi-cyan-fg">0.01</span><span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+        <span class="ansi-green-fg">if</span> padding <span class="ansi-green-fg">is</span> <span class="ansi-green-fg">None</span><span class="ansi-blue-fg">:</span> padding <span class="ansi-blue-fg">=</span> <span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">(</span>ks<span class="ansi-blue-fg">-</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">//</span><span class="ansi-cyan-fg">2</span> <span class="ansi-green-fg">if</span> <span class="ansi-green-fg">not</span> transpose <span class="ansi-green-fg">else</span> <span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">)</span>
+        bn <span class="ansi-blue-fg">=</span> norm_type <span class="ansi-green-fg">in</span> <span class="ansi-blue-fg">(</span>NormType<span class="ansi-blue-fg">.</span>Batch<span class="ansi-blue-fg">,</span> NormType<span class="ansi-blue-fg">.</span>BatchZero<span class="ansi-blue-fg">)</span>
+        inn <span class="ansi-blue-fg">=</span> norm_type <span class="ansi-green-fg">in</span> <span class="ansi-blue-fg">(</span>NormType<span class="ansi-blue-fg">.</span>Instance<span class="ansi-blue-fg">,</span> NormType<span class="ansi-blue-fg">.</span>InstanceZero<span class="ansi-blue-fg">)</span>
+        <span class="ansi-green-fg">if</span> bias <span class="ansi-green-fg">is</span> <span class="ansi-green-fg">None</span><span class="ansi-blue-fg">:</span> bias <span class="ansi-blue-fg">=</span> <span class="ansi-green-fg">not</span> <span class="ansi-blue-fg">(</span>bn <span class="ansi-green-fg">or</span> inn<span class="ansi-blue-fg">)</span>
+        conv_func <span class="ansi-blue-fg">=</span> _conv_func<span class="ansi-blue-fg">(</span>ndim<span class="ansi-blue-fg">,</span> transpose<span class="ansi-blue-fg">=</span>transpose<span class="ansi-blue-fg">)</span>
+        conv <span class="ansi-blue-fg">=</span> conv_func<span class="ansi-blue-fg">(</span>ni<span class="ansi-blue-fg">,</span> nf<span class="ansi-blue-fg">,</span> kernel_size<span class="ansi-blue-fg">=</span>ks<span class="ansi-blue-fg">,</span> bias<span class="ansi-blue-fg">=</span>bias<span class="ansi-blue-fg">,</span> stride<span class="ansi-blue-fg">=</span>stride<span class="ansi-blue-fg">,</span> padding<span class="ansi-blue-fg">=</span>padding<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span>
+        act <span class="ansi-blue-fg">=</span> <span class="ansi-green-fg">None</span> <span class="ansi-green-fg">if</span> act_cls <span class="ansi-green-fg">is</span> <span class="ansi-green-fg">None</span> <span class="ansi-green-fg">else</span> act_cls<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
+        init_linear<span class="ansi-blue-fg">(</span>conv<span class="ansi-blue-fg">,</span> act<span class="ansi-blue-fg">,</span> init<span class="ansi-blue-fg">=</span>init<span class="ansi-blue-fg">,</span> bias_std<span class="ansi-blue-fg">=</span>bias_std<span class="ansi-blue-fg">)</span>
+        <span class="ansi-green-fg">if</span>   norm_type<span class="ansi-blue-fg">==</span>NormType<span class="ansi-blue-fg">.</span>Weight<span class="ansi-blue-fg">:</span>   conv <span class="ansi-blue-fg">=</span> weight_norm<span class="ansi-blue-fg">(</span>conv<span class="ansi-blue-fg">)</span>
+        <span class="ansi-green-fg">elif</span> norm_type<span class="ansi-blue-fg">==</span>NormType<span class="ansi-blue-fg">.</span>Spectral<span class="ansi-blue-fg">:</span> conv <span class="ansi-blue-fg">=</span> spectral_norm<span class="ansi-blue-fg">(</span>conv<span class="ansi-blue-fg">)</span>
+        layers <span class="ansi-blue-fg">=</span> <span class="ansi-blue-fg">[</span>conv<span class="ansi-blue-fg">]</span>
+        act_bn <span class="ansi-blue-fg">=</span> <span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">]</span>
+        <span class="ansi-green-fg">if</span> act <span class="ansi-green-fg">is</span> <span class="ansi-green-fg">not</span> <span class="ansi-green-fg">None</span><span class="ansi-blue-fg">:</span> act_bn<span class="ansi-blue-fg">.</span>append<span class="ansi-blue-fg">(</span>act<span class="ansi-blue-fg">)</span>
+        <span class="ansi-green-fg">if</span> bn<span class="ansi-blue-fg">:</span> act_bn<span class="ansi-blue-fg">.</span>append<span class="ansi-blue-fg">(</span>BatchNorm<span class="ansi-blue-fg">(</span>nf<span class="ansi-blue-fg">,</span> norm_type<span class="ansi-blue-fg">=</span>norm_type<span class="ansi-blue-fg">,</span> ndim<span class="ansi-blue-fg">=</span>ndim<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+        <span class="ansi-green-fg">if</span> inn<span class="ansi-blue-fg">:</span> act_bn<span class="ansi-blue-fg">.</span>append<span class="ansi-blue-fg">(</span>InstanceNorm<span class="ansi-blue-fg">(</span>nf<span class="ansi-blue-fg">,</span> norm_type<span class="ansi-blue-fg">=</span>norm_type<span class="ansi-blue-fg">,</span> ndim<span class="ansi-blue-fg">=</span>ndim<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+        <span class="ansi-green-fg">if</span> bn_1st<span class="ansi-blue-fg">:</span> act_bn<span class="ansi-blue-fg">.</span>reverse<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
+        layers <span class="ansi-blue-fg">+=</span> act_bn
+        <span class="ansi-green-fg">if</span> xtra<span class="ansi-blue-fg">:</span> layers<span class="ansi-blue-fg">.</span>append<span class="ansi-blue-fg">(</span>xtra<span class="ansi-blue-fg">)</span>
+        super<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">.</span>__init__<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">*</span>layers<span class="ansi-blue-fg">)</span>
+<span class="ansi-red-fg">File:</span>           /mnt/stud/work/mjessulat/miniconda3/envs/dev/lib/python3.8/site-packages/fastai/layers.py
+<span class="ansi-red-fg">Type:</span>           type
+<span class="ansi-red-fg">Subclasses:</span>     
+</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+<<<<<<< HEAD
+=======
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="BasicTemporalBlock:">BasicTemporalBlock:<a class="anchor-link" href="#BasicTemporalBlock:"> </a></h3>
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+>>>>>>> dev
 <div class="output_wrapper">
 <div class="output">
 
@@ -209,7 +323,7 @@ MTL-Architectures.</p>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">BasicTemporalBlock</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">)(</span><span class="n">torch</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">BasicTemporalBlock</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)(</span><span class="n">torch</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -219,6 +333,15 @@ MTL-Architectures.</p>
 </div>
     {% endraw %}
 
+<<<<<<< HEAD
+=======
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="ResiudalBlock:">ResiudalBlock:<a class="anchor-link" href="#ResiudalBlock:"> </a></h3>
+</div>
+</div>
+</div>
+>>>>>>> dev
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -230,7 +353,11 @@ MTL-Architectures.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
+<<<<<<< HEAD
 <h2 id="ResidualBlock" class="doc_header"><code>class</code> <code>ResidualBlock</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/model.py#L117" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ResidualBlock</code>(<strong><code>n_inputs</code></strong>, <strong><code>n_outputs</code></strong>, <strong><code>kernel_size</code></strong>, <strong><code>stride</code></strong>, <strong><code>dilation</code></strong>, <strong><code>padding</code></strong>, <strong><code>act_func</code></strong>=<em><code>ReLU</code></em>, <strong><code>embedding_size</code></strong>=<em><code>None</code></em>, <strong><code>dropout</code></strong>=<em><code>0.2</code></em>) :: <code>Module</code></p>
+=======
+<h2 id="ResidualBlock" class="doc_header"><code>class</code> <code>ResidualBlock</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/model.py#L117" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ResidualBlock</code>(<strong><code>n_inputs</code></strong>, <strong><code>n_outputs</code></strong>, <strong><code>kernel_size</code></strong>, <strong><code>stride</code></strong>, <strong><code>dilation</code></strong>, <strong><code>padding</code></strong>, <strong><code>act_func</code></strong>=<em><code>ReLU</code></em>, <strong><code>embedding_size</code></strong>=<em><code>None</code></em>, <strong><code>dropout</code></strong>=<em><code>0.2</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
+>>>>>>> dev
 </blockquote>
 <p>(Single) Residual block of a TCN.</p>
 
@@ -291,7 +418,7 @@ MTL-Architectures.</p>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">ResidualBlock</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">ResidualBlock</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">transpose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">test_eq</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">24</span><span class="p">]),</span> <span class="n">model</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 </pre></div>
 
@@ -302,6 +429,15 @@ MTL-Architectures.</p>
 </div>
     {% endraw %}
 
+<<<<<<< HEAD
+=======
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="TemporalConvNet:">TemporalConvNet:<a class="anchor-link" href="#TemporalConvNet:"> </a></h3>
+</div>
+</div>
+</div>
+>>>>>>> dev
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -313,7 +449,7 @@ MTL-Architectures.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TemporalConvNet" class="doc_header"><code>class</code> <code>TemporalConvNet</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/model.py#L226" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TemporalConvNet</code>() :: <code>Module</code></p>
+<h2 id="TemporalConvNet" class="doc_header"><code>class</code> <code>TemporalConvNet</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/model.py#L233" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TemporalConvNet</code>() :: <code>Module</code></p>
 </blockquote>
 <p>Wrapper module that is capable of creating a simple CNN or a TCN.</p>
 
@@ -356,6 +492,8 @@ MTL-Architectures.</p>
     
 <div class="cell border-box-sizing code_cell rendered">
 
+<<<<<<< HEAD
+=======
 <div class="output_wrapper">
 <div class="output">
 
@@ -363,7 +501,7 @@ MTL-Architectures.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TemporalCNN" class="doc_header"><code>class</code> <code>TemporalCNN</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/model.py#L313" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TemporalCNN</code>(<strong><code>cnn_structure</code></strong>, <strong><code>kernel_size</code></strong>=<em><code>3</code></em>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>embedding_module</code></strong>=<em><code>None</code></em>, <strong><code>batch_norm_cont</code></strong>=<em><code>True</code></em>, <strong><code>cnn_type</code></strong>=<em><code>'tcn'</code></em>, <strong><code>y_ranges</code></strong>=<em><code>None</code></em>, <strong><code>final_activation</code></strong>=<em><code>Identity</code></em>, <strong><code>act_func</code></strong>=<em><code>ReLU</code></em>, <strong><code>add_embedding_at_layer</code></strong>=<em><code>[]</code></em>, <strong><code>input_sequence_length</code></strong>=<em><code>None</code></em>, <strong><code>output_sequence_length</code></strong>=<em><code>None</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>, <strong><code>sequence_transform</code></strong>=<em><code>None</code></em>) :: <code>Module</code></p>
+<h2 id="TemporalCNN" class="doc_header"><code>class</code> <code>TemporalCNN</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/model.py#L321" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TemporalCNN</code>(<strong><code>cnn_structure</code></strong>, <strong><code>kernel_size</code></strong>=<em><code>3</code></em>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>embedding_module</code></strong>=<em><code>None</code></em>, <strong><code>batch_norm_cont</code></strong>=<em><code>True</code></em>, <strong><code>cnn_type</code></strong>=<em><code>'tcn'</code></em>, <strong><code>y_ranges</code></strong>=<em><code>None</code></em>, <strong><code>final_activation</code></strong>=<em><code>Identity</code></em>, <strong><code>act_func</code></strong>=<em><code>ReLU</code></em>, <strong><code>add_embedding_at_layer</code></strong>=<em><code>[]</code></em>, <strong><code>input_sequence_length</code></strong>=<em><code>None</code></em>, <strong><code>output_sequence_length</code></strong>=<em><code>None</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>, <strong><code>sequence_transform</code></strong>=<em><code>None</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Module to create a CNN based architecture for timerseries such as a simple CNN, a TCN, or a Task-TCN.</p>
 
@@ -391,7 +529,74 @@ MTL-Architectures.</p>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">TemporalCNN</span><span class="p">(</span><span class="n">cnn_structure</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">conv_model</span> <span class="o">=</span> <span class="n">TemporalCNN</span><span class="p">(</span><span class="n">cnn_structure</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span> <span class="n">transpose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cnn_type</span><span class="o">=</span><span class="s1">&#39;cnn&#39;</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">conv_model</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+>>>>>>> dev
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<<<<<<< HEAD
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="TemporalCNN" class="doc_header"><code>class</code> <code>TemporalCNN</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/timeseries/model.py#L313" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TemporalCNN</code>(<strong><code>cnn_structure</code></strong>, <strong><code>kernel_size</code></strong>=<em><code>3</code></em>, <strong><code>dropout</code></strong>=<em><code>0.0</code></em>, <strong><code>embedding_module</code></strong>=<em><code>None</code></em>, <strong><code>batch_norm_cont</code></strong>=<em><code>True</code></em>, <strong><code>cnn_type</code></strong>=<em><code>'tcn'</code></em>, <strong><code>y_ranges</code></strong>=<em><code>None</code></em>, <strong><code>final_activation</code></strong>=<em><code>Identity</code></em>, <strong><code>act_func</code></strong>=<em><code>ReLU</code></em>, <strong><code>add_embedding_at_layer</code></strong>=<em><code>[]</code></em>, <strong><code>input_sequence_length</code></strong>=<em><code>None</code></em>, <strong><code>output_sequence_length</code></strong>=<em><code>None</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>, <strong><code>sequence_transform</code></strong>=<em><code>None</code></em>) :: <code>Module</code></p>
+</blockquote>
+<p>Module to create a CNN based architecture for timerseries such as a simple CNN, a TCN, or a Task-TCN.</p>
+=======
+>>>>>>> dev
+
+<div class="output_text output_subarea output_execute_result">
+<pre>TemporalCNN(
+  (bn_cont): BatchNorm1d(4, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (layers): TemporalConvNet(
+    (temporal_blocks): Sequential(
+      (0): BasicTemporalBlock(
+        (conv): ConvLayer(
+          (0): ConvTranspose1d(4, 6, kernel_size=(3,), stride=(1,), padding=(1,), bias=False)
+          (1): ReLU()
+        )
+      )
+      (1): BasicTemporalBlock(
+        (conv): ConvLayer(
+          (0): ConvTranspose1d(6, 8, kernel_size=(3,), stride=(1,), padding=(1,), bias=False)
+          (1): Identity()
+        )
+      )
+    )
+  )
+)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">transp_model</span> <span class="o">=</span> <span class="n">TemporalCNN</span><span class="p">(</span><span class="n">cnn_structure</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span> <span class="n">transpose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cnn_type</span><span class="o">=</span><span class="s1">&#39;cnn&#39;</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -408,7 +613,13 @@ MTL-Architectures.</p>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">x_cat</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">x_cont</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">96</span><span class="p">)</span>
+
+<span class="c1">#conv_model = nn.Sequential(nn.Conv1d(in_channels=n_feats, out_channels=6, kernel_size=kernel_size, padding=padding))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;conv. output: </span><span class="si">{</span><span class="n">conv_model</span><span class="p">(</span><span class="n">x_cat</span><span class="p">,</span> <span class="n">x_cont</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="c1">#transp_model = nn.Sequential(nn.ConvTranspose1d(in_channels=n_feats, out_channels=6, kernel_size=kernel_size, padding=padding))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;transp. output: </span><span class="si">{</span><span class="n">transp_model</span><span class="p">(</span><span class="n">x_cat</span><span class="p">,</span> <span class="n">x_cont</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -420,40 +631,11 @@ MTL-Architectures.</p>
 
 <div class="output_area">
 
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>TemporalCNN(
-  (bn_cont): BatchNorm1d(1, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-  (layers): TemporalConvNet(
-    (temporal_blocks): Sequential(
-      (0): ResidualBlock(
-        (conv1): Conv1d(1, 2, kernel_size=(3,), stride=(1,), padding=(2,))
-        (chomp1): Chomp1d()
-        (act_func1): Identity()
-        (dropout1): Dropout2d(p=0.0, inplace=False)
-        (conv2): Conv1d(2, 2, kernel_size=(3,), stride=(1,), padding=(2,))
-        (chomp2): Chomp1d()
-        (act_func2): Identity()
-        (dropout2): Dropout2d(p=0.0, inplace=False)
-        (net): Sequential(
-          (0): Conv1d(1, 2, kernel_size=(3,), stride=(1,), padding=(2,))
-          (1): Chomp1d()
-          (2): Identity()
-          (3): Dropout2d(p=0.0, inplace=False)
-          (4): Conv1d(2, 2, kernel_size=(3,), stride=(1,), padding=(2,))
-          (5): Chomp1d()
-          (6): Identity()
-          (7): Dropout2d(p=0.0, inplace=False)
-        )
-        (downsample): Conv1d(1, 2, kernel_size=(1,), stride=(1,))
-        (act_func3): Identity()
-      )
-    )
-  )
-)</pre>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>conv. output: torch.Size([32, 8, 96])
+transp. output: torch.Size([32, 8, 96])
+</pre>
 </div>
-
 </div>
 
 </div>

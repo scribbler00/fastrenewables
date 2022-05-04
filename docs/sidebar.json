@@ -7,6 +7,7 @@
     "baselines": "baselines.html",
     "metrics": "metrics.html",
     "utils_pytorch": "utils_pytorch.html",
+    "Title": "synthetic_data.html",
     "tabular.core": "tabular.core.html",
     "tabular.data": "tabular.data.html",
     "tabular.model": "tabular.model.html",
