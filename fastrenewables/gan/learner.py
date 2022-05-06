@@ -38,8 +38,15 @@ class GANLearner():
                 x_cat = x_cat.to(self.gan.device)
                 x_cont = x_cont.to(self.gan.device)
                 y = y.to(self.gan.device)
-                if y.dim() == 3:
-                    y = y.flatten(1, 2)[:, 0]
+
+                # todo: only for mlp
+                x_cat = x_cat.flatten(1, 2).long()
+                x_cont = x_cont.flatten(1, 2)
+                y = y[:, 0]
+                #if y.dim() == 3:
+                #    print('learner', y.shape)
+                #    y = y.flatten(1, 2)[:, 0]
+                #    print('learner', y.shape)
 
                 for _ in range(self.n_dis):
                     self.gan.train_discriminator(x_cat, x_cont, y)
