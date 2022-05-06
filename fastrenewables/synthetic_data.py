@@ -64,24 +64,29 @@ class SineDataset(torch.utils.data.Dataset):
 
     def generate_series(self):
         for c in range(self.n_classes):
+
             t = torch.linspace(0, 1, self.len_ts)
-            amplitudes = torch.distributions.Uniform(self.amp_min, self.amp_max).sample((1, self.n_features))
-            frequencies = torch.distributions.Uniform(self.freq_min, self.freq_max).sample((1, self.n_features))
-            phases = torch.distributions.Uniform(self.phase_min, self.phase_max).sample((1, self.n_features))
+            amplitudes = torch.linspace(self.amp_min, self.amp_max, self.n_classes)
+            frequencies = torch.linspace(self.freq_min, self.freq_max, self.n_classes)
+            phases = torch.linspace(self.phase_min, self.phase_max, self.n_classes)
+            #amplitudes = torch.distributions.Uniform(self.amp_min, self.amp_max).sample((1, self.n_features))
+            #frequencies = torch.distributions.Uniform(self.freq_min, self.freq_max).sample((1, self.n_features))
+            #phases = torch.distributions.Uniform(self.phase_min, self.phase_max).sample((1, self.n_features))
             for idx in range(self.n_samples):
+                self.cat_data[c*self.n_samples + idx, :, :] = c # why must this be at least 1 (==task_id)
                 self.target[c*self.n_samples + idx, 0, c] = c
                 for f_idx in range(self.n_features):
-                    a = amplitudes[:, f_idx]
-                    f = frequencies[:, f_idx]
-                    p = phases[:, f_idx]
-                    self.cat_data[c*self.n_samples + idx, :, :] = c+1 # why must this be at least 1 (==task_id)
+                    a = torch.ones_like(t)*amplitudes[c]
+                    f = torch.ones_like(t)*frequencies[c]
+                    p = torch.ones_like(t)*phases[c]
                     self.cont_data[c*self.n_samples + idx, f_idx, :] = a*torch.sin(2*torch.pi*f*t + p) + self.noise*torch.randn_like(t)
 
     def __len__(self):
         return self.n_samples*self.n_classes
 
     def __getitem__(self, idx):
-        x_cat = self.cat_data[idx, :]
+        #x_cat = self.cat_data[idx, :]
+        x_cat = self.target[idx, :]
         x_cont = self.cont_data[idx, :]
         y = self.target[idx, :]
         return x_cat, x_cont, y
