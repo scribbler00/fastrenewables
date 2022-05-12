@@ -161,7 +161,8 @@ modules = ["utils.py",
            "models/autoencoders.py",
            "models/prob.py",
            "models/transfermodels.py",
-           "models/ensembles.py"]
+           "models/ensembles.py",
+           "models/weaksupervision.py"]
 
 doc_url = "https://scribbler00.github.io/fastrenewables/"
 

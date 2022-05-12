@@ -75,6 +75,9 @@ entries:
     - output: web,pdf
       title: models.ensembles
       url: ensemble_models.html
+    - output: web,pdf
+      title: models.weaksupervision
+      url: weak_supvervision_models.html
     output: web
     title: fastrenewables
   output: web
