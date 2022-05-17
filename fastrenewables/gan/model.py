@@ -13,7 +13,7 @@ from functools import partial
 from torch.nn import BCELoss, CrossEntropyLoss
 from tqdm import tqdm
 
-from ..synthetic_data import SineDataset, plot_sine_samples
+from ..synthetic_data import GaussianDataset, plot_sine_samples, plot_class_hists
 from ..timeseries.model import TemporalCNN
 from ..tabular.model import EmbeddingModule
 
@@ -47,7 +47,7 @@ def LinBnAct(si, so, use_bn, act_cls):
 # Cell
 
 class GANMLP(torch.nn.Module):
-    def __init__(self, ann_structure, len_ts=1, bn_cont=False, act_fct=torch.nn.ReLU, final_act_fct=nn.Sigmoid, embedding_module=None, transpose=False):
+    def __init__(self, ann_structure, bn_cont=False, act_fct=torch.nn.ReLU, final_act_fct=nn.Sigmoid, embedding_module=None, transpose=False):
         super(GANMLP, self).__init__()
 
         n_cont = ann_structure[0]
@@ -67,7 +67,7 @@ class GANMLP(torch.nn.Module):
                 cur_act_fct = None
                 cur_use_bn = False
 
-            layer = LinBnAct(ann_structure[idx-1]*len_ts, ann_structure[idx]*len_ts, cur_use_bn, cur_act_fct)
+            layer = LinBnAct(ann_structure[idx-1], ann_structure[idx], cur_use_bn, cur_act_fct)
             layers.append(layer)
         if final_act_fct is not None:
             layers.append(final_act_fct())
@@ -76,10 +76,10 @@ class GANMLP(torch.nn.Module):
 
     def forward(self, x_cat, x_cont):
         if self.embedding_module is not None:
-            x_cat = x_cat.squeeze(1)
+            #x_cat = x_cat.squeeze(1)
             x_cat = self.embedding_module(x_cat)
-            x_cat = x_cat.unsqueeze(1)
-            x_cont = torch.cat([x_cat, x_cont], 2)
+            #x_cat = x_cat.unsqueeze(1)
+            x_cont = torch.cat([x_cat, x_cont], 1)
 
         return self.model(x_cont)
 
@@ -140,7 +140,7 @@ class GAN(nn.Module):
         self.to_device(self.device)
 
     def noise(self, x):
-        z = torch.randn(x.shape[0], 1, self.n_z).to(self.device)
+        z = torch.randn(x.shape[0], self.n_z).to(self.device)
         return z
 
     def to_device(self, device):
@@ -159,8 +159,8 @@ class GAN(nn.Module):
 
     def auxiliary_loss(self, class_probs, y):
         # class_probs and targets should be of the same shape (N, n_classes)!
-        class_probs = class_probs.squeeze(1)
-        y = y.squeeze(1)
+        #class_probs = class_probs.squeeze(1)
+        #y = y.squeeze(1)
         return self.auxiliary_loss_function(class_probs, y)*self.auxiliary_weighting_factor
 
     def train_generator(self, x_cat, x_cont, y):
@@ -272,8 +272,9 @@ class AuxiliaryDiscriminator(torch.nn.Module):
         self.final_input_size = final_input_size
         self.len_ts = len_ts
 
-        self.adv_layer = nn.Sequential(nn.Linear(self.final_input_size*len_ts, len_ts), nn.Sigmoid())
-        self.aux_layer = nn.Sequential(nn.Linear(self.final_input_size*len_ts, n_classes), nn.Softmax(dim=1))
+        self.adv_layer = nn.Sequential(nn.Linear(self.final_input_size*len_ts, 1), nn.Sigmoid())
+        self.aux_layer = nn.Sequential(nn.Linear(self.final_input_size*len_ts, 1), nn.Softmax(dim=1))
+
 
     def forward(self, cats, conts):
         out = self.basic_discriminator(cats, conts)
@@ -283,7 +284,7 @@ class AuxiliaryDiscriminator(torch.nn.Module):
 
 # Cell
 
-#def get_gan_model(gan_type, model_type, structure, len_ts=1, n_classes=1, n_z=100, emb_module=None):
+#def get_gan_model(gan_type, model_type, structure, len_ts=1, n_classes=1, n_z=100, emb_module=None, bn=False):
 #    gen_structure = structure.copy()
 #    structure.reverse()
 #    dis_structure = structure
@@ -291,8 +292,9 @@ class AuxiliaryDiscriminator(torch.nn.Module):
 #    n_z = gen_structure[0]
 #
 #    if model_type == 'mlp':
-#        model_fct = partial(GANMLP, len_ts=len_ts)
+#        model_fct = partial(GANMLP, len_ts=len_ts, bn_cont=bn)
 #    elif model_type == 'cnn':
+#        #todo
 #        model_fct = partial(GANCNN, n_z=n_z, len_ts=len_ts)
 #
 #    if gan_type == 'bce' or gan_type == 'aux':
