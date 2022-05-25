@@ -669,7 +669,7 @@ class TrainTestSplitByDays(RenewableSplits):
     def _inner(cur_dataset, test_size):
         unique_days = np.unique(cur_dataset.index.date)
         train_days, test_days = train_test_split(
-            unique_days, random_state=42, test_size=0.25
+            unique_days, test_size=test_size
         )
         train_mask = np.array([True if d in train_days else False for d in cur_dataset.index.date])
 
