@@ -25,9 +25,9 @@ class GANLearner():
         self.n_gen = n_gen
         self.n_dis = n_dis
 
-    def generate_samples(self, x):
-        z = self.gan.noise(x)
-        fake_samples = self.gan.generator(None, z).detach()
+    def generate_samples(self, x_cat, x_cont):
+        z = self.gan.noise(x_cont)
+        fake_samples = self.gan.generator(x_cat, z).detach()
         return fake_samples
 
     def fit(self, dl, epochs=10, plot_epochs=10, save_model=False):
@@ -35,11 +35,9 @@ class GANLearner():
         self.gan.to_device(self.gan.device)
         for e in tqdm(range(epochs)):
             for x_cat, x_cont, y in dl:
-                x_cat = x_cat.to(self.gan.device)
+                x_cat = x_cat.to(self.gan.device).long()
                 x_cont = x_cont.to(self.gan.device)
                 y = y.to(self.gan.device)
-                if y.dim() == 3:
-                    y = y.flatten(1, 2)[:, 0]
 
                 for _ in range(self.n_dis):
                     self.gan.train_discriminator(x_cat, x_cont, y)
