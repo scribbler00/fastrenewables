@@ -65,7 +65,7 @@ class GANMLP(torch.nn.Module):
                 cur_use_bn = False
             if idx == len(ann_structure)-1:
                 cur_act_fct = None
-                #cur_use_bn = False
+                cur_use_bn = False
 
             layer = LinBnAct(ann_structure[idx-1], ann_structure[idx], cur_use_bn, cur_act_fct)
             layers.append(layer)
@@ -85,7 +85,7 @@ class GANMLP(torch.nn.Module):
 
 class GAN(nn.Module):
 
-    def __init__(self, generator, discriminator, gen_optim, dis_optim, n_z=100, auxiliary=False, auxiliary_weighting_factor=1):
+    def __init__(self, generator, discriminator, gen_optim, dis_optim, n_z=100, auxiliary=False, auxiliary_weighting_factor=0.1):
         super(GAN, self).__init__()
         self.generator = generator
         self.discriminator = discriminator
@@ -129,10 +129,12 @@ class GAN(nn.Module):
         x_cont_fake = self.generator(x_cat, z)
         y_fake = self.discriminator(None, x_cont_fake)
         y_fake, class_probs = self._split_pred(y_fake)
-        loss = self.bce_loss(y_fake, torch.ones_like(y_fake))
+        label = torch.ones_like(y_fake) + torch.randn(y_fake.shape).to(self.device)
+        label = label.clamp(0, 1)
+        loss = self.bce_loss(y_fake, label)
         if self.auxiliary:
             aux_loss = self.auxiliary_loss(class_probs, y)
-            loss = (loss + aux_loss)#2
+            loss = (loss + aux_loss)/self.auxiliary_weighting_factor
         loss.backward()
         self.gen_optim.step()
         return
@@ -142,11 +144,13 @@ class GAN(nn.Module):
         self.discriminator.zero_grad()
         y_real = self.discriminator(None, x_cont)
         y_real, class_probs = self._split_pred(y_real)
-        real_loss = self.bce_loss(y_real, torch.ones_like(y_real))
+        label = torch.ones_like(y_real) + torch.randn(y_real.shape).to(self.device)
+        label = label.clamp(0, 1)
+        real_loss = self.bce_loss(y_real, label)
         if self.auxiliary:
             aux_loss = self.auxiliary_loss(class_probs, y)
-            self.aux_loss.append(aux_loss)
-            real_loss = (real_loss + aux_loss)#/2
+            self.aux_loss.append(aux_loss.item())
+            real_loss = (real_loss + aux_loss)/self.auxiliary_weighting_factor
 
         real_loss.backward()
         self.dis_optim.step()
@@ -158,10 +162,12 @@ class GAN(nn.Module):
         y_fake = self.discriminator(None, x_cont_fake)
         y_fake, class_probs = self._split_pred(y_fake)
 
-        fake_loss =  self.bce_loss(y_fake, torch.zeros_like(y_fake))
+        label = torch.zeros_like(y_fake) + torch.randn(y_fake.shape).to(self.device)
+        label = label.clamp(0, 1)
+        fake_loss =  self.bce_loss(y_fake, label)
         if self.auxiliary:
             aux_loss = self.auxiliary_loss(class_probs, y)
-            fake_loss = (fake_loss + aux_loss)#/2
+            fake_loss = (fake_loss + aux_loss)/self.auxiliary_weighting_factor
 
         fake_loss.backward()
         self.dis_optim.step()
@@ -233,8 +239,8 @@ class AuxiliaryDiscriminator(torch.nn.Module):
         self.final_input_size = final_input_size
         self.len_ts = len_ts
 
-        self.adv_layer = nn.Sequential(nn.Linear(self.final_input_size*len_ts, 1), nn.BatchNorm1d(1) ,nn.Sigmoid())
-        self.aux_layer = nn.Sequential(nn.Linear(self.final_input_size*len_ts, n_classes), nn.BatchNorm1d(n_classes), nn.Softmax(dim=1))
+        self.adv_layer = nn.Sequential(nn.Linear(self.final_input_size*len_ts, 1), nn.Sigmoid())
+        self.aux_layer = nn.Sequential(nn.Linear(self.final_input_size*len_ts, n_classes), nn.Softmax(dim=1))
 
     def forward(self, cats, conts):
         out = self.basic_discriminator(cats, conts)
@@ -244,7 +250,7 @@ class AuxiliaryDiscriminator(torch.nn.Module):
 
 # Cell
 
-def get_gan_model(gan_type, structure, n_classes=2, emb_module=None, bn=False):
+def get_gan_model(gan_type, structure, n_classes=2, emb_module=None, bn=False, aux_factor=1):
     gen_structure = structure.copy()
     structure.reverse()
     dis_structure = structure
@@ -265,15 +271,15 @@ def get_gan_model(gan_type, structure, n_classes=2, emb_module=None, bn=False):
         auxiliary = True
         dis_structure = dis_structure[:-1]
         final_input_size = dis_structure[-1]
-        discriminator = GANMLP(ann_structure=dis_structure, act_fct=nn.LeakyReLU, final_act_fct=final_act_dis, bn_cont=bn)
+        discriminator = GANMLP(ann_structure=dis_structure, act_fct=nn.LeakyReLU, final_act_fct=final_act_dis, bn_cont=False)
         discriminator = AuxiliaryDiscriminator(basic_discriminator=discriminator, n_classes=n_classes, final_input_size=final_input_size)
     else:
         auxiliary = False
-        discriminator = GANMLP(ann_structure=dis_structure, act_fct=nn.LeakyReLU, final_act_fct=final_act_dis, bn_cont=bn)
+        discriminator = GANMLP(ann_structure=dis_structure, act_fct=nn.LeakyReLU, final_act_fct=final_act_dis, bn_cont=False)
 
     gen_opt = opt_fct(params=generator.parameters())
     dis_opt = opt_fct(params=discriminator.parameters())
-    model = gan_class(generator=generator, discriminator=discriminator, gen_optim=gen_opt, dis_optim=dis_opt, n_z=n_z, auxiliary=auxiliary)
+    model = gan_class(generator=generator, discriminator=discriminator, gen_optim=gen_opt, dis_optim=dis_opt, n_z=n_z, auxiliary=auxiliary, auxiliary_weighting_factor=aux_factor)
 
     return model
 
