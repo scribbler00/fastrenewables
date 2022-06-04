@@ -41,6 +41,7 @@ class GANLearner():
 
         for e in tqdm(range(epochs)):
             for x_cat, x_cont, y in dl:
+                #x_cat[:] = 0
                 x_cat = x_cat.to(self.gan.device).long()
                 x_cont = x_cont.to(self.gan.device)
                 y = y.to(self.gan.device)

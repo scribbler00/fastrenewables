@@ -13,7 +13,7 @@ from functools import partial
 from torch.nn import BCELoss, CrossEntropyLoss, MSELoss
 from tqdm import tqdm
 
-from ..synthetic_data import GaussianDataset, plot_class_hists
+from ..synthetic_data import *
 from ..timeseries.model import TemporalCNN
 from ..tabular.model import EmbeddingModule
 
@@ -127,9 +127,9 @@ class GAN(nn.Module):
         z = self.noise(x_cont)
         self.generator.zero_grad()
         x_cont_fake = self.generator(x_cat, z)
-        y_fake = self.discriminator(None, x_cont_fake)
+        y_fake = self.discriminator(x_cat, x_cont_fake)
         y_fake, class_probs = self._split_pred(y_fake)
-        label = torch.ones_like(y_fake) + torch.randn(y_fake.shape).to(self.device)
+        label = 0.75*torch.ones_like(y_fake) + torch.randn(y_fake.shape).to(self.device)
         label = label.clamp(0, 1)
         loss = self.bce_loss(y_fake, label)
         if self.auxiliary:
@@ -142,9 +142,9 @@ class GAN(nn.Module):
     def train_discriminator(self, x_cat, x_cont, y):
         z = self.noise(x_cont)
         self.discriminator.zero_grad()
-        y_real = self.discriminator(None, x_cont)
+        y_real = self.discriminator(x_cat, x_cont)
         y_real, class_probs = self._split_pred(y_real)
-        label = torch.ones_like(y_real) + torch.randn(y_real.shape).to(self.device)
+        label = 0.75*torch.ones_like(y_real) + torch.randn(y_real.shape).to(self.device)
         label = label.clamp(0, 1)
         real_loss = self.bce_loss(y_real, label)
         if self.auxiliary:
@@ -159,10 +159,10 @@ class GAN(nn.Module):
         z = self.noise(x_cont)
         self.discriminator.zero_grad()
         x_cont_fake = self.generator(x_cat, z).detach()
-        y_fake = self.discriminator(None, x_cont_fake)
+        y_fake = self.discriminator(x_cat, x_cont_fake)
         y_fake, class_probs = self._split_pred(y_fake)
 
-        label = torch.zeros_like(y_fake) + torch.randn(y_fake.shape).to(self.device)
+        label = 0.25*torch.ones_like(y_fake) + torch.randn(y_fake.shape).to(self.device)
         label = label.clamp(0, 1)
         fake_loss =  self.bce_loss(y_fake, label)
         if self.auxiliary:
@@ -178,7 +178,7 @@ class GAN(nn.Module):
         z = self.noise(x_cont)
         x_gen = self.generator(x_cat, z)
         assert(x_gen.shape == x_cont.shape)
-        y = self.discriminator(None, x_gen)
+        y = self.discriminator(x_cat, x_gen)
         out = self._split_pred(y)
         return out
 
@@ -201,7 +201,7 @@ class WGAN(GAN):
         z = self.noise(x_cont)
         self.generator.zero_grad()
         x_cont_fake = self.generator(x_cat, z)
-        y_fake = self.discriminator(None, x_cont_fake)
+        y_fake = self.discriminator(x_cat, x_cont_fake)
         loss = - y_fake.mean()
         loss.backward()
         self.gen_optim.step()
@@ -210,7 +210,7 @@ class WGAN(GAN):
     def train_discriminator(self, x_cat, x_cont, y):
         z = self.noise(x_cont)
         self.discriminator.zero_grad()
-        y_real = self.discriminator(None, x_cont)
+        y_real = self.discriminator(x_cat, x_cont)
         real_loss = - y_real.mean()
         real_loss.backward()
         self.dis_optim.step()
@@ -219,7 +219,7 @@ class WGAN(GAN):
         z = self.noise(x_cont)
         self.discriminator.zero_grad()
         x_cont_fake = self.generator(x_cat, z).detach()
-        y_fake = self.discriminator(None, x_cont_fake)
+        y_fake = self.discriminator(x_cat, x_cont_fake)
         fake_loss = y_fake.mean()
         fake_loss.backward()
         self.dis_optim.step()
@@ -271,11 +271,11 @@ def get_gan_model(gan_type, structure, n_classes=2, emb_module=None, bn=False, a
         auxiliary = True
         dis_structure = dis_structure[:-1]
         final_input_size = dis_structure[-1]
-        discriminator = GANMLP(ann_structure=dis_structure, act_fct=nn.LeakyReLU, final_act_fct=final_act_dis, bn_cont=False)
+        discriminator = GANMLP(ann_structure=dis_structure, act_fct=nn.LeakyReLU, final_act_fct=final_act_dis, embedding_module=emb_module, bn_cont=False)
         discriminator = AuxiliaryDiscriminator(basic_discriminator=discriminator, n_classes=n_classes, final_input_size=final_input_size)
     else:
         auxiliary = False
-        discriminator = GANMLP(ann_structure=dis_structure, act_fct=nn.LeakyReLU, final_act_fct=final_act_dis, bn_cont=False)
+        discriminator = GANMLP(ann_structure=dis_structure, act_fct=nn.LeakyReLU, final_act_fct=final_act_dis, embedding_module=emb_module, bn_cont=False)
 
     gen_opt = opt_fct(params=generator.parameters())
     dis_opt = opt_fct(params=discriminator.parameters())
