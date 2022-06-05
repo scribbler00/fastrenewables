@@ -29,8 +29,9 @@ class GANLearner():
         self.n_dis = n_dis
 
     def generate_samples(self, x_cat, x_cont):
-        z = self.gan.noise(x_cont)
-        fake_samples = self.gan.generator(x_cat, z).detach()
+        with torch.no_grad():
+            z = self.gan.noise(x_cont)
+            fake_samples = self.gan.generator(x_cat, z)
         return fake_samples
 
     def fit(self, dl, epochs=10, lr=1e-3, plot_epochs=10, save_model=False):

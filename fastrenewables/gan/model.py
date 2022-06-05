@@ -13,7 +13,7 @@ from functools import partial
 from torch.nn import BCELoss, CrossEntropyLoss, MSELoss
 from tqdm import tqdm
 
-from ..synthetic_data import *
+from ..synthetic_data import GaussianDataset, plot_class_hists
 from ..timeseries.model import TemporalCNN
 from ..tabular.model import EmbeddingModule
 
