@@ -129,12 +129,12 @@ class GAN(nn.Module):
         x_cont_fake = self.generator(x_cat, z)
         y_fake = self.discriminator(x_cat, x_cont_fake)
         y_fake, class_probs = self._split_pred(y_fake)
-        label = 0.75*torch.ones_like(y_fake) + torch.randn(y_fake.shape).to(self.device)
+        label = 1*torch.ones_like(y_fake)# + torch.randn(y_fake.shape).to(self.device)
         label = label.clamp(0, 1)
         loss = self.bce_loss(y_fake, label)
         if self.auxiliary:
             aux_loss = self.auxiliary_loss(class_probs, y)
-            loss = (loss + aux_loss)/self.auxiliary_weighting_factor
+            loss = (loss + aux_loss)
         loss.backward()
         self.gen_optim.step()
         return
@@ -144,13 +144,13 @@ class GAN(nn.Module):
         self.discriminator.zero_grad()
         y_real = self.discriminator(x_cat, x_cont)
         y_real, class_probs = self._split_pred(y_real)
-        label = 0.75*torch.ones_like(y_real) + torch.randn(y_real.shape).to(self.device)
+        label = 1*torch.ones_like(y_real)# + torch.randn(y_real.shape).to(self.device)
         label = label.clamp(0, 1)
         real_loss = self.bce_loss(y_real, label)
         if self.auxiliary:
             aux_loss = self.auxiliary_loss(class_probs, y)
             self.aux_loss.append(aux_loss.item())
-            real_loss = (real_loss + aux_loss)/self.auxiliary_weighting_factor
+            real_loss = (real_loss + aux_loss)
 
         real_loss.backward()
         self.dis_optim.step()
@@ -162,12 +162,12 @@ class GAN(nn.Module):
         y_fake = self.discriminator(x_cat, x_cont_fake)
         y_fake, class_probs = self._split_pred(y_fake)
 
-        label = 0.25*torch.ones_like(y_fake) + torch.randn(y_fake.shape).to(self.device)
+        label = 0*torch.ones_like(y_fake)# + torch.randn(y_fake.shape).to(self.device)
         label = label.clamp(0, 1)
         fake_loss =  self.bce_loss(y_fake, label)
         if self.auxiliary:
             aux_loss = self.auxiliary_loss(class_probs, y)
-            fake_loss = (fake_loss + aux_loss)/self.auxiliary_weighting_factor
+            fake_loss = (fake_loss + aux_loss)
 
         fake_loss.backward()
         self.dis_optim.step()

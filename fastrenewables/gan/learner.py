@@ -40,6 +40,8 @@ class GANLearner():
         self.gan.gen_optim.param_groups[0]['lr'] = lr
         self.gan.dis_optim.param_groups[0]['lr'] = lr
 
+        self.gan.train()
+
         for e in tqdm(range(epochs)):
             for x_cat, x_cont, y in dl:
                 #x_cat[:] = 0
@@ -61,6 +63,8 @@ class GANLearner():
                     plt.plot(self.gan.aux_loss, label='Aux Loss')
                 plt.legend()
                 plt.show()
+
+        self.gan.eval()
 
         if save_model:
             self.gan.to_device('cpu')
