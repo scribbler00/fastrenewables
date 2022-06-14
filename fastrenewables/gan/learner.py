@@ -16,6 +16,8 @@ from ..tabular.model import EmbeddingModule
 
 import torch.nn.functional as F
 
+plt.style.use('seaborn-colorblind')
+
 #import glob
 
 # Cell

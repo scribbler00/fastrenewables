@@ -147,14 +147,15 @@ class GAN(nn.Module):
         label = 1*torch.ones_like(y_real)# + torch.randn(y_real.shape).to(self.device)
         label = label.clamp(0, 1)
         real_loss = self.bce_loss(y_real, label)
+        self.real_loss.append(real_loss.item())
         if self.auxiliary:
             aux_loss = self.auxiliary_loss(class_probs, y)
-            self.aux_loss.append(aux_loss.item())
+            self.aux_loss.append(aux_loss.item()/self.auxiliary_weighting_factor)
             real_loss = (real_loss + aux_loss)
 
         real_loss.backward()
         self.dis_optim.step()
-        self.real_loss.append(real_loss.item())
+
 
         z = self.noise(x_cont)
         self.discriminator.zero_grad()
@@ -165,13 +166,13 @@ class GAN(nn.Module):
         label = 0*torch.ones_like(y_fake)# + torch.randn(y_fake.shape).to(self.device)
         label = label.clamp(0, 1)
         fake_loss =  self.bce_loss(y_fake, label)
+        self.fake_loss.append(fake_loss.item())
         if self.auxiliary:
             aux_loss = self.auxiliary_loss(class_probs, y)
             fake_loss = (fake_loss + aux_loss)
 
         fake_loss.backward()
         self.dis_optim.step()
-        self.fake_loss.append(fake_loss.item())
         return
 
     def forward(self, x_cat, x_cont):
