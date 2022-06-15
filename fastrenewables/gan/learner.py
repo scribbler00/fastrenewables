@@ -58,12 +58,30 @@ class GANLearner():
                     self.gan.train_generator(x_cat, x_cont, y)
 
             if (e+1)%plot_epochs==0:
-                plt.figure(figsize=figsize)
-                plt.plot(self.gan.real_loss, label='Real Loss')
-                plt.plot(self.gan.fake_loss, label='Fake Loss')
-                if len(self.gan.aux_loss) > 0:
-                    plt.plot(self.gan.aux_loss, label='Aux Loss')
-                plt.legend()
+                #plt.figure(figsize=figsize)
+                #plt.plot(self.gan.real_loss, label='Real Loss')
+                #plt.plot(self.gan.fake_loss, label='Fake Loss')
+                #if len(self.gan.aux_loss) > 0:
+                #    plt.plot(self.gan.aux_loss, label='Aux Loss')
+                #plt.legend()
+                #plt.show()
+
+                fig, ax1 = plt.subplots(figsize=figsize)
+
+                ax1.set_xlabel('iterations')
+                ax1.set_ylabel('bce loss')
+                ax1.plot(self.gan.real_loss, label='real')
+                ax1.plot(self.gan.fake_loss, label='fake')
+                ax1.tick_params(axis='y')
+                ax1.legend(loc='upper right')
+                ax2 = ax1.twinx()
+
+                ax2.set_ylabel('aux loss')
+                ax2.plot(self.gan.aux_loss, label='aux')
+                ax2.tick_params(axis='y')
+                ax2.legend(loc='lower right')
+
+                fig.tight_layout()
                 plt.show()
 
         self.gan.eval()

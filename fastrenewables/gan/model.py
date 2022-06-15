@@ -85,7 +85,7 @@ class GANMLP(torch.nn.Module):
 
 class GAN(nn.Module):
 
-    def __init__(self, generator, discriminator, gen_optim, dis_optim, n_z=100, auxiliary=False, auxiliary_weighting_factor=0.1):
+    def __init__(self, generator, discriminator, gen_optim, dis_optim, n_z=100, auxiliary=False, auxiliary_weighting_factor=0.1, label_bias=0, label_noise=0):
         super(GAN, self).__init__()
         self.generator = generator
         self.discriminator = discriminator
@@ -99,6 +99,8 @@ class GAN(nn.Module):
         self.bce_loss = BCELoss()
         self.auxiliary_loss_function = CrossEntropyLoss()
         self.auxiliary_weighting_factor=auxiliary_weighting_factor
+        self.label_bias = label_bias
+        self.label_noise = label_noise
         self.device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
         self.to_device(self.device)
 
@@ -129,7 +131,7 @@ class GAN(nn.Module):
         x_cont_fake = self.generator(x_cat, z)
         y_fake = self.discriminator(x_cat, x_cont_fake)
         y_fake, class_probs = self._split_pred(y_fake)
-        label = 1*torch.ones_like(y_fake)# + torch.randn(y_fake.shape).to(self.device)
+        label = (1-self.label_bias)*torch.ones_like(y_fake) + self.label_noise*torch.randn(y_fake.shape).to(self.device)
         label = label.clamp(0, 1)
         loss = self.bce_loss(y_fake, label)
         if self.auxiliary:
@@ -144,7 +146,7 @@ class GAN(nn.Module):
         self.discriminator.zero_grad()
         y_real = self.discriminator(x_cat, x_cont)
         y_real, class_probs = self._split_pred(y_real)
-        label = 1*torch.ones_like(y_real)# + torch.randn(y_real.shape).to(self.device)
+        label = (1-self.label_bias)*torch.ones_like(y_real) + self.label_noise*torch.randn(y_real.shape).to(self.device)
         label = label.clamp(0, 1)
         real_loss = self.bce_loss(y_real, label)
         self.real_loss.append(real_loss.item())
@@ -163,7 +165,7 @@ class GAN(nn.Module):
         y_fake = self.discriminator(x_cat, x_cont_fake)
         y_fake, class_probs = self._split_pred(y_fake)
 
-        label = 0*torch.ones_like(y_fake)# + torch.randn(y_fake.shape).to(self.device)
+        label = (0+self.label_bias)*torch.ones_like(y_fake) + self.label_noise*torch.randn(y_fake.shape).to(self.device)
         label = label.clamp(0, 1)
         fake_loss =  self.bce_loss(y_fake, label)
         self.fake_loss.append(fake_loss.item())
