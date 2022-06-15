@@ -150,7 +150,7 @@ class GAN(nn.Module):
         self.real_loss.append(real_loss.item())
         if self.auxiliary:
             aux_loss = self.auxiliary_loss(class_probs, y)
-            self.aux_loss.append(aux_loss.item()/self.auxiliary_weighting_factor)
+            self.aux_loss.append(aux_loss.item())
             real_loss = (real_loss + aux_loss)
 
         real_loss.backward()
