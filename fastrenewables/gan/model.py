@@ -253,7 +253,13 @@ class AuxiliaryDiscriminator(torch.nn.Module):
 
 # Cell
 
-def get_gan_model(gan_type, structure, n_classes=2, emb_module=None, bn=False, aux_factor=1):
+def get_gan_model(structure, n_classes=2, use_embedding=True, bn=True, gan_type='bce', aux_factor=1):
+
+    if use_embedding:
+        emb_module = EmbeddingModule(categorical_dimensions=[n_classes+1])
+    else:
+        emb_module = None
+
     gen_structure = structure.copy()
     structure.reverse()
     dis_structure = structure
