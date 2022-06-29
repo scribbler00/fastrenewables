@@ -253,7 +253,7 @@ class AuxiliaryDiscriminator(torch.nn.Module):
 
 # Cell
 
-def get_gan_model(structure, n_classes=2, use_embedding=True, bn=True, gan_type='bce', aux_factor=1):
+def get_gan_model(structure, n_classes=2, use_embedding=True, bn=True, gan_type='bce', aux_factor=1, label_noise=0, label_bias=0):
 
     if use_embedding:
         emb_module = EmbeddingModule(categorical_dimensions=[n_classes+1])
@@ -288,7 +288,7 @@ def get_gan_model(structure, n_classes=2, use_embedding=True, bn=True, gan_type=
 
     gen_opt = opt_fct(params=generator.parameters())
     dis_opt = opt_fct(params=discriminator.parameters())
-    model = gan_class(generator=generator, discriminator=discriminator, gen_optim=gen_opt, dis_optim=dis_opt, n_z=n_z, auxiliary=auxiliary, auxiliary_weighting_factor=aux_factor)
+    model = gan_class(generator=generator, discriminator=discriminator, gen_optim=gen_opt, dis_optim=dis_opt, n_z=n_z, auxiliary=auxiliary, auxiliary_weighting_factor=aux_factor, label_noise=label_noise, label_bias=label_bias)
 
     return model
 

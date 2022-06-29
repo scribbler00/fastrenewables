@@ -70,17 +70,16 @@ class GANLearner():
                 #plt.show()
 
                 fig, ax1 = plt.subplots(figsize=figsize)
-
                 ax1.set_xlabel('iterations')
                 ax1.set_ylabel('bce loss')
-                ax1.plot(self.gan.real_loss, label='real')
-                ax1.plot(self.gan.fake_loss, label='fake')
+                ax1.plot(self.gan.real_loss, label='real', color='red')
+                ax1.plot(self.gan.fake_loss, label='fake', color='blue')
                 ax1.tick_params(axis='y')
                 ax1.legend(loc='upper right')
 
                 ax2 = ax1.twinx()
                 ax2.set_ylabel('aux loss')
-                ax2.plot(self.gan.aux_loss, label='aux')
+                ax2.plot(self.gan.aux_loss, label='aux', color='green')
                 ax2.tick_params(axis='y')
                 ax2.legend(loc='lower right')
 
@@ -100,16 +99,16 @@ def evaluate_gan(gan_type='bce', aux_factor=1, epochs=10):
 
     print(gan_type, aux_factor)
     set_seed(1337)
-    model = get_gan_model(structure=[n_z, n_hidden, n_hidden, n_in], n_classes=n_classes, gan_type=gan_type, aux_factor=aux_factor)
+    model = get_gan_model(structure=[n_z, n_hidden, n_hidden, n_in], n_classes=n_classes, gan_type=gan_type, aux_factor=aux_factor, label_noise=0.1, label_bias=0.25)
     learner = GANLearner(gan=model, n_gen=n_gen, n_dis=n_dis)
     learner.fit(train_dl, epochs=epochs, lr=lr, plot_epochs=epochs, save_model=True)
     for x_cat, x_cont, y in test_dl:
         x_cat = x_cat.long()
-        #print('distribution of real data:')
-        d_real = fit_kde(x_cont, bandwidth=1/25)
+        print('distribution of real data:')
+        d_real = fit_kde(x_cont, bandwidth=1/25, show_plot=True)
         x_fake = learner.generate_samples(x_cat, x_cont)
-        #print('distribution of generated data:')
-        d_fake = fit_kde(x_fake, bandwidth=1/25)
+        print('distribution of generated data:')
+        d_fake = fit_kde(x_fake, bandwidth=1/25, show_plot=True)
         break
     kld = calculate_kld(d_real, d_fake)
 
