@@ -12,6 +12,7 @@ tags
 
 nbs/*.h5
 nbs/*.csv
+nbs/kld_evaluation.ipynb
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
