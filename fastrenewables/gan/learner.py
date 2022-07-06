@@ -40,7 +40,7 @@ class GANLearner():
             fake_samples = self.gan.generator(x_cat, z)
         return fake_samples
 
-    def fit(self, dl, epochs=10, lr=1e-3, plot_epochs=10, save_model=False, figsize=(16, 9)):
+    def fit(self, dl, epochs=10, lr=1e-3, plot_epochs=10, save_model=False, savepathfigsize=(16, 9)):
 
         self.gan.to_device(torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu'))
         self.gan.gen_optim.param_groups[0]['lr'] = lr
@@ -60,7 +60,7 @@ class GANLearner():
                 for _ in range(self.n_gen):
                     self.gan.train_generator(x_cat, x_cont, y)
 
-            if (e+1)%plot_epochs==0:
+            #if (e+1)%plot_epochs==0:
                 #plt.figure(figsize=figsize)
                 #plt.plot(self.gan.real_loss, label='Real Loss')
                 #plt.plot(self.gan.fake_loss, label='Fake Loss')
@@ -69,22 +69,22 @@ class GANLearner():
                 #plt.legend()
                 #plt.show()
 
-                fig, ax1 = plt.subplots(figsize=figsize)
-                ax1.set_xlabel('iterations')
-                ax1.set_ylabel('bce loss')
-                ax1.plot(self.gan.real_loss, label='real', color='red')
-                ax1.plot(self.gan.fake_loss, label='fake', color='blue')
-                ax1.tick_params(axis='y')
-                ax1.legend(loc='upper right')
-
-                ax2 = ax1.twinx()
-                ax2.set_ylabel('aux loss')
-                ax2.plot(self.gan.aux_loss, label='aux', color='green')
-                ax2.tick_params(axis='y')
-                ax2.legend(loc='lower right')
-
-                fig.tight_layout()
-                plt.show()
+                #fig, ax1 = plt.subplots(figsize=figsize)
+                #ax1.set_xlabel('iterations')
+                #ax1.set_ylabel('bce loss')
+                #ax1.plot(self.gan.real_loss, label='real', color='red')
+                #ax1.plot(self.gan.fake_loss, label='fake', color='blue')
+                #ax1.tick_params(axis='y')
+                #ax1.legend(loc='upper right')
+                #
+                #ax2 = ax1.twinx()
+                #ax2.set_ylabel('aux loss')
+                #ax2.plot(self.gan.aux_loss, label='aux', color='green')
+                #ax2.tick_params(axis='y')
+                #ax2.legend(loc='lower right')
+                #
+                #fig.tight_layout()
+                #plt.show()
 
         self.gan.eval()
 

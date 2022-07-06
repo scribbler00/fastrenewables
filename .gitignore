@@ -10,6 +10,7 @@ _tmp*
 tmp*
 tags
 
+models/
 nbs/*.h5
 nbs/*.csv
 nbs/kld_evaluation.ipynb
