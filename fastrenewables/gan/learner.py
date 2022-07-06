@@ -7,6 +7,7 @@ __all__ = ['GANLearner', 'evaluate_gan']
 import pandas as pd
 import numpy as np
 import torch
+import os
 import torch.nn as nn
 import matplotlib.pyplot as plt
 
@@ -40,7 +41,7 @@ class GANLearner():
             fake_samples = self.gan.generator(x_cat, z)
         return fake_samples
 
-    def fit(self, dl, epochs=10, lr=1e-3, plot_epochs=10, save_model=False, savepathfigsize=(16, 9)):
+    def fit(self, dl, epochs=10, lr=1e-3, plot_epochs=10, save_model=False, save_dir='models/', save_file='tmp', figsize=(16, 9)):
 
         self.gan.to_device(torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu'))
         self.gan.gen_optim.param_groups[0]['lr'] = lr
@@ -90,6 +91,9 @@ class GANLearner():
 
         if save_model:
             self.gan.to_device('cpu')
+            if not os.path.exists(save_dir):
+                os.mkdir(save_dir)
+            torch.save(self.gan.state_dict(), save_dir+save_file)
 
         return
 
@@ -99,7 +103,8 @@ def evaluate_gan(gan_type='bce', aux_factor=1, epochs=10):
 
     print(gan_type, aux_factor)
     set_seed(1337)
-    model = get_gan_model(structure=[n_z, n_hidden, n_hidden, n_in], n_classes=n_classes, gan_type=gan_type, aux_factor=aux_factor, label_noise=0.1, label_bias=0.25)
+    emb_module = EmbeddingModule(categorical_dimensions=[n_classes+1])
+    model = get_gan_model(structure=[n_z, n_hidden, n_hidden, n_in], n_classes=n_classes, emb_module=emb_module, gan_type=gan_type, aux_factor=aux_factor, label_noise=0.1, label_bias=0.25)
     learner = GANLearner(gan=model, n_gen=n_gen, n_dis=n_dis)
     learner.fit(train_dl, epochs=epochs, lr=lr, plot_epochs=epochs, save_model=True)
     for x_cat, x_cont, y in test_dl:
