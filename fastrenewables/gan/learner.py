@@ -93,7 +93,7 @@ class GANLearner():
             self.gan.to_device('cpu')
             if not os.path.exists(save_dir):
                 os.mkdir(save_dir)
-            torch.save(self.gan.state_dict(), save_dir+save_file)
+            torch.save(self.gan.state_dict(), save_dir+save_file+'.pt')
 
         return
 
