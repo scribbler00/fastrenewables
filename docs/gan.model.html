@@ -36,12 +36,6 @@ nb_path: "nbs/10_gan.model.ipynb"
 </div>
     {% endraw %}
 
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="functions:">functions:<a class="anchor-link" href="#functions:"> </a></h3>
-</div>
-</div>
-</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -53,39 +47,7 @@ nb_path: "nbs/10_gan.model.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="flatten_ts" class="doc_header"><code>flatten_ts</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/gan/model.py#L22" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>flatten_ts</code>(<strong><code>x</code></strong>)</p>
-</blockquote>
-<p>assumes matrix of shape (n_samples, n_features, ts_length)</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="LinBnAct" class="doc_header"><code>LinBnAct</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/gan/model.py#L38" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>LinBnAct</code>(<strong><code>si</code></strong>, <strong><code>so</code></strong>, <strong><code>use_bn</code></strong>, <strong><code>act_cls</code></strong>)</p>
+<h4 id="LinBnAct" class="doc_header"><code>LinBnAct</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/gan/model.py#L23" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>LinBnAct</code>(<strong><code>si</code></strong>, <strong><code>so</code></strong>, <strong><code>use_bn</code></strong>, <strong><code>act_cls</code></strong>)</p>
 </blockquote>
 
 </div>
@@ -105,12 +67,6 @@ nb_path: "nbs/10_gan.model.ipynb"
 </div>
     {% endraw %}
 
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="models:">models:<a class="anchor-link" href="#models:"> </a></h3>
-</div>
-</div>
-</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -122,7 +78,7 @@ nb_path: "nbs/10_gan.model.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="GANMLP" class="doc_header"><code>class</code> <code>GANMLP</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/gan/model.py#L49" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GANMLP</code>(<strong><code>ann_structure</code></strong>, <strong><code>bn_cont</code></strong>=<em><code>False</code></em>, <strong><code>act_fct</code></strong>=<em><code>ReLU</code></em>, <strong><code>final_act_fct</code></strong>=<em><code>Sigmoid</code></em>, <strong><code>embedding_module</code></strong>=<em><code>None</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
+<h2 id="GANMLP" class="doc_header"><code>class</code> <code>GANMLP</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/gan/model.py#L34" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GANMLP</code>(<strong><code>ann_structure</code></strong>, <strong><code>bn_cont</code></strong>=<em><code>False</code></em>, <strong><code>act_fct</code></strong>=<em><code>ReLU</code></em>, <strong><code>final_act_fct</code></strong>=<em><code>Sigmoid</code></em>, <strong><code>embedding_module</code></strong>=<em><code>None</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -177,7 +133,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="GAN" class="doc_header"><code>class</code> <code>GAN</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/gan/model.py#L86" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GAN</code>(<strong><code>generator</code></strong>, <strong><code>discriminator</code></strong>, <strong><code>gen_optim</code></strong>, <strong><code>dis_optim</code></strong>, <strong><code>n_z</code></strong>=<em><code>100</code></em>, <strong><code>auxiliary</code></strong>=<em><code>False</code></em>, <strong><code>auxiliary_weighting_factor</code></strong>=<em><code>0.1</code></em>, <strong><code>label_bias</code></strong>=<em><code>0</code></em>, <strong><code>label_noise</code></strong>=<em><code>0</code></em>) :: <code>Module</code></p>
+<h2 id="AuxiliaryDiscriminator" class="doc_header"><code>class</code> <code>AuxiliaryDiscriminator</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/gan/model.py#L71" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AuxiliaryDiscriminator</code>(<strong><code>basic_discriminator</code></strong>, <strong><code>n_classes</code></strong>, <strong><code>final_input_size</code></strong>, <strong><code>len_ts</code></strong>=<em><code>1</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -224,100 +180,52 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
 
-<div class="output_wrapper">
-<div class="output">
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># n_samples = 1024</span>
+<span class="c1"># n_classes = 2</span>
+<span class="c1"># n_features = 1</span>
+<span class="c1"># batch_size = 512</span>
+<span class="c1"># n_z = 10</span>
+<span class="c1"># n_in = n_features</span>
+<span class="c1"># n_hidden = 64</span>
+<span class="c1"># epochs = 2</span>
 
-<div class="output_area">
+<span class="c1"># data = GaussianDataset(n_samples, n_classes)</span>
+<span class="c1"># dl = torch.utils.data.DataLoader(data, batch_size=batch_size, shuffle=True, drop_last=True)</span>
+<span class="c1"># emb_module = EmbeddingModule(categorical_dimensions=[n_classes+1])</span>
 
+<span class="c1"># model = get_gan_model(structure=[n_z, n_hidden, n_hidden, n_in], n_classes=n_classes, emb_module=emb_module, bn=True, gan_type=&#39;bce&#39;)</span>
+<span class="c1"># #print(model)    </span>
+<span class="c1"># for e in tqdm(range(epochs)):</span>
+<span class="c1">#     for x_cat, x_cont, y in dl:</span>
+<span class="c1">#         x_cat = x_cat.to(model.device).long()</span>
+<span class="c1">#         x_cont = x_cont.to(model.device)</span>
+<span class="c1">#         y = y.to(model.device)</span>
+<span class="c1">#         model.train_discriminator(x_cat, x_cont, y)</span>
+<span class="c1">#         model.train_generator(x_cat, x_cont, y)</span>
 
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="WGAN" class="doc_header"><code>class</code> <code>WGAN</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/gan/model.py#L190" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>WGAN</code>(<strong><code>generator</code></strong>, <strong><code>discriminator</code></strong>, <strong><code>gen_optim</code></strong>, <strong><code>dis_optim</code></strong>, <strong><code>n_z</code></strong>=<em><code>100</code></em>, <strong><code>clip</code></strong>=<em><code>0.01</code></em>, <strong><code>auxiliary</code></strong>=<em><code>False</code></em>) :: <a href="/fastrenewables/gan.model.html#GAN"><code>GAN</code></a></p>
-</blockquote>
-<p>Base class for all neural network modules.</p>
-<p>Your models should also subclass this class.</p>
-<p>Modules can also contain other Modules, allowing to nest them in
-a tree structure. You can assign the submodules as regular attributes::</p>
+<span class="c1"># plt.figure(figsize=(16, 9))</span>
+<span class="c1"># plt.plot(model.real_loss, label=&#39;Real Loss&#39;)</span>
+<span class="c1"># plt.plot(model.fake_loss, label=&#39;Fake Loss&#39;)</span>
+<span class="c1"># plt.plot(model.aux_loss, label=&#39;Aux Loss&#39;)</span>
+<span class="c1"># plt.legend()</span>
+<span class="c1"># plt.show()</span>
 
-<pre><code>import torch.nn as nn
-import torch.nn.functional as F
+<span class="c1"># model.eval()</span>
+<span class="c1"># z = model.noise(x_cont)</span>
+<span class="c1"># x_fake = model.generator(x_cat, z)</span>
 
-class Model(nn.Module):
-    def __init__(self):
-        super(Model, self).__init__()
-        self.conv1 = nn.Conv2d(1, 20, 5)
-        self.conv2 = nn.Conv2d(20, 20, 5)
+<span class="c1"># print(&#39;distribution of real data:&#39;)</span>
+<span class="c1"># plot_class_hists(x_cat.cpu(), x_cont.cpu())</span>
 
-    def forward(self, x):
-        x = F.relu(self.conv1(x))
-        return F.relu(self.conv2(x))
+<span class="c1"># print(&#39;distribution of generated data:&#39;)</span>
+<span class="c1"># plot_class_hists(x_cat.cpu(), x_fake.cpu().detach())</span>
+</pre></div>
 
-</code></pre>
-<p>Submodules assigned in this way will be registered, and will have their
-parameters converted too when you call :meth:<code>to</code>, etc.</p>
-<p>:ivar training: Boolean represents whether this module is in training or
-                evaluation mode.
-:vartype training: bool</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="AuxiliaryDiscriminator" class="doc_header"><code>class</code> <code>AuxiliaryDiscriminator</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/gan/model.py#L237" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>AuxiliaryDiscriminator</code>(<strong><code>basic_discriminator</code></strong>, <strong><code>n_classes</code></strong>, <strong><code>final_input_size</code></strong>, <strong><code>len_ts</code></strong>=<em><code>1</code></em>, <strong><code>bn</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
-</blockquote>
-<p>Base class for all neural network modules.</p>
-<p>Your models should also subclass this class.</p>
-<p>Modules can also contain other Modules, allowing to nest them in
-a tree structure. You can assign the submodules as regular attributes::</p>
-
-<pre><code>import torch.nn as nn
-import torch.nn.functional as F
-
-class Model(nn.Module):
-    def __init__(self):
-        super(Model, self).__init__()
-        self.conv1 = nn.Conv2d(1, 20, 5)
-        self.conv2 = nn.Conv2d(20, 20, 5)
-
-    def forward(self, x):
-        x = F.relu(self.conv1(x))
-        return F.relu(self.conv2(x))
-
-</code></pre>
-<p>Submodules assigned in this way will be registered, and will have their
-parameters converted too when you call :meth:<code>to</code>, etc.</p>
-<p>:ivar training: Boolean represents whether this module is in training or
-                evaluation mode.
-:vartype training: bool</p>
-
-</div>
-
-</div>
-
+    </div>
 </div>
 </div>
 
@@ -327,28 +235,25 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
 
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># from fastai.data.core import DataLoader,DataLoaders</span>
 
 
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_gan_model" class="doc_header"><code>get_gan_model</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/gan/model.py#L256" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_gan_model</code>(<strong><code>structure</code></strong>, <strong><code>n_classes</code></strong>=<em><code>2</code></em>, <strong><code>emb_module</code></strong>=<em><code>None</code></em>, <strong><code>bn</code></strong>=<em><code>True</code></em>, <strong><code>gan_type</code></strong>=<em><code>'bce'</code></em>, <strong><code>aux_factor</code></strong>=<em><code>1</code></em>, <strong><code>label_noise</code></strong>=<em><code>0</code></em>, <strong><code>label_bias</code></strong>=<em><code>0</code></em>)</p>
-</blockquote>
+<span class="c1"># opt = torch.optim.Adam(params=model.parameters())</span>
+<span class="c1"># loss = torch.nn.MSELoss()</span>
 
-</div>
+<span class="c1"># n_cats, n_z, n_targets = 1,2, 2</span>
+<span class="c1"># data = DummyDataset(n_samples=100, n_cat_feats=n_cats, n_cont_feats=n_z, n_targets=n_targets, n_dim=3)</span>
 
-</div>
 
+<span class="c1"># dl_train = DataLoader(data, batch_size=8, shuffle=True, drop_last=True)</span>
+<span class="c1"># dl_valid = DataLoader(data, batch_size=8, shuffle=True, drop_last=True)</span>
+</pre></div>
+
+    </div>
 </div>
 </div>
 
@@ -358,6 +263,16 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># cats, conts, ys = DataLoaders(dl_train, dl_valid).one_batch()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
 
 </div>
     {% endraw %}
@@ -365,6 +280,220 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># gen_structure = [n_z, n_hidden, n_hidden, n_targets]</span>
+<span class="c1"># dis_structure = [n_targets, n_hidden, n_hidden, 1]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#                                    cnn_type=&#39;tcn&#39;, </span>
+<span class="c1">#                                    final_activation=nn.Sigmoid,</span>
+<span class="c1">#                                    embedding_module=emb_module, </span>
+<span class="c1">#                                    add_embedding_at_layer=[idx for idx in range(len(gen_structure)-2)],</span>
+<span class="c1">#                        )</span>
+<span class="c1"># generator</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#                                    cnn_type=&#39;tcn&#39;, </span>
+<span class="c1">#                                    final_activation=nn.Sigmoid,</span>
+<span class="c1">#                                    embedding_module=emb_module, </span>
+<span class="c1">#                                    add_embedding_at_layer=[idx for idx in range(len(dis_structure)-2)],</span>
+<span class="c1">#                        )</span>
+<span class="c1"># discriminator</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># gan_class = GAN</span>
+<span class="c1"># auxiliary = False</span>
+<span class="c1"># aux_factor=0.1</span>
+<span class="c1"># label_noise=0</span>
+<span class="c1"># label_bias=0</span>
+
+<span class="c1"># gen_opt = opt_fct(params=generator.parameters())</span>
+<span class="c1"># dis_opt = opt_fct(params=discriminator.parameters())</span>
+
+<span class="c1"># model = gan_class(generator=generator, discriminator=discriminator, \</span>
+<span class="c1">#                   gen_optim=gen_opt, dis_optim=dis_opt, n_z=n_z, auxiliary=auxiliary,\</span>
+<span class="c1">#                   auxiliary_weighting_factor=aux_factor, label_noise=label_noise, label_bias=label_bias)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># for e in tqdm(range(epochs)):</span>
+<span class="c1">#     for x_cat, x_cont, y in dl_train:</span>
+<span class="c1">#         x_cat = x_cat.to(model.device).long()</span>
+<span class="c1">#         x_cont = x_cont.to(model.device)</span>
+<span class="c1">#         y = y.to(model.device)</span>
+        
+<span class="c1">#         model.train_generator(x_cat, x_cont, y)</span>
+<span class="c1">#         model.train_discriminator(x_cat, y, _)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># epochs = 5</span>
+<span class="c1"># lr = 1e-4</span>
+<span class="c1"># plot_epochs = 2</span>
+<span class="c1"># learner = GANLearner(gan=model, n_gen=n_gen, n_dis=n_dis)</span>
+<span class="c1"># learner.fit(dl_train, epochs=epochs, lr=lr, plot_epochs=plot_epochs, save_model=False)</span>
+    
+</pre></div>
+
+    </div>
+</div>
+</div>
 
 </div>
     {% endraw %}

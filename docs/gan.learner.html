@@ -47,7 +47,148 @@ nb_path: "nbs/11_gan.learner.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="GANLearner" class="doc_header"><code>class</code> <code>GANLearner</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/gan/learner.py#L30" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GANLearner</code>(<strong><code>gan</code></strong>, <strong><code>n_gen</code></strong>=<em><code>1</code></em>, <strong><code>n_dis</code></strong>=<em><code>1</code></em>)</p>
+<h2 id="GAN" class="doc_header"><code>class</code> <code>GAN</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/gan/learner.py#L31" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GAN</code>(<strong><code>generator</code></strong>, <strong><code>discriminator</code></strong>, <strong><code>gen_optim</code></strong>, <strong><code>dis_optim</code></strong>, <strong><code>n_z</code></strong>=<em><code>100</code></em>, <strong><code>auxiliary</code></strong>=<em><code>False</code></em>, <strong><code>auxiliary_weighting_factor</code></strong>=<em><code>0.1</code></em>, <strong><code>label_bias</code></strong>=<em><code>0</code></em>, <strong><code>label_noise</code></strong>=<em><code>0</code></em>) :: <code>Module</code></p>
+</blockquote>
+<p>Base class for all neural network modules.</p>
+<p>Your models should also subclass this class.</p>
+<p>Modules can also contain other Modules, allowing to nest them in
+a tree structure. You can assign the submodules as regular attributes::</p>
+
+<pre><code>import torch.nn as nn
+import torch.nn.functional as F
+
+class Model(nn.Module):
+    def __init__(self):
+        super(Model, self).__init__()
+        self.conv1 = nn.Conv2d(1, 20, 5)
+        self.conv2 = nn.Conv2d(20, 20, 5)
+
+    def forward(self, x):
+        x = F.relu(self.conv1(x))
+        return F.relu(self.conv2(x))
+
+</code></pre>
+<p>Submodules assigned in this way will be registered, and will have their
+parameters converted too when you call :meth:<code>to</code>, etc.</p>
+<p>:ivar training: Boolean represents whether this module is in training or
+                evaluation mode.
+:vartype training: bool</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="WGAN" class="doc_header"><code>class</code> <code>WGAN</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/gan/learner.py#L141" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>WGAN</code>(<strong><code>generator</code></strong>, <strong><code>discriminator</code></strong>, <strong><code>gen_optim</code></strong>, <strong><code>dis_optim</code></strong>, <strong><code>n_z</code></strong>=<em><code>100</code></em>, <strong><code>clip</code></strong>=<em><code>0.01</code></em>, <strong><code>auxiliary</code></strong>=<em><code>False</code></em>) :: <a href="/fastrenewables/gan.learner.html#GAN"><code>GAN</code></a></p>
+</blockquote>
+<p>Base class for all neural network modules.</p>
+<p>Your models should also subclass this class.</p>
+<p>Modules can also contain other Modules, allowing to nest them in
+a tree structure. You can assign the submodules as regular attributes::</p>
+
+<pre><code>import torch.nn as nn
+import torch.nn.functional as F
+
+class Model(nn.Module):
+    def __init__(self):
+        super(Model, self).__init__()
+        self.conv1 = nn.Conv2d(1, 20, 5)
+        self.conv2 = nn.Conv2d(20, 20, 5)
+
+    def forward(self, x):
+        x = F.relu(self.conv1(x))
+        return F.relu(self.conv2(x))
+
+</code></pre>
+<p>Submodules assigned in this way will be registered, and will have their
+parameters converted too when you call :meth:<code>to</code>, etc.</p>
+<p>:ivar training: Boolean represents whether this module is in training or
+                evaluation mode.
+:vartype training: bool</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="get_gan_model" class="doc_header"><code>get_gan_model</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/gan/learner.py#L187" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_gan_model</code>(<strong><code>structure</code></strong>, <strong><code>n_classes</code></strong>=<em><code>2</code></em>, <strong><code>emb_module</code></strong>=<em><code>None</code></em>, <strong><code>bn</code></strong>=<em><code>True</code></em>, <strong><code>gan_type</code></strong>=<em><code>'bce'</code></em>, <strong><code>aux_factor</code></strong>=<em><code>1</code></em>, <strong><code>label_noise</code></strong>=<em><code>0</code></em>, <strong><code>label_bias</code></strong>=<em><code>0</code></em>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="GANLearner" class="doc_header"><code>class</code> <code>GANLearner</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/gan/learner.py#L231" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GANLearner</code>(<strong><code>gan</code></strong>, <strong><code>n_gen</code></strong>=<em><code>1</code></em>, <strong><code>n_dis</code></strong>=<em><code>1</code></em>)</p>
 </blockquote>
 
 </div>
@@ -84,7 +225,7 @@ nb_path: "nbs/11_gan.learner.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="evaluate_gan" class="doc_header"><code>evaluate_gan</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/gan/learner.py#L102" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>evaluate_gan</code>(<strong><code>gan_type</code></strong>=<em><code>'bce'</code></em>, <strong><code>aux_factor</code></strong>=<em><code>1</code></em>, <strong><code>epochs</code></strong>=<em><code>10</code></em>)</p>
+<h4 id="evaluate_gan" class="doc_header"><code>evaluate_gan</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/gan/learner.py#L303" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>evaluate_gan</code>(<strong><code>gan_type</code></strong>=<em><code>'bce'</code></em>, <strong><code>aux_factor</code></strong>=<em><code>1</code></em>, <strong><code>epochs</code></strong>=<em><code>10</code></em>)</p>
 </blockquote>
 
 </div>

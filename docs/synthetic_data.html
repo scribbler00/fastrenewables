@@ -118,40 +118,32 @@ nb_path: "nbs/00g_synthetic_data.ipynb"
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
 
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#</span>
-<span class="c1">#class DummyDataset(torch.utils.data.Dataset):</span>
-<span class="c1">#</span>
-<span class="c1">#    def __init__(self, n_samples=1024, n_cat_feats=2, n_cont_feats=2, n_targets=1, len_ts=24, n_dim=2):</span>
-<span class="c1">#</span>
-<span class="c1">#        self.n_samples = n_samples</span>
-<span class="c1">#        if n_dim == 2:</span>
-<span class="c1">#            self.x_cat = torch.ones(n_samples, n_cat_feats)</span>
-<span class="c1">#            self.x_cont = torch.ones(n_samples, n_cont_feats)</span>
-<span class="c1">#            self.y = torch.ones(n_samples, n_targets)</span>
-<span class="c1">#        elif n_dim == 3:</span>
-<span class="c1">#            self.x_cat = torch.ones(n_samples, n_cat_feats, len_ts)</span>
-<span class="c1">#            self.x_cont = torch.ones(n_samples, n_cont_feats, len_ts)</span>
-<span class="c1">#            self.y = torch.ones(n_samples, n_targets, len_ts)</span>
-<span class="c1">#        elif n_dim == 4:</span>
-<span class="c1">#            self.x_cat = torch.ones(n_samples, n_cat_feats, len_ts, len_ts)</span>
-<span class="c1">#            self.x_cont = torch.ones(n_samples, n_cont_feats, len_ts, len_ts)</span>
-<span class="c1">#            self.y = torch.ones(n_samples, n_targets, len_ts, len_ts)</span>
-<span class="c1">#</span>
-<span class="c1">#    def __len__(self):</span>
-<span class="c1">#        return self.n_samples</span>
-<span class="c1">#    </span>
-<span class="c1">#    def __getitem__(self, idx):</span>
-<span class="c1">#        x_cat = self.x_cat[idx, :]</span>
-<span class="c1">#        x_cont = self.x_cont[idx, :]</span>
-<span class="c1">#        y = self.y[idx, :]</span>
-<span class="c1">#        return x_cat, x_cont, y</span>
-</pre></div>
+<div class="output_wrapper">
+<div class="output">
 
-    </div>
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="DummyDataset" class="doc_header"><code>class</code> <code>DummyDataset</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/synthetic_data.py#L57" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>DummyDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <code>Dataset</code></p>
+</blockquote>
+<p>An abstract class representing a :class:<code>Dataset</code>.</p>
+<p>All datasets that represent a map from keys to data samples should subclass
+it. All subclasses should overwrite :meth:<code>__getitem__</code>, supporting fetching a
+data sample for a given key. Subclasses could also optionally overwrite
+:meth:<code>__len__</code>, which is expected to return the size of the dataset by many
+:class:<code>~torch.utils.data.Sampler</code> implementations and the default options
+of :class:<code>~torch.utils.data.DataLoader</code>.</p>
+<p>.. note::
+  :class:<code>~torch.utils.data.DataLoader</code> by default constructs a index
+  sampler that yields integral indices.  To make it work with a map-style
+  dataset with non-integral indices/keys, a custom sampler must be provided.</p>
+
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -161,33 +153,6 @@ nb_path: "nbs/00g_synthetic_data.ipynb"
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#</span>
-<span class="c1">#n_dim = 2</span>
-<span class="c1">#data = DummyDataset(n_dim=n_dim)</span>
-<span class="c1">#dl = torch.utils.data.DataLoader(data, batch_size=batch_size, shuffle=True, drop_last=True)</span>
-<span class="c1">#for x_cat, x_cont, y in dl:</span>
-<span class="c1">#    assert(x_cat.dim()==x_cont.dim()==n_dim)</span>
-<span class="c1">#</span>
-<span class="c1">#n_dim = 3</span>
-<span class="c1">#data = DummyDataset(n_dim=n_dim)</span>
-<span class="c1">#dl = torch.utils.data.DataLoader(data, batch_size=batch_size, shuffle=True, drop_last=True)</span>
-<span class="c1">#for x_cat, x_cont, y in dl:</span>
-<span class="c1">#    assert(x_cat.dim()==x_cont.dim()==n_dim)</span>
-<span class="c1">#</span>
-<span class="c1">#n_dim = 4</span>
-<span class="c1">#data = DummyDataset(n_dim=n_dim)</span>
-<span class="c1">#dl = torch.utils.data.DataLoader(data, batch_size=batch_size, shuffle=True, drop_last=True)</span>
-<span class="c1">#for x_cat, x_cont, y in dl:</span>
-<span class="c1">#    assert(x_cat.dim()==x_cont.dim()==n_dim)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
 
 </div>
     {% endraw %}
@@ -203,7 +168,7 @@ nb_path: "nbs/00g_synthetic_data.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="GaussianDataset" class="doc_header"><code>class</code> <code>GaussianDataset</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/synthetic_data.py#L57" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GaussianDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <code>Dataset</code></p>
+<h2 id="GaussianDataset" class="doc_header"><code>class</code> <code>GaussianDataset</code><a href="https://github.com/scribbler00/fastrenewables/tree/master/fastrenewables/synthetic_data.py#L86" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>GaussianDataset</code>(<strong>*<code>args</code></strong>, <strong>**<code>kwds</code></strong>) :: <code>Dataset</code></p>
 </blockquote>
 <p>An abstract class representing a :class:<code>Dataset</code>.</p>
 <p>All datasets that represent a map from keys to data samples should subclass
