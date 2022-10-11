@@ -12,16 +12,19 @@ import torch.nn as nn
 import matplotlib.pyplot as plt
 
 from tqdm import tqdm
+from sklearn.model_selection import train_test_split
+
+import torch.nn.functional as F
+from torch.nn import BCELoss, CrossEntropyLoss, MSELoss
+
 from fastai.basics import set_seed
 from ..synthetic_data import *
 from .model import *
 from ..tabular.model import EmbeddingModule
 
-from sklearn.model_selection import train_test_split
-
-import torch.nn.functional as F
-
-from torch.nn import BCELoss, CrossEntropyLoss, MSELoss
+from ..timeseries.core import *
+from ..timeseries.data import *
+from ..timeseries.model import *
 
 plt.style.use('seaborn-colorblind')
 
@@ -185,13 +188,21 @@ class WGAN(GAN):
 
 # Cell
 def get_gan_model(structure, n_classes=2, emb_module=None, bn=True, \
-                  gan_type='bce', aux_factor=1, label_noise=0, label_bias=0):
+                  gan_type='bce', aux_factor=1, \
+                  label_noise=0, label_bias=0,\
+                  model_type = "MLP", len_ts=-1):
 
+    structure = structure.copy()
     gen_structure = structure.copy()
     structure.reverse()
     dis_structure = structure
     dis_structure[-1] = 1
     n_z = gen_structure[0]
+
+    if model_type=="tcn" and len_ts==-1 and gan_type=="aux":
+        raise AttributeError("Please provide timeseries length.")
+    else:
+        len_ts = 1
 
     if gan_type == 'bce' or gan_type == 'aux':
         final_act_dis = nn.Sigmoid
@@ -202,21 +213,61 @@ def get_gan_model(structure, n_classes=2, emb_module=None, bn=True, \
         opt_fct = torch.optim.RMSprop
         gan_class = WGAN
 
-    generator = GANMLP(ann_structure=gen_structure, act_fct=nn.ReLU, final_act_fct=nn.Sigmoid, \
-                       transpose=True, embedding_module=emb_module, bn_cont=bn)
+    if model_type.lower() == "mlp":
+        generator = GANMLP(ann_structure=gen_structure, act_fct=nn.ReLU, final_act_fct=nn.Sigmoid, \
+                       embedding_module=emb_module, bn_cont=bn)
+    elif model_type.lower() == "tcn":
+        generator = TemporalCNN(cnn_structure=gen_structure, \
+                                            act_func=nn.ReLU,\
+                                           cnn_type='tcn',
+                                           final_activation=nn.Sigmoid, \
+                                           embedding_module=emb_module,
+                                           batch_norm_cont=bn,
+                                           add_embedding_at_layer=[idx for idx in range(len(gen_structure)-2)],
+                       )
+    else:
+        raise ValueError
 
     if gan_type == 'aux':
         auxiliary = True
         dis_structure = dis_structure[:-1]
         final_input_size = dis_structure[-1]
-        discriminator = GANMLP(ann_structure=dis_structure, act_fct=nn.LeakyReLU, final_act_fct=final_act_dis, \
-                               embedding_module=emb_module, bn_cont=False)
+        if model_type.lower() == "mlp":
+            discriminator = GANMLP(ann_structure=dis_structure,
+                                   act_fct=nn.LeakyReLU, \
+                                   final_act_fct=final_act_dis, \
+                                   embedding_module=emb_module,
+                                   bn_cont=False)
+        elif model_type.lower() == "tcn":
+            discriminator = TemporalCNN(cnn_structure=dis_structure, \
+                                            act_func=nn.LeakyReLU,\
+                                           cnn_type='tcn',
+                                           final_activation=final_act_dis, \
+                                           embedding_module=emb_module,
+                                           batch_norm_cont=False,
+                                           add_embedding_at_layer=[idx for idx in range(len(dis_structure)-2)],
+                       )
+        else:
+            raise ValueError
+
         discriminator = AuxiliaryDiscriminator(basic_discriminator=discriminator, n_classes=n_classes, \
-                                               final_input_size=final_input_size)
+                                               final_input_size=final_input_size, len_ts=len_ts)
     else:
         auxiliary = False
-        discriminator = GANMLP(ann_structure=dis_structure, act_fct=nn.LeakyReLU, \
+        if model_type.lower() == "mlp":
+            discriminator = GANMLP(ann_structure=dis_structure, act_fct=nn.LeakyReLU, \
                                final_act_fct=final_act_dis, embedding_module=emb_module, bn_cont=False)
+        elif model_type.lower() == "tcn":
+            discriminator = TemporalCNN(cnn_structure=dis_structure, \
+                                            act_func=nn.LeakyReLU,\
+                                           cnn_type='tcn',
+                                           final_activation=final_act_dis, \
+                                           embedding_module=emb_module,
+                                           batch_norm_cont=False,
+                                           add_embedding_at_layer=[idx for idx in range(len(dis_structure)-2)],
+                       )
+        else:
+            raise ValueError
 
     gen_opt = opt_fct(params=generator.parameters())
     dis_opt = opt_fct(params=discriminator.parameters())

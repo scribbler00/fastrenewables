@@ -32,7 +32,8 @@ def LinBnAct(si, so, use_bn, act_cls):
 # Cell
 
 class GANMLP(torch.nn.Module):
-    def __init__(self, ann_structure, bn_cont=False, act_fct=torch.nn.ReLU, final_act_fct=nn.Sigmoid, embedding_module=None, transpose=False):
+    def __init__(self, ann_structure, bn_cont=False, act_fct=torch.nn.ReLU,
+                 final_act_fct=nn.Sigmoid, embedding_module=None):
         super(GANMLP, self).__init__()
 
         n_cont = ann_structure[0]
