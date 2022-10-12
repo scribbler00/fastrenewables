@@ -352,10 +352,10 @@ class GANLearner():
         self.gan.eval()
 
         if save_model:
-            self.gan.to_device('cpu')
+            self.gan.to('cpu')
             Path(save_dir).mkdir(exist_ok=True, parents=True)
 
-            torch.save(self.gan.state_dict(), save_dir+save_file+'.pt')
+            torch.save(self.gan.to('cpu').state_dict(), save_dir+save_file+'.pt')
 
         return
 

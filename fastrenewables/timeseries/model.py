@@ -505,7 +505,8 @@ class TemporalCNN(nn.Module):
         emb_dim = categorical_data.shape[1]
         ones = torch.ones((batch_size, emb_dim, timesteps))
 
-        if torch.cuda.is_available():
+        device_type = self.embedding_module.embeddings[0].weight.device.type
+        if torch.cuda.is_available() and device_type != "cpu":
             ones = ones.cuda()
 
         return ones * categorical_data.reshape(batch_size, emb_dim, 1)
