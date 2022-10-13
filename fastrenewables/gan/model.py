@@ -82,6 +82,7 @@ class AuxiliaryDiscriminator(torch.nn.Module):
 
     def forward(self, cats, conts):
         out = self.basic_discriminator(cats, conts)
+        out = torch.flatten(out, start_dim=1)
         validity = self.adv_layer(out)
         label = self.aux_layer(out)
         return (validity, label)
