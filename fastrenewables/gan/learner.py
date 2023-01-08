@@ -189,14 +189,22 @@ class WGAN(GAN):
         return
 
 # Cell
-def get_gan_model(structure, n_classes=2, emb_module=None, bn=True, \
-                  gan_type='bce', aux_factor=1, \
-                  label_noise=0, label_bias=0,\
-                  model_type = "MLP", len_ts=-1):
+def get_gan_model(
+    structure,
+    n_classes=2,
+    emb_module=None,
+    bn=True,
+    gan_type="bce",
+    aux_factor=1,
+    label_noise=0,
+    label_bias=0,
+    model_type="MLP",
+    len_ts=-1,
+):
 
-    if model_type.lower()=="mlp":
+    if model_type.lower() == "mlp":
         len_ts = 1
-    elif model_type.lower()=="tcn" and len_ts==-1 and gan_type.lower()=="aux":
+    elif model_type.lower() == "tcn" and len_ts == -1 and gan_type.lower() == "aux":
         raise AttributeError("Please provide timeseries length.")
 
     structure = structure.copy()
@@ -206,84 +214,114 @@ def get_gan_model(structure, n_classes=2, emb_module=None, bn=True, \
     dis_structure[-1] = 1
     n_z = gen_structure[0]
 
-    if gan_type == 'bce' or gan_type == 'aux':
+    if gan_type == "bce" or gan_type == "aux":
         final_act_dis = nn.Sigmoid
         opt_fct = torch.optim.Adam
         gan_class = GAN
-    elif gan_type == 'wgan':
+    elif gan_type == "wgan":
         final_act_dis = None
         opt_fct = torch.optim.RMSprop
         gan_class = WGAN
 
     if model_type.lower() == "mlp":
-        generator = GANMLP(ann_structure=gen_structure, act_fct=nn.ReLU, final_act_fct=nn.Sigmoid, \
-                       embedding_module=emb_module, bn_cont=bn)
+        generator = GANMLP(
+            ann_structure=gen_structure,
+            act_fct=nn.ReLU,
+            final_act_fct=nn.Sigmoid,
+            embedding_module=emb_module,
+            bn_cont=bn,
+        )
     elif model_type.lower() == "tcn":
-        generator = TemporalCNN(cnn_structure=gen_structure, \
-                                            act_func=nn.ReLU,\
-                                           cnn_type='tcn',
-                                           final_activation=nn.Sigmoid, \
-                                           embedding_module=emb_module,
-                                           batch_norm_cont=bn,
-                                           add_embedding_at_layer=[idx for idx in range(len(gen_structure)-2)],
-                       )
+        generator = TemporalCNN(
+            cnn_structure=gen_structure,
+            act_func=nn.ReLU,
+            cnn_type="tcn",
+            final_activation=nn.Sigmoid,
+            embedding_module=emb_module,
+            batch_norm_cont=bn,
+            # add_embedding_at_layer=[idx for idx in range(len(gen_structure) - 2)],
+            add_embedding_at_layer=[0],
+        )
     else:
         raise ValueError
 
-    if gan_type == 'aux':
+    if gan_type == "aux":
         auxiliary = True
         dis_structure = dis_structure[:-1]
         final_input_size = dis_structure[-1]
 
         if model_type.lower() == "mlp":
-            discriminator = GANMLP(ann_structure=dis_structure,
-                                   act_fct=nn.LeakyReLU, \
-                                   final_act_fct=final_act_dis, \
-                                   embedding_module=emb_module,
-                                   bn_cont=False)
+            discriminator = GANMLP(
+                ann_structure=dis_structure,
+                act_fct=nn.LeakyReLU,
+                final_act_fct=final_act_dis,
+                embedding_module=emb_module,
+                bn_cont=False,
+            )
         elif model_type.lower() == "tcn":
-            discriminator = TemporalCNN(cnn_structure=dis_structure, \
-                                            act_func=nn.LeakyReLU,\
-                                           cnn_type='tcn',
-                                           final_activation=final_act_dis, \
-                                           embedding_module=emb_module,
-                                           batch_norm_cont=False,
-                                           add_embedding_at_layer=[idx for idx in range(len(dis_structure)-2)],
-                       )
+            discriminator = TemporalCNN(
+                cnn_structure=dis_structure,
+                act_func=nn.LeakyReLU,
+                cnn_type="tcn",
+                final_activation=final_act_dis,
+                embedding_module=emb_module,
+                batch_norm_cont=False,
+                # add_embedding_at_layer=[idx for idx in range(len(dis_structure) - 2)],
+                add_embedding_at_layer=[0],
+            )
         else:
             raise ValueError
 
-        discriminator = AuxiliaryDiscriminator(basic_discriminator=discriminator, n_classes=n_classes, \
-                                               final_input_size=final_input_size, len_ts=len_ts)
+        discriminator = AuxiliaryDiscriminator(
+            basic_discriminator=discriminator,
+            n_classes=n_classes,
+            final_input_size=final_input_size,
+            len_ts=len_ts,
+        )
     else:
         auxiliary = False
         if model_type.lower() == "mlp":
-            discriminator = GANMLP(ann_structure=dis_structure, act_fct=nn.LeakyReLU, \
-                               final_act_fct=final_act_dis, embedding_module=emb_module, bn_cont=False)
-        elif model_type.lower() == "tcn":
-            output_layer = nn.Sequential(
-                nn.Linear(dis_structure[-2] * len_ts, 1), nn.Sigmoid()
+            discriminator = GANMLP(
+                ann_structure=dis_structure,
+                act_fct=nn.LeakyReLU,
+                final_act_fct=final_act_dis,
+                embedding_module=emb_module,
+                bn_cont=False,
             )
-            output_layer = CATWrapper(output_layer)
+        elif model_type.lower() == "tcn":
+            # output_layer = nn.Sequential(
+            #     nn.Linear(dis_structure[-2] * len_ts, 1), nn.Sigmoid()
+            # )
+            # output_layer = CATWrapper(output_layer)
             discriminator = TemporalCNN(
-                cnn_structure=dis_structure[:-1],
+                cnn_structure=dis_structure,
                 act_func=nn.LeakyReLU,
                 cnn_type="tcn",
-                final_activation=nn.LeakyReLU,
+                # final_activation=nn.LeakyReLU,
                 embedding_module=emb_module,
                 batch_norm_cont=False,
                 input_sequence_length=len_ts,
-                add_embedding_at_layer=[idx for idx in range(len(dis_structure) - 2)],
-                sequence_transform=output_layer,
+                final_activation=nn.Sigmoid,
+                # add_embedding_at_layer=[idx for idx in range(len(dis_structure) - 2)],
+                add_embedding_at_layer=[0],
+                # sequence_transform=output_layer,
             )
         else:
             raise ValueError
 
     gen_opt = opt_fct(params=generator.parameters())
     dis_opt = opt_fct(params=discriminator.parameters())
-    model = gan_class(generator=generator, discriminator=discriminator, gen_optim=gen_opt, dis_optim=dis_opt, n_z=n_z, \
-                      auxiliary=auxiliary, auxiliary_weighting_factor=aux_factor, \
-                      label_noise=label_noise, label_bias=label_bias)
+    model = gan_class(
+        generator=generator,
+        discriminator=discriminator,
+        gen_optim=gen_opt,
+        dis_optim=dis_opt,
+        n_z=n_z,
+        auxiliary=auxiliary,
+        auxiliary_weighting_factor=aux_factor,
+        label_noise=label_noise,
+        label_bias=label_bias,
+    )
 
     return model
 
@@ -364,15 +402,17 @@ class GANLearner():
 def evaluate_gan(gan_type='bce', aux_factor=1, epochs=2):
     print(gan_type, aux_factor)
     set_seed(1337)
-    emb_module = EmbeddingModule(categorical_dimensions=[n_classes+1])
+    emb_module = EmbeddingModule(categorical_dimensions=[n_classes+1]).to("cpu")
     model = get_gan_model(structure=[n_z, n_hidden, n_hidden, n_in], n_classes=n_classes, emb_module=emb_module, gan_type=gan_type, aux_factor=aux_factor, label_noise=0.1, label_bias=0.25)
+    model.to_device("cpu")
     learner = GANLearner(gan=model, n_gen=n_gen, n_dis=n_dis)
+
     learner.fit(train_dl, epochs=epochs, lr=lr, plot_epochs=epochs, save_model=True)
     for x_cat, x_cont, y in test_dl:
-        x_cat = x_cat.long()
+        x_cat = x_cat.long().to("cpu")
         print('distribution of real data:')
         d_real = fit_kde(x_cont, bandwidth=1/25, show_plot=True)
-        x_fake = learner.generate_samples(x_cat, x_cont)
+        x_fake = learner.generate_samples(x_cat.to("cpu"), x_cont.to("cpu"))
         print('distribution of generated data:')
         d_fake = fit_kde(x_fake, bandwidth=1/25, show_plot=True)
         break
