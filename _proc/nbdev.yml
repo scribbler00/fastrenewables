@@ -1,0 +1,9 @@
+project:
+  output-dir: docs
+
+website:
+  title: "fastrenewables"
+  site-url: "https://scribbler00.github.io/fastrenewables/"
+  description: "A framework for transfer learning in the context of renewable timeseries power forecasts."
+  repo-branch: master
+  repo-url: "https://github.com/scribbler00/fastrenewables/tree/master/"

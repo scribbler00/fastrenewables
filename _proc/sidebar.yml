@@ -1,0 +1,27 @@
+website:
+  sidebar:
+    contents:
+      - index.ipynb
+      - 00a_utils.ipynb
+      - 00b_losses.ipynb
+      - 00c_utils_blitz.ipynb
+      - 00d_baselines.ipynb
+      - 00e_metrics.ipynb
+      - 00f_utils_pytorch.ipynb
+      - 00g_synthetic_data.ipynb
+      - 01_tabular.core.ipynb
+      - 02_tabular.data.ipynb
+      - 03_tabular.model.ipynb
+      - 04_tabular.learner.ipynb
+      - 05_timeseries.core.ipynb
+      - 06_timeseries.data.ipynb
+      - 07_timeseries.model.ipynb
+      - 08_timeseries.learner.ipynb
+      - 09_gan.core.ipynb
+      - 10_gan.model.ipynb
+      - 11_gan.learner.ipynb
+      - 12_autoencoder_models.ipynb
+      - 13_probabilistic_models.ipynb
+      - 14_transfer_models.ipynb
+      - 15_ensemble_models.ipynb
+      - 16_weak_supvervision_models.ipynb
